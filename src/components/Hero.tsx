@@ -10,11 +10,8 @@ export default function Hero() {
         <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
           para<span className="text-sky-300">MOT</span>
         </h1>
-        <p className="text-xl md:text-2xl mb-4 text-sky-100 font-medium">
+        <p className="text-xl md:text-2xl mb-12 text-sky-100 font-medium">
           Paragliding servicing and repairs
-        </p>
-        <p className="text-lg text-sky-200 max-w-2xl mx-auto mb-12 leading-relaxed">
-          Life hanging by a couple of threads.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a href="#services">

@@ -6,6 +6,7 @@ import {
   CardTitle,
   CardDescription,
 } from "@/components/ui/card";
+import prices from "@/data/prices.json";
 
 const services = [
   {
@@ -30,7 +31,7 @@ const services = [
     description:
       "Professional emergency parachute repacking following manufacturer specifications and safety protocols.",
     code: "PACK-001",
-    available: true,
+    available: false,
   },
   {
     icon: Wrench,
@@ -43,6 +44,8 @@ const services = [
 ];
 
 export default function Services() {
+  const pricing = prices as Record<string, any>;
+
   return (
     <section
       id="services"
@@ -84,6 +87,17 @@ export default function Services() {
                   {!service.available && (
                     <span className="text-xs font-medium text-orange-600 bg-orange-50 px-2 py-1 rounded-full">
                       Coming Soon
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center justify-center">
+                  {typeof pricing[service.code] === "number" ? (
+                    <span className="text-lg font-bold text-sky-900">
+                      £{pricing[service.code]}
+                    </span>
+                  ) : (
+                    <span className="text-lg font-bold text-sky-900">
+                      {pricing[service.code]}
                     </span>
                   )}
                 </div>

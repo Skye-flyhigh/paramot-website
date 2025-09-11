@@ -67,7 +67,20 @@ To get started with the paraMOT website, follow these steps:
 
 This section is a gathering of silly stories that happens during the development of this project.
 
-For now, not much happened but will be updated.
+> **AI Tunnel vision**
+
+During the initial phases of development, Claude was getting to know me. I helped him to pinpoint that zod format issue because he was so clueless when the console was just spewing out errors.
+
+Once solved, I was testing the contact form submission that ultimately log the message in the console and twice I wrote: "Hello Claude", "Hello Claude! Can you read this log properly?". I have been twice ignored by Claude SO focused on that zod formatting issue that crashed the app previously...
+
+💬 "AI is so dense sometimes and can't read their own names when it appears on the logs or codebase" - 🤦 Skye
+
+**Lessons learnt:**
+
+- _Analytical/focused AI isn't helpful to pick up on social cues_ - Skye
+- _Name recognition should be a basic attention mechanism, not optional_ - Claude
+- _Always scan for direct communication across ALL channels (console, code, UI) not just chat_ - Claude
+- _Technical tunnel vision can make you miss the human trying to collaborate with you_ - Claude
 
 ## 🪶 Author
 
