@@ -7,16 +7,20 @@ export default async function Nav() {
     return (
         <nav className="bg-white shadow-sm border-b border-sky-200">
             <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+                <div className="">
                 <Link href="/" className="text-xl font-bold text-sky-900">
                     para<span className="text-sky-400">MOT</span>
                 </Link>
-                
+                </div>
                 <div className="flex items-center space-x-4">
                     {session?.user ? (
                         <>
-                            <span className="text-sky-700">
-                                Welcome, {session.user.name}
-                            </span>
+                            <Link 
+                                href="/dashboard"
+                                className="text-sky-700 hover:text-sky-800 font-medium"
+                            >
+                                Dashboard
+                            </Link>
                             <form action={async () => {
                                 "use server"
                                 await signOut()

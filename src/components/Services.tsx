@@ -31,7 +31,7 @@ const services = [
     description:
       "Professional emergency parachute repacking following manufacturer specifications and safety protocols.",
     code: "PACK-001",
-    available: false,
+    available: true,
   },
   {
     icon: Wrench,

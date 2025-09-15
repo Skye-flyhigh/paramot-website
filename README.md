@@ -37,6 +37,7 @@ Website has a static public facing interface built with Next.js, showcasing the 
 - [Lucide React](https://lucide.dev/) for clean, consistent icons
 - [Zod](https://zod.dev/?id=objects) data validation
 - [Shadcn](https://ui.shadcn.com/) for accessible and customizable UI components
+- [NextAuth.js](https://next-auth.js.org/) for authentication
 
 ## Setup
 
