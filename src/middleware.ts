@@ -1,13 +1,13 @@
-import { auth } from "@/auth"
-import { NextResponse } from "next/server"
+import { auth } from "@/auth";
+import { NextResponse } from "next/server";
 
 export default auth((req) => {
-  const { nextUrl } = req
-  const isLoggedIn = !!req.auth
+  const { nextUrl } = req;
+  const isLoggedIn = !!req.auth;
 
   // Define protected routes
-  const isProtectedRoute = nextUrl.pathname.startsWith('/dashboard')
-  
+  const isProtectedRoute = nextUrl.pathname.startsWith("/dashboard");
+
   // If trying to access protected route without auth, redirect to login
   // if (isProtectedRoute && !isLoggedIn) {
   //   const loginUrl = new URL('/login', nextUrl.origin)
@@ -16,17 +16,17 @@ export default auth((req) => {
   // }
 
   // If logged in and trying to access login page, redirect to dashboard
-  if (isLoggedIn && nextUrl.pathname === '/login') {
-    const callbackUrl = nextUrl.searchParams.get('callbackUrl')
-    const redirectUrl = callbackUrl || '/dashboard'
-    return NextResponse.redirect(new URL(redirectUrl, nextUrl.origin))
+  if (isLoggedIn && nextUrl.pathname === "/login") {
+    const callbackUrl = nextUrl.searchParams.get("callbackUrl");
+    const redirectUrl = callbackUrl || "/dashboard";
+    return NextResponse.redirect(new URL(redirectUrl, nextUrl.origin));
   }
 
-  return NextResponse.next()
-})
+  return NextResponse.next();
+});
 
 export const config = {
   matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)',
-  ]
-}
+    "/((?!api|_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt).*)",
+  ],
+};

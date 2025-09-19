@@ -1,4 +1,4 @@
-import { signIn } from "@/auth"
+import { signIn } from "@/auth";
 
 export default function Login() {
   return (
@@ -8,18 +8,20 @@ export default function Login() {
           Customer Login
         </h2>
         <div className="space-y-4">
-          <form action={async () => {
-            "use server"
-            await signIn("google", { redirectTo: "/dashboard" })
-          }}>
-            <button 
+          <form
+            action={async () => {
+              "use server";
+              await signIn("google", { redirectTo: "/dashboard" });
+            }}
+          >
+            <button
               type="submit"
               className="w-full bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700 transition-colors"
             >
               Sign in with Google
             </button>
           </form>
-          
+
           <div className="text-center">
             <p className="text-sm text-sky-600">
               Access your service history and manage your paragliding equipment
@@ -28,5 +30,5 @@ export default function Login() {
         </div>
       </div>
     </div>
-  )
+  );
 }
