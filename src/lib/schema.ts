@@ -30,6 +30,13 @@ export const SERVICE_TYPES = [
 ] as const;
 export type ServiceType = (typeof SERVICE_TYPES)[number];
 
+const SERVICE_STATUSES = [
+  "PENDING",
+  "IN_PROGRESS",
+  "COMPLETED",
+  "CANCELLED",
+] as const;
+
 export interface ServiceRecords {
   //This schema could be used for a glider, a reserve parachute or a harness
   service: ServiceType;
@@ -39,7 +46,7 @@ export interface ServiceRecords {
   manufacturer: string; // Could be linked to workbench database
   model: string; // Could be linked to workbench database
   size: string; // Could be linked to workbench database
-  status: string;
+  status: typeof SERVICE_STATUSES[number];
   cost: number; // in £
   createdAt: Date;
   updatedAt?: Date;
@@ -88,19 +95,32 @@ export interface DetailedServiceRecord extends ServiceRecords {
   inspectionData?: WorkbenchInspectionSession;
 }
 
-// Equipment registry (what the customer owns)
+// Equipment registry (independent of ownership - like a car with a reg number)
 export interface Equipment {
-  id: string; // Unique equipment ID
-  customerId: string; // Links to Customer
+  id: string; // Internal ID
+  serialNumber: string; // The "registration number" - unique identifier
   type: "glider" | "reserve" | "harness";
-  serialNumber: string;
   manufacturer: string;
   model: string;
   size: string;
-  purchaseDate?: Date;
-  lastServiceDate?: Date;
-  nextServiceDue?: Date;
-  status: "active" | "retired" | "service_required";
+  manufactureDate?: Date;
+  status: "active" | "retired" | "damaged" | "decommissioned";
+  createdAt: Date;
+  updatedAt: Date;
+  // NO customerId - ownership is tracked separately!
+}
+
+// Ownership junction table - tracks who owns what and when (like DVLA registration)
+export interface CustomerEquipment {
+  id: string;
+  customerId: string; // Links to Customer
+  equipmentId: string; // Links to Equipment
+  equipmentSerialNumber: string; // Denormalized for quick lookup
+  ownedFrom: Date; // When they acquired it
+  ownedUntil: Date | null; // null = currently owned, date = sold/transferred
+  purchaseDate?: Date; // Optional: actual purchase date (might differ from ownedFrom)
+  purchasePrice?: number;
+  notes?: string; // "Bought second-hand", "Gift from friend", etc.
   createdAt: Date;
   updatedAt: Date;
 }

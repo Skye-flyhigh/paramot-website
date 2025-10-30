@@ -51,7 +51,7 @@ export default function Location() {
                 href="mailto:info@paramot.uk"
                 className="hover:text-sky-800 font-medium transition-colors"
               >
-                info@paramot.uk
+                info@paramot.co.uk
               </a>
             </p>
           </div>

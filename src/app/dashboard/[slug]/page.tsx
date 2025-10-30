@@ -1,9 +1,9 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getEquipmentBySerial, getServiceById } from "@/lib/mockData";
-import ServiceHistoryTable from "@/components/ServiceHistoryTable";
-import { ServiceRecords } from "@/lib/schema";
+import { getEquipmentBySerial, getEquipmentServiceHistory } from "@/lib/mockData";
+import ServiceHistoryTable from "@/components/dashboard/ServiceHistoryTable";
 import { getServiceDescription, getStatusColor } from "@/lib/styling/services";
+import { Button } from "@/components/ui/button";
 
 interface ServiceDetailPageProps {
   params: { slug: string };
@@ -14,7 +14,7 @@ export default async function ServiceDetailPage({
 }: {
   params: Promise<{ slug: string; locale: string }>;
 }) {
-  // Find the service record by ID
+  // Find equipment by serial number
   const { slug } = await params;
   const equipment = getEquipmentBySerial(slug);
 
@@ -22,10 +22,10 @@ export default async function ServiceDetailPage({
     notFound();
   }
 
-  const lastService = getServiceById(equipment.serviceHistory[0]);
-  const serviceHistory: ServiceRecords[] = equipment.serviceHistory
-    .map((id) => getServiceById(id))
-    .filter((service): service is ServiceRecords => service !== undefined);
+  // Get complete service history for this equipment
+  const serviceHistory = getEquipmentServiceHistory(equipment.serialNumber);
+  const lastService = serviceHistory.length > 0 ? serviceHistory[0] : null;
+
   if (!lastService) {
     notFound();
   }
@@ -53,7 +53,7 @@ export default async function ServiceDetailPage({
                   {equipment.manufacturer} {equipment.model} ({equipment.size})
                 </span>
               </h1>
-              <p>Last service: {equipment.serviceHistory[0]}</p>
+              <p>Last service: {lastService.id}</p>
             </div>
             <div className="text-right">
               <span
@@ -202,7 +202,7 @@ export default async function ServiceDetailPage({
                       Serial Number
                     </p>
                     <p className="text-sky-900 font-mono text-sm">
-                      {equipment.serialNb}
+                      {equipment.serialNumber}
                     </p>
                   </div>
                 </div>
@@ -216,19 +216,19 @@ export default async function ServiceDetailPage({
               </div>
               <div className="p-6">
                 <div className="space-y-3">
-                  {lastService.status === "Completed" && (
-                    <button className="w-full bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700 transition-colors">
+                  {lastService.status === "COMPLETED" && (
+                    <Button variant="default" className="w-full">
                       Download Service Report
-                    </button>
+                    </Button>
                   )}
-                  {lastService.status === "Scheduled" && (
-                    <button className="w-full bg-yellow-600 text-white py-2 px-4 rounded hover:bg-yellow-700 transition-colors">
+                  {lastService.status === "PENDING" && (
+                    <Button variant="default" className="w-full bg-yellow-600 hover:bg-yellow-700">
                       Modify Booking
-                    </button>
+                    </Button>
                   )}
-                  <button className="w-full border border-sky-300 text-sky-700 py-2 px-4 rounded hover:bg-sky-50 transition-colors">
+                  <Button variant="outline" className="w-full">
                     Contact Support
-                  </button>
+                  </Button>
                 </div>
               </div>
             </div>
@@ -237,7 +237,10 @@ export default async function ServiceDetailPage({
           {/* Service History */}
 
           <div className="col-span-3">
-            <ServiceHistoryTable serviceHistory={serviceHistory} />
+            <ServiceHistoryTable
+              serviceHistory={serviceHistory}
+              equipment={equipment}
+            />
           </div>
         </div>
       </div>
