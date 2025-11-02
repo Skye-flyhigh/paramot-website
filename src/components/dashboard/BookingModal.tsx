@@ -37,6 +37,7 @@ export default function BookingModal({
     contactMethod: "email",
   });
 
+  // TODO: remove hard coded values, check with @/data/prices.json as it is similar values
   const serviceTypes = [
     {
       value: "SVC-001",
@@ -74,8 +75,8 @@ export default function BookingModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-slate-600 bg-opacity-90">
+      <dialog open={isOpen} className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] m-auto overflow-y-auto">
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
           <h2 className="text-xl font-semibold">
@@ -235,7 +236,7 @@ export default function BookingModal({
             </Button>
           </div>
         </form>
-      </div>
+      </dialog>
     </div>
   );
 }

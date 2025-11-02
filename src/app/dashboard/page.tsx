@@ -22,7 +22,7 @@ export default async function Dashboard() {
   //   where: { email: session.user.email },
   //   include: { equipment: true, serviceRecords: true }
   // })
-  let customerData = getCustomerByEmail(session.user.email || "skye@paramot.co.uk");
+  let customerData = getCustomerByEmail("skye@paramot.co.uk");
 
   // First time user? Would create their record here
   if (!customerData) {
@@ -57,7 +57,7 @@ export default async function Dashboard() {
               <p className="font-mono text-sky-800">{customerData.email}</p>
             </div>
           </div>
-          <DashboardCTA />
+          <DashboardCTA customer={customerData} />
           {/* TODO: add settings button and contact details edition through a modal */}
         </header>
 

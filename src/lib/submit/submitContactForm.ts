@@ -54,7 +54,10 @@ export default async function submitContactForm(
   } catch (error) {
     return {
       ...prevState,
-      errors: { general: "Something went wrong. Please try again later." },
+      errors: {
+        ...prevState.errors,
+        general: "Something went wrong. Please try again later."
+      },
       success: false,
     };
   }

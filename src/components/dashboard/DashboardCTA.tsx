@@ -1,10 +1,12 @@
 "use client";
 
-import { ServiceRecords } from "@/lib/schema";
+import { Customer, Equipment, ServiceRecords } from "@/lib/schema";
 import { useState } from "react";
+import { EquipmentPicker } from "./EquipmentPicker";
+import { getCustomerEquipment } from "@/lib/mockData";
 import BookingModal from "./BookingModal";
 
-export function DashboardCTA() {
+export function DashboardCTA(customer: Customer) {
   const [modalState, setModalState] = useState<{
     isOpen: boolean;
     mode: "create" | "modify";
@@ -13,6 +15,9 @@ export function DashboardCTA() {
     isOpen: false,
     mode: "create",
   });
+
+  const equipmentList = getCustomerEquipment(customer.id)
+  // const newEquipement: Equipment = {}
 
   const openModal = (mode: "create" | "modify", service?: ServiceRecords) => {
     setModalState({
@@ -37,6 +42,23 @@ export function DashboardCTA() {
       >
         Schedule New Service
       </button>
+      {
+       ( modalState.isOpen && (
+          <EquipmentPicker
+            isOpen={modalState.isOpen}
+            onClose={closeModal}
+            equipmentList={equipmentList}
+          />
+         )) // || (newEquipement && (
+        //   <BookingModal
+        //     isOpen={modalState.isOpen}
+        //     onClose={closeModal}
+        //     mode="create"
+        //     equipment={newEquipement}
+        //   />)
+        // )
+      }
+
     </div>
   );
 }
