@@ -1,11 +1,10 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import { ServiceRecords } from "@/lib/schema";
-import { getStatusColor } from "@/lib/styling/services";
-import { Equipment } from "@/lib/schema";
-import BookingModal from "./BookingModal";
-import { Button } from "@/components/ui/button";
+import { useState } from 'react';
+import { ServiceRecords, Equipment } from '@/lib/schema';
+import { getStatusColor } from '@/lib/styling/services';
+import BookingModal from './BookingModal';
+import { Button } from '@/components/ui/button';
 
 export default function ServiceHistoryTable({
   serviceHistory,
@@ -16,14 +15,14 @@ export default function ServiceHistoryTable({
 }) {
   const [modalState, setModalState] = useState<{
     isOpen: boolean;
-    mode: "create" | "modify";
+    mode: 'create' | 'modify';
     selectedService?: ServiceRecords;
   }>({
     isOpen: false,
-    mode: "create",
+    mode: 'create',
   });
 
-  const openModal = (mode: "create" | "modify", service?: ServiceRecords) => {
+  const openModal = (mode: 'create' | 'modify', service?: ServiceRecords) => {
     setModalState({
       isOpen: true,
       mode,
@@ -34,7 +33,7 @@ export default function ServiceHistoryTable({
   const closeModal = () => {
     setModalState({
       isOpen: false,
-      mode: "create",
+      mode: 'create',
     });
   };
   return (
@@ -95,10 +94,10 @@ export default function ServiceHistoryTable({
                   {service.id}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  {service.status === "PENDING" ? (
+                  {service.status === 'PENDING' ? (
                     equipment ? (
                       <button
-                        onClick={() => openModal("modify", service)}
+                        onClick={() => openModal('modify', service)}
                         className="text-sky-600 hover:text-sky-800 font-medium transition-colors"
                       >
                         Modify Booking →
@@ -124,7 +123,7 @@ export default function ServiceHistoryTable({
       {equipment && (
         <div className="p-6 border-t border-sky-100 bg-sky-25">
           <Button
-            onClick={() => openModal("create")}
+            onClick={() => openModal('create')}
             variant="default"
             size="lg"
             className="w-full"

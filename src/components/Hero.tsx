@@ -1,10 +1,10 @@
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 
 export default function Hero() {
   return (
     <section className="relative bg-gradient-to-br from-sky-800 via-sky-700 to-slate-800 text-white py-24 px-4 overflow-hidden">
       <div className="absolute inset-0 opacity-30">
-        <div className="w-full h-full bg-gradient-to-br from-transparent via-sky-500/5 to-transparent"></div>
+        <div className="w-full h-full bg-gradient-to-br from-transparent via-sky-500/5 to-transparent" />
       </div>
       <div className="max-w-4xl mx-auto text-center relative z-10">
         <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
