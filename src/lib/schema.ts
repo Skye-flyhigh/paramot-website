@@ -8,7 +8,7 @@
 // - Glider has many ServiceRecords
 // - Service defines types (SVC-001, TRIM-001, etc.) with pricing/details
 // - ServiceRecord connects Customer + Glider + Service + booking details
-import prices from "@/data/prices.json";
+import prices from '@/data/prices.json';
 
 // Example structure to get you started:
 export interface Customer {
@@ -22,20 +22,13 @@ export interface Customer {
   serviceHistory: ServiceRecords[];
 }
 
-export const SERVICE_TYPES = [
-  "SVC-001",
-  "TRIM-001",
-  "PACK-001",
-  "REP-001",
-] as const;
+export const SERVICE_TYPES = ['SVC-001', 'TRIM-001', 'PACK-001', 'REP-001'] as const;
 export type ServiceType = (typeof SERVICE_TYPES)[number];
 
-const SERVICE_STATUSES = [
-  "PENDING",
-  "IN_PROGRESS",
-  "COMPLETED",
-  "CANCELLED",
-] as const;
+const SERVICE_STATUSES = ['PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'] as const;
+
+export const EQUIPMENT_TYPES = ['glider', 'reserve', 'harness'] as const;
+export type EquipmentType = (typeof EQUIPMENT_TYPES)[number];
 
 export interface ServiceRecords {
   //This schema could be used for a glider, a reserve parachute or a harness
@@ -46,7 +39,7 @@ export interface ServiceRecords {
   manufacturer: string; // Could be linked to workbench database
   model: string; // Could be linked to workbench database
   size: string; // Could be linked to workbench database
-  status: typeof SERVICE_STATUSES[number];
+  status: (typeof SERVICE_STATUSES)[number];
   cost: number; // in £
   createdAt: Date;
   updatedAt?: Date;
@@ -99,12 +92,12 @@ export interface DetailedServiceRecord extends ServiceRecords {
 export interface Equipment {
   id: string; // Internal ID
   serialNumber: string; // The "registration number" - unique identifier
-  type: "glider" | "reserve" | "harness";
+  type: EquipmentType;
   manufacturer: string;
   model: string;
   size: string;
   manufactureDate?: Date;
-  status: "active" | "retired" | "damaged" | "decommissioned";
+  status: 'active' | 'retired' | 'damaged' | 'decommissioned';
   createdAt: Date;
   updatedAt: Date;
   // NO customerId - ownership is tracked separately!
@@ -127,5 +120,5 @@ export interface CustomerEquipment {
 
 // Pricing lookup helper
 export function getServicePrice(serviceType: ServiceType): string | number {
-  return prices[serviceType] || "Contact us";
+  return prices[serviceType] || 'Contact us';
 }

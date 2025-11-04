@@ -5,10 +5,9 @@ import { X } from 'lucide-react';
 import { Equipment, ServiceRecords } from '@/lib/schema';
 import { Button } from '@/components/ui/button';
 
-interface BookingModalProps {
+export interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
-  mode: 'create' | 'modify';
   equipment: Equipment;
   existingBooking?: ServiceRecords;
 }
@@ -24,7 +23,6 @@ interface BookingFormData {
 export default function BookingModal({
   isOpen,
   onClose,
-  mode,
   equipment,
   existingBooking,
 }: BookingModalProps) {
@@ -63,7 +61,7 @@ export default function BookingModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: Handle form submission
-    console.log('Booking request:', { equipment, formData, mode });
+    console.log('Booking request:', { equipment, formData });
     onClose();
   };
 
@@ -81,9 +79,7 @@ export default function BookingModal({
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-semibold">
-            {mode === 'create' ? 'Request Service' : 'Modify Booking'}
-          </h2>
+          <h2 className="text-xl font-semibold">Modify Booking</h2>
           <button
             onClick={onClose}
             className="text-gray-400 hover:text-gray-600 transition-colors"
@@ -213,7 +209,7 @@ export default function BookingModal({
               Cancel
             </Button>
             <Button type="submit" variant="default">
-              {mode === 'create' ? 'Submit Request' : 'Update Booking'}
+              Update Booking
             </Button>
           </div>
         </form>
