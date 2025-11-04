@@ -5,6 +5,7 @@ import { LoaderCircle, X } from 'lucide-react';
 import { useActionState, useEffect, useState } from 'react';
 import { Alert, AlertDescription } from '../ui/alert';
 import submitEquipmentForm from '@/lib/submit/submitEquipmentForm';
+import { Button } from '../ui/button';
 
 interface EquipmentPickerProps {
   isOpen: boolean;
@@ -71,9 +72,8 @@ export function EquipmentPicker({
       };
 
       onEquipmentSelected(newEquipment);
-      onClose(); // Close the modal after selection
     }
-  }, [state.success, state.formData, onEquipmentSelected, onClose]);
+  }, [state.success, state.formData, onEquipmentSelected]);
 
   // Make sure that the modal is closed
   if (!isOpen) return null;
@@ -94,12 +94,11 @@ export function EquipmentPicker({
     const equipment = equipmentList.find((eq) => eq.id === selectedEquipmentId);
     if (equipment) {
       onEquipmentSelected(equipment);
-      onClose();
     }
   }
 
   return (
-    <div className="fixed inset-0 bg-slate-600 bg-opacity-90 flex items-center justify-center p-4">
+    <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
       <dialog
         open={isOpen}
         className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto m-0"
@@ -235,22 +234,18 @@ export function EquipmentPicker({
           )}
 
           {/* Action Buttons */}
-          <div className="flex justify-end p-6 border-t">
-            <button
-              type="button"
-              onClick={onClose}
-              className="mr-4 text-gray-400 hover:text-gray-600 transition-colors"
-            >
+          <div className="flex justify-end gap-3 p-6 border-t">
+            <Button type="button" onClick={onClose} variant="ghost">
               Cancel
-            </button>
-            <button
+            </Button>
+            <Button
               type={isNew ? 'submit' : 'button'}
               onClick={isNew ? undefined : handleContinue}
+              variant="default"
               disabled={
                 isPending ||
                 (!isNew && (!selectedEquipmentId || selectedEquipmentId === 'new'))
               }
-              className="inline-flex items-center px-4 py-2 bg-sky-600 text-white rounded-md shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isPending ? (
                 <>
@@ -262,7 +257,7 @@ export function EquipmentPicker({
               ) : (
                 'Continue to Booking'
               )}
-            </button>
+            </Button>
           </div>
         </form>
       </dialog>

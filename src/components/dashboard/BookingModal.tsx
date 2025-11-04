@@ -61,7 +61,6 @@ export default function BookingModal({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: Handle form submission
-    console.log('Booking request:', { equipment, formData });
     onClose();
   };
 
@@ -72,10 +71,10 @@ export default function BookingModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-slate-600 bg-opacity-90">
+    <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
       <dialog
         open={isOpen}
-        className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] m-auto overflow-y-auto"
+        className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto m-0"
       >
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b">
@@ -205,7 +204,7 @@ export default function BookingModal({
 
           {/* Actions */}
           <div className="flex justify-end space-x-4 pt-4 border-t">
-            <Button type="button" variant="outline" onClick={onClose}>
+            <Button type="button" variant="ghost" onClick={onClose}>
               Cancel
             </Button>
             <Button type="submit" variant="default">

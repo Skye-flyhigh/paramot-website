@@ -1,25 +1,30 @@
-"use client";
+'use client';
 
-import { Customer, Equipment, ServiceRecords } from "@/lib/schema";
-import { useState } from "react";
-import { EquipmentPicker } from "./EquipmentPicker";
-import { getCustomerEquipment } from "@/lib/mockData";
-import BookingModal from "./BookingModal";
+import { Customer, Equipment, ServiceRecords } from '@/lib/schema';
+import { useState } from 'react';
+import { EquipmentPicker } from './EquipmentPicker';
+import { getCustomerEquipment } from '@/lib/mockData';
+import BookingModal from './BookingModal';
+import { Button } from '../ui/button';
+
+interface ModalState {
+  isOpen: boolean;
+  mode: 'picker' | 'booking' | null;
+  selectedService?: ServiceRecords;
+}
 
 export function DashboardCTA(customer: Customer) {
-  const [modalState, setModalState] = useState<{
-    isOpen: boolean;
-    mode: "create" | "modify";
-    selectedService?: ServiceRecords;
-  }>({
+  const [modalState, setModalState] = useState<ModalState>({
     isOpen: false,
-    mode: "create",
+    mode: null,
   });
 
-  const equipmentList = getCustomerEquipment(customer.id)
+  const [newEquipment, setNewEquipment] = useState<Equipment | null>(null);
+
+  const equipmentList = getCustomerEquipment(customer.id);
   // const newEquipement: Equipment = {}
 
-  const openModal = (mode: "create" | "modify", service?: ServiceRecords) => {
+  const openModal = (mode: 'picker' | 'booking', service?: ServiceRecords) => {
     setModalState({
       isOpen: true,
       mode,
@@ -30,35 +35,34 @@ export function DashboardCTA(customer: Customer) {
   const closeModal = () => {
     setModalState({
       isOpen: false,
-      mode: "create",
+      mode: null,
     });
   };
 
   return (
-    <div className="mt-6">
-      <button
-        onClick={() => openModal("create")}
-        className="inline-flex items-center px-4 py-2 bg-sky-600 text-white rounded-md shadow-sm hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
-      >
+    <div className="mt-6 flex gap-3 space-around">
+      <Button onClick={() => openModal('picker')} variant="default">
         Schedule New Service
-      </button>
-      {
-       ( modalState.isOpen && (
-          <EquipmentPicker
+      </Button>
+      {(modalState.mode === 'picker' && (
+        <EquipmentPicker
+          isOpen={modalState.isOpen}
+          onClose={() => closeModal()}
+          equipmentList={equipmentList}
+          onEquipmentSelected={(equipment) => {
+            // Handle equipment selection
+            setNewEquipment(equipment);
+            openModal('booking');
+          }}
+        />
+      )) ||
+        (modalState.mode === 'booking' && newEquipment && (
+          <BookingModal
             isOpen={modalState.isOpen}
             onClose={closeModal}
-            equipmentList={equipmentList}
+            equipment={newEquipment}
           />
-         )) // || (newEquipement && (
-        //   <BookingModal
-        //     isOpen={modalState.isOpen}
-        //     onClose={closeModal}
-        //     mode="create"
-        //     equipment={newEquipement}
-        //   />)
-        // )
-      }
-
+        ))}
     </div>
   );
 }

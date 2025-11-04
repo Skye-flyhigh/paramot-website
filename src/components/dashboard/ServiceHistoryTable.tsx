@@ -138,7 +138,6 @@ export default function ServiceHistoryTable({
         <BookingModal
           isOpen={modalState.isOpen}
           onClose={closeModal}
-          mode={modalState.mode}
           equipment={equipment}
           existingBooking={modalState.selectedService}
         />
