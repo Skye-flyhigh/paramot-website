@@ -118,7 +118,7 @@ export function EquipmentPicker({
           {/* Modal main */}
           <div className="p-6 bg-gray-50 border-b">
             <h2 className="font-medium text-gray-900">Select Equipment</h2>
-            <select
+            <select // FIXME: at the opening of the modal, the first option selected isn't loaded as equipment and there for the button is disabled. Load the first equipement too
               onChange={(e) => handleSelectChange(e.target.value)}
               value={isNew ? 'new' : selectedEquipmentId || equipmentList[0]?.id}
               className="mt-2 h-10 w-full bg-white p-2 border-sky-300 border-2 rounded-lg hover:border-sky-700"
@@ -183,6 +183,11 @@ export function EquipmentPicker({
                     }
                     defaultValue={state.formData.manufacturer}
                   />
+                  {state.errors.manufacturer && (
+                    <span className="text-red-500 text-xs mt-1 block">
+                      {state.errors.manufacturer}
+                    </span>
+                  )}
                 </label>
                 <label className="text-gray-600">
                   Model:
@@ -198,6 +203,11 @@ export function EquipmentPicker({
                     }
                     defaultValue={state.formData.model}
                   />
+                  {state.errors.model && (
+                    <span className="text-red-500 text-xs mt-1 block">
+                      {state.errors.model}
+                    </span>
+                  )}
                 </label>
                 <label className="text-gray-600">
                   Size:
@@ -213,6 +223,11 @@ export function EquipmentPicker({
                     }
                     defaultValue={state.formData.size}
                   />
+                  {state.errors.size && (
+                    <span className="text-red-500 text-xs mt-1 block">
+                      {state.errors.size}
+                    </span>
+                  )}
                 </label>
                 <label className="text-gray-600">
                   Serial Number:
@@ -228,6 +243,11 @@ export function EquipmentPicker({
                     }
                     defaultValue={state.formData.serialNumber}
                   />
+                  {state.errors.serialNumber && (
+                    <span className="text-red-500 text-xs mt-1 block">
+                      {state.errors.serialNumber}
+                    </span>
+                  )}
                 </label>
               </div>
             </div>

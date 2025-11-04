@@ -1,10 +1,10 @@
 'use client';
 
-import { useState } from 'react';
 import { ServiceRecords, Equipment } from '@/lib/schema';
 import { getStatusColor } from '@/lib/styling/services';
 import BookingModal from './BookingModal';
 import { Button } from '@/components/ui/button';
+import { useModal } from '@/hooks/useModal';
 
 export default function ServiceHistoryTable({
   serviceHistory,
@@ -13,29 +13,8 @@ export default function ServiceHistoryTable({
   serviceHistory: ServiceRecords[];
   equipment?: Equipment;
 }) {
-  const [modalState, setModalState] = useState<{
-    isOpen: boolean;
-    mode: 'create' | 'modify';
-    selectedService?: ServiceRecords;
-  }>({
-    isOpen: false,
-    mode: 'create',
-  });
+  const { modalState, openModal, closeModal } = useModal();
 
-  const openModal = (mode: 'create' | 'modify', service?: ServiceRecords) => {
-    setModalState({
-      isOpen: true,
-      mode,
-      selectedService: service,
-    });
-  };
-
-  const closeModal = () => {
-    setModalState({
-      isOpen: false,
-      mode: 'create',
-    });
-  };
   return (
     <div className="bg-white rounded-lg shadow-sm border border-sky-200 mt-8">
       <div className="p-6 border-b border-sky-100">
@@ -87,7 +66,7 @@ export default function ServiceHistoryTable({
                     {service.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap font-medium text-sky-900">
+                <td className="px-6 py-4 whitespace-nowrap font-medium text-sky-900 before:content-['£']">
                   {service.cost}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-xs font-mono text-sky-500">
@@ -95,22 +74,23 @@ export default function ServiceHistoryTable({
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm">
                   {service.status === 'PENDING' ? (
-                    equipment ? (
-                      <button
-                        onClick={() => openModal('modify', service)}
-                        className="text-sky-600 hover:text-sky-800 font-medium transition-colors"
-                      >
-                        Modify Booking →
-                      </button>
-                    ) : (
-                      <span className="text-sky-600 hover:text-sky-800 font-medium">
-                        Modify Booking →
-                      </span>
-                    )
+                    <Button
+                      onClick={() => openModal('booking', service)}
+                      disabled={!equipment}
+                      variant="link"
+                      size="sm"
+                      className="text-sky-600 hover:text-sky-800 font-medium transition-colors"
+                    >
+                      Modify Booking →
+                    </Button>
                   ) : (
-                    <span className="text-sky-600 hover:text-sky-800 font-medium cursor-pointer">
+                    <Button
+                      className="text-sky-600 hover:text-sky-800 font-medium cursor-pointer"
+                      variant="link"
+                      size="sm"
+                    >
                       Download Report →
-                    </span>
+                    </Button>
                   )}
                 </td>
               </tr>
@@ -123,7 +103,7 @@ export default function ServiceHistoryTable({
       {equipment && (
         <div className="p-6 border-t border-sky-100 bg-sky-25">
           <Button
-            onClick={() => openModal('create')}
+            onClick={() => openModal('booking')}
             variant="default"
             size="lg"
             className="w-full"

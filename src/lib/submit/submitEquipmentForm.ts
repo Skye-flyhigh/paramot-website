@@ -3,12 +3,14 @@
 import { EquipmentPickerFormState } from '@/components/dashboard/EquipmentPicker';
 import { z } from 'zod';
 import { zfd } from 'zod-form-data';
+import { EquipmentType } from '../schema';
 
 // Define the schema for equipment form validation
 const equipmentFormSchema = zfd.formData({
   manufacturer: zfd.text(z.string().min(1, 'Manufacturer is required')),
   model: zfd.text(z.string().min(1, 'Model is required')),
-  size: zfd.text(z.string().min(1, 'Size is required').max(10, 'Size too long')),
+  size: zfd.text(z.string().min(1, 'Size is required').max(3, 'Size too long')),
+  type: zfd.text(z.string().min(1, 'Type is required')),
   serialNumber: zfd.text(z.string().optional()),
 
   // Examples of other zfd types you can use:
@@ -32,15 +34,16 @@ export default async function submitEquipmentForm(
     // Simulate processing delay
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // TODO: Save to database
-    // await mockDatabase.equipment.create(validatedData);
+    // TODO: Save to database and get real ID back
+    // const newEquipment = await mockDatabase.equipment.create(validatedData);
 
     return {
       formData: {
-        manufacturer: '',
-        model: '',
-        size: '',
-        serialNumber: '',
+        manufacturer: validatedData.manufacturer,
+        model: validatedData.model,
+        size: validatedData.size,
+        serialNumber: validatedData.serialNumber || '',
+        type: validatedData.type as EquipmentType,
       },
       errors: {},
       success: true,
@@ -52,7 +55,7 @@ export default async function submitEquipmentForm(
     if (error instanceof z.ZodError) {
       const fieldErrors: Record<string, string> = {};
 
-      error.errors.forEach((err) => {
+      error.issues.forEach((err) => {
         const fieldName = err.path[0] as string;
         fieldErrors[fieldName] = err.message;
       });
@@ -63,6 +66,7 @@ export default async function submitEquipmentForm(
           model: (data.get('model') as string) || '',
           size: (data.get('size') as string) || '',
           serialNumber: (data.get('serialNumber') as string) || '',
+          type: (data.get('type') as EquipmentType) || 'glider',
         },
         errors: fieldErrors,
         success: false,

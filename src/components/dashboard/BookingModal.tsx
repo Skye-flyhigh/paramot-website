@@ -120,25 +120,29 @@ export default function BookingModal({
               Service Type
             </label>
             <div className="space-y-3">
-              {serviceTypes.map((service) => (
-                <label
-                  key={service.value}
-                  className="flex items-start space-x-3 cursor-pointer"
-                >
-                  <input
-                    type="radio"
-                    name="serviceType"
-                    value={service.value}
-                    checked={formData.serviceType === service.value}
-                    onChange={(e) => handleInputChange('serviceType', e.target.value)}
-                    className="mt-1"
-                  />
-                  <div>
-                    <div className="font-medium text-gray-900">{service.label}</div>
-                    <div className="text-sm text-gray-600">{service.description}</div>
-                  </div>
-                </label>
-              ))}
+              {serviceTypes.map(
+                (
+                  service, // FIXME: not all the services apply to all the equipment types
+                ) => (
+                  <label
+                    key={service.value}
+                    className="flex items-start space-x-3 cursor-pointer"
+                  >
+                    <input
+                      type="radio"
+                      name="serviceType"
+                      value={service.value}
+                      checked={formData.serviceType === service.value}
+                      onChange={(e) => handleInputChange('serviceType', e.target.value)}
+                      className="mt-1"
+                    />
+                    <div>
+                      <div className="font-medium text-gray-900">{service.label}</div>
+                      <div className="text-sm text-gray-600">{service.description}</div>
+                    </div>
+                  </label>
+                ),
+              )}
             </div>
           </div>
 
