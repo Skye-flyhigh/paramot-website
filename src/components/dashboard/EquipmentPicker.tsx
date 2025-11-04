@@ -234,7 +234,6 @@ export function EquipmentPicker({
                   <input
                     type="text"
                     name="serialNumber"
-                    required
                     className={
                       'mt-2 h-10 w-full block bg-white p-2 border-sky-300 border-2 rounded-lg hover:border-sky-700 ' +
                       (state.errors.serialNumber
