@@ -1,19 +1,18 @@
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import { getEquipmentBySerial, getEquipmentServiceHistory } from "@/lib/mockData";
-import ServiceHistoryTable from "@/components/dashboard/ServiceHistoryTable";
-import { getServiceDescription, getStatusColor } from "@/lib/styling/services";
-import { Button } from "@/components/ui/button";
-
-interface ServiceDetailPageProps {
-  params: { slug: string };
-}
+import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { getEquipmentBySerial, getEquipmentServiceHistory } from '@/lib/mockData';
+import ServiceHistoryTable from '@/components/dashboard/ServiceHistoryTable';
+import { getServiceDescription, getStatusColor } from '@/lib/styling/services';
+import ServiceActionButtons from '@/components/dashboard/ServiceActionButtons';
+import { auth } from '@/auth';
 
 export default async function ServiceDetailPage({
   params,
 }: {
   params: Promise<{ slug: string; locale: string }>;
 }) {
+  const session = await auth();
+
   // Find equipment by serial number
   const { slug } = await params;
   const equipment = getEquipmentBySerial(slug);
@@ -34,21 +33,23 @@ export default async function ServiceDetailPage({
     <div className="min-h-screen bg-sky-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
         {/* Navigation */}
-        <div className="mb-6">
-          <Link
-            href="/dashboard"
-            className="text-sky-600 hover:text-sky-800 font-medium"
-          >
-            ← Back to Dashboard
-          </Link>
-        </div>
+        {session && (
+          <div className="mb-6">
+            <Link
+              href="/dashboard"
+              className="text-sky-600 hover:text-sky-800 font-medium"
+            >
+              ← Back to Dashboard
+            </Link>
+          </div>
+        )}
 
         {/* Header */}
         <div className="bg-white rounded-lg shadow-sm border border-sky-200 p-6 mb-8">
           <div className="flex justify-between items-start">
             <div>
               <h1 className="text-3xl font-bold text-sky-900 mb-2">
-                Inspection:{" "}
+                Inspection:{' '}
                 <span className="text-sky-600">
                   {equipment.manufacturer} {equipment.model} ({equipment.size})
                 </span>
@@ -61,9 +62,7 @@ export default async function ServiceDetailPage({
               >
                 {lastService.status}
               </span>
-              <p className="text-2xl font-bold text-sky-900 mt-2">
-                £{lastService.cost}
-              </p>
+              <p className="text-2xl font-bold text-sky-900 mt-2">£{lastService.cost}</p>
             </div>
           </div>
         </div>
@@ -74,9 +73,7 @@ export default async function ServiceDetailPage({
             {/* Service Information */}
             <div className="bg-white rounded-lg shadow-sm border border-sky-200">
               <div className="p-6 border-b border-sky-100">
-                <h2 className="text-xl font-bold text-sky-900">
-                  Service Details
-                </h2>
+                <h2 className="text-xl font-bold text-sky-900">Service Details</h2>
               </div>
               <div className="p-6">
                 <div className="space-y-4">
@@ -91,18 +88,12 @@ export default async function ServiceDetailPage({
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <p className="text-sm text-sky-600 font-medium">
-                        Service Code
-                      </p>
+                      <p className="text-sm text-sky-600 font-medium">Service Code</p>
                       <p className="text-sky-900">{lastService.service}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-sky-600 font-medium">
-                        Service ID
-                      </p>
-                      <p className="text-sky-900 font-mono text-sm">
-                        {lastService.id}
-                      </p>
+                      <p className="text-sm text-sky-600 font-medium">Service ID</p>
+                      <p className="text-sky-900 font-mono text-sm">{lastService.id}</p>
                     </div>
                   </div>
                 </div>
@@ -133,9 +124,7 @@ export default async function ServiceDetailPage({
                       </svg>
                     </div>
                     <div>
-                      <p className="font-semibold text-sky-900">
-                        Service Created
-                      </p>
+                      <p className="font-semibold text-sky-900">Service Created</p>
                       <p className="text-sky-600 text-sm">
                         {lastService.createdAt.toDateString()}
                       </p>
@@ -184,9 +173,7 @@ export default async function ServiceDetailPage({
               <div className="p-6">
                 <div className="space-y-3">
                   <div>
-                    <p className="text-sm text-sky-600 font-medium">
-                      Manufacturer
-                    </p>
+                    <p className="text-sm text-sky-600 font-medium">Manufacturer</p>
                     <p className="text-sky-900">{equipment.manufacturer}</p>
                   </div>
                   <div>
@@ -198,9 +185,7 @@ export default async function ServiceDetailPage({
                     <p className="text-sky-900">{equipment.size}</p>
                   </div>
                   <div>
-                    <p className="text-sm text-sky-600 font-medium">
-                      Serial Number
-                    </p>
+                    <p className="text-sm text-sky-600 font-medium">Serial Number</p>
                     <p className="text-sky-900 font-mono text-sm">
                       {equipment.serialNumber}
                     </p>
@@ -210,37 +195,17 @@ export default async function ServiceDetailPage({
             </div>
 
             {/* Actions */}
-            <div className="bg-white rounded-lg shadow-sm border border-sky-200">
-              <div className="p-6 border-b border-sky-100">
-                <h2 className="text-xl font-bold text-sky-900">Actions</h2>
-              </div>
-              <div className="p-6">
-                <div className="space-y-3">
-                  {lastService.status === "COMPLETED" && (
-                    <Button variant="default" className="w-full">
-                      Download Service Report
-                    </Button>
-                  )}
-                  {lastService.status === "PENDING" && (
-                    <Button variant="default" className="w-full bg-yellow-600 hover:bg-yellow-700">
-                      Modify Booking
-                    </Button>
-                  )}
-                  <Button variant="outline" className="w-full">
-                    Contact Support
-                  </Button>
-                </div>
-              </div>
-            </div>
+            <ServiceActionButtons
+              status={lastService.status}
+              session={session}
+              equipment={equipment}
+            />
           </div>
 
           {/* Service History */}
 
           <div className="col-span-3">
-            <ServiceHistoryTable
-              serviceHistory={serviceHistory}
-              equipment={equipment}
-            />
+            <ServiceHistoryTable serviceHistory={serviceHistory} equipment={equipment} />
           </div>
         </div>
       </div>

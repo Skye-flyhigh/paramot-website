@@ -4,7 +4,7 @@ import { ServiceRecords, Equipment } from '@/lib/schema';
 import { getStatusColor } from '@/lib/styling/services';
 import BookingModal from './BookingModal';
 import { Button } from '@/components/ui/button';
-import { useModal } from '@/hooks/useModal';
+import { useBookingModal } from '@/hooks/useBookingModal';
 
 export default function ServiceHistoryTable({
   serviceHistory,
@@ -13,7 +13,7 @@ export default function ServiceHistoryTable({
   serviceHistory: ServiceRecords[];
   equipment?: Equipment;
 }) {
-  const { modalState, openModal, closeModal } = useModal();
+  const { modalState, openModal, closeModal } = useBookingModal();
 
   return (
     <div className="bg-white rounded-lg shadow-sm border border-sky-200 mt-8">

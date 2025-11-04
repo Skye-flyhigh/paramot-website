@@ -6,11 +6,11 @@ import { EquipmentPicker } from './EquipmentPicker';
 import { getCustomerEquipment } from '@/lib/mockData';
 import BookingModal from './BookingModal';
 import { Button } from '../ui/button';
-import { useModal } from '@/hooks/useModal';
+import { useBookingModal } from '@/hooks/useBookingModal';
 import CustomerDetails from '../customer/CustomerDetails';
 
 export function DashboardCTA(customer: Customer) {
-  const { modalState, openModal, closeModal } = useModal();
+  const { modalState, openModal, closeModal } = useBookingModal();
   const [newEquipment, setNewEquipment] = useState<Equipment | null>(null);
   const [openContact, setOpenContact] = useState<boolean>(false);
 

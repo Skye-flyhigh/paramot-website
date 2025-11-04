@@ -7,7 +7,7 @@ interface ModalState<T> {
   selectedService?: ServiceRecords;
 }
 
-export function useModal<T = undefined>() {
+export function useBookingModal<T = undefined>() {
   const [modalState, setModalState] = useState<ModalState<T>>({
     isOpen: false,
     mode: null,

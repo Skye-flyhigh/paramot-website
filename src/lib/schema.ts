@@ -26,6 +26,7 @@ export const SERVICE_TYPES = ['SVC-001', 'TRIM-001', 'PACK-001', 'REP-001'] as c
 export type ServiceType = (typeof SERVICE_TYPES)[number];
 
 const SERVICE_STATUSES = ['PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'] as const;
+export type ServiceStatus = (typeof SERVICE_STATUSES)[number];
 
 export const EQUIPMENT_TYPES = ['glider', 'reserve', 'harness'] as const;
 export type EquipmentType = (typeof EQUIPMENT_TYPES)[number];
@@ -39,7 +40,7 @@ export interface ServiceRecords {
   manufacturer: string; // Could be linked to workbench database
   model: string; // Could be linked to workbench database
   size: string; // Could be linked to workbench database
-  status: (typeof SERVICE_STATUSES)[number];
+  status: ServiceStatus;
   cost: number; // in £
   createdAt: Date;
   updatedAt?: Date;
