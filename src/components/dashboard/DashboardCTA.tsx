@@ -8,17 +8,19 @@ import BookingModal from './BookingModal';
 import { Button } from '../ui/button';
 import { useBookingModal } from '@/hooks/useBookingModal';
 import CustomerDetails from '../customer/CustomerDetails';
+import { useCustomer } from '@/contexts/CustomerContext';
 
-export function DashboardCTA(customer: Customer) {
+export function DashboardCTA() {
   const { modalState, openModal, closeModal } = useBookingModal();
   const [newEquipment, setNewEquipment] = useState<Equipment | null>(null);
   const [openContact, setOpenContact] = useState<boolean>(false);
+  const customer: Customer = useCustomer();
 
   const equipmentList = getCustomerEquipment(customer.id);
 
   return (
     <>
-      <div className="mt-6 flex gap-3 space-around">
+      <div className="mt-6 flex gap-3 space-around" id="dashboard-CTA">
         <Button onClick={() => openModal('picker')} variant="default" type="button">
           Schedule New Service
         </Button>

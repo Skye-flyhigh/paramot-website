@@ -1,0 +1,30 @@
+#!/bin/sh
+
+# Pre-push hook to prevent deploying test/debug code
+
+echo "🔍 Checking for hardcoded test data..."
+
+# Check for hardcoded test email (but allow in mockData.ts and dev-conditional code)
+violations=$(git grep -n "skye@paramot.co.uk" src/ | grep -v "mockData.ts" | grep -v "Test data for local development" || true)
+
+if [ -n "$violations" ]; then
+  echo "❌ ERROR: Found hardcoded test email 'skye@paramot.co.uk' in unexpected location"
+  echo "   Allowed: mockData.ts and lines with comment '// Test data for local development'"
+  echo "$violations"
+  exit 1
+fi
+
+# Check for FIXME comments (optional warning, doesn't block)
+if git grep -q "FIXME" src/; then
+  echo "⚠️  WARNING: Found FIXME comments in src/"
+  git grep -n "FIXME" src/ | head -5
+  echo ""
+  read -p "Continue with push? (y/N) " -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "Push cancelled"
+    exit 1
+  fi
+fi
+
+echo "✅ Pre-push checks passed"

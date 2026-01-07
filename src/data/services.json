@@ -1,0 +1,30 @@
+{
+  "servicing": {
+    "icon": "Shield",
+    "title": "Paragliding Servicing",
+    "description": "Complete servicing including canopy fabric inspection and strength testing, line strength analysis, riser state evaluation, and paraglider trimming.",
+    "code": "SVC-001",
+    "available": true
+  },
+  "trim": {
+    "icon": "Zap",
+    "title": "Paraglider Trimming",
+    "description": "Precision trimming services to optimize your wing's performance using professional tension meters and line geometry analysis.",
+    "code": "TRIM-001",
+    "available": true
+  },
+  "repack": {
+    "icon": "PackageCheck",
+    "title": "Parachute Repacking",
+    "description": "Professional emergency parachute repacking following manufacturer specifications and safety protocols.",
+    "code": "PACK-001",
+    "available": true
+  },
+  "repair": {
+    "icon": "Wrench",
+    "title": "Glider Repair",
+    "description": "Comprehensive repair services for paraglider canopies and components. Currently developing advanced sewing capabilities.",
+    "code": "REP-001",
+    "available": false
+  }
+}

@@ -9,6 +9,7 @@
 // - Service defines types (SVC-001, TRIM-001, etc.) with pricing/details
 // - ServiceRecord connects Customer + Glider + Service + booking details
 import prices from '@/data/prices.json';
+import rawServicesData from '@/data/services.json';
 
 // Example structure to get you started:
 export interface Customer {
@@ -22,10 +23,25 @@ export interface Customer {
   serviceHistory: ServiceRecords[];
 }
 
-export const SERVICE_TYPES = ['SVC-001', 'TRIM-001', 'PACK-001', 'REP-001'] as const;
-export type ServiceType = (typeof SERVICE_TYPES)[number];
+export interface ServicesType {
+  icon: string; // Icon name as string (mapped to component in ServiceCard)
+  title: string;
+  description: string;
+  code: ServiceCode;
+  available: boolean;
+}
 
-const SERVICE_STATUSES = ['PENDING', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED'] as const;
+export type Prices = Record<string, number | string>;
+
+export const SERVICE_CODE = ['SVC-001', 'TRIM-001', 'PACK-001', 'REP-001'] as const;
+export type ServiceCode = (typeof SERVICE_CODE)[number];
+
+export const SERVICE_STATUSES = [
+  'PENDING',
+  'IN_PROGRESS',
+  'COMPLETED',
+  'CANCELLED',
+] as const;
 export type ServiceStatus = (typeof SERVICE_STATUSES)[number];
 
 export const EQUIPMENT_TYPES = ['glider', 'reserve', 'harness'] as const;
@@ -33,7 +49,7 @@ export type EquipmentType = (typeof EQUIPMENT_TYPES)[number];
 
 export interface ServiceRecords {
   //This schema could be used for a glider, a reserve parachute or a harness
-  service: ServiceType;
+  service: ServicesType;
   type: string;
   id: string; // Start with SERVICE_TYPE + unique time ref. This ID will be able to generate a report on the workbench side like opening a new record.
   serialNb: string; // Get the unique serial number of the kit
@@ -120,6 +136,11 @@ export interface CustomerEquipment {
 }
 
 // Pricing lookup helper
-export function getServicePrice(serviceType: ServiceType): string | number {
-  return prices[serviceType] || 'Contact us';
+export function getServicePrice(servicesType: ServicesType): string | number {
+  return prices[servicesType.code] || 'Contact us';
+}
+
+// Service list function helper
+export function getServicesList(): ServicesType[] {
+  return Object.values(rawServicesData) as ServicesType[];
 }

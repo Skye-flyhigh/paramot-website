@@ -207,9 +207,10 @@ function FieldError({
 
     return (
       <ul className="ml-4 flex list-disc flex-col gap-1">
-        {uniqueErrors.map(
-          (error, index) => error?.message && <li key={index}>{error.message}</li>,
-        )}
+        {uniqueErrors.map((error) => {
+          const count = uniqueErrors.indexOf(error);
+          return error?.message && <li key={count}>{error.message}</li>;
+        })}
       </ul>
     );
   }, [children, errors]);

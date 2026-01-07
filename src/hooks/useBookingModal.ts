@@ -1,14 +1,14 @@
 import { useState } from 'react';
 import { ServiceRecords } from '../lib/schema';
 
-interface ModalState<T> {
+interface ModalState {
   isOpen: boolean;
   mode: 'picker' | 'booking' | null;
   selectedService?: ServiceRecords;
 }
 
-export function useBookingModal<T = undefined>() {
-  const [modalState, setModalState] = useState<ModalState<T>>({
+export function useBookingModal() {
+  const [modalState, setModalState] = useState<ModalState>({
     isOpen: false,
     mode: null,
     selectedService: undefined,

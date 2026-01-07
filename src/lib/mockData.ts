@@ -1,4 +1,4 @@
-import { ServiceRecords, Customer, Equipment, CustomerEquipment } from "./schema";
+import { ServiceRecords, Customer, Equipment, CustomerEquipment } from './schema';
 
 // ============================================
 // MOCK DATABASE - Simulates PostgreSQL/SQLite
@@ -8,66 +8,66 @@ import { ServiceRecords, Customer, Equipment, CustomerEquipment } from "./schema
 // Service Records Table
 const serviceRecordsTable: ServiceRecords[] = [
   {
-    service: "SVC-001",
-    type: "Annual Service",
-    id: "SVC-001-2025-004",
-    serialNb: "12345wer1234",
-    manufacturer: "Ozone",
-    model: "Rush 5",
-    size: "ML",
-    status: "PENDING",
-    createdAt: new Date("2025-08-20"),
+    service: 'SVC-001',
+    type: 'Annual Service',
+    id: 'SVC-001-2025-004',
+    serialNb: '12345wer1234',
+    manufacturer: 'Ozone',
+    model: 'Rush 5',
+    size: 'ML',
+    status: 'PENDING',
+    createdAt: new Date('2025-08-20'),
     cost: 150,
   },
   {
-    service: "PACK-001",
-    type: "Parachute repacking",
-    id: "PACK-001-2024-005",
-    serialNb: "rescue-001",
-    manufacturer: "Gin",
-    model: "Yeti",
-    size: "120",
-    status: "PENDING",
-    createdAt: new Date("2025-08-20"),
+    service: 'PACK-001',
+    type: 'Parachute repacking',
+    id: 'PACK-001-2024-005',
+    serialNb: 'rescue-001',
+    manufacturer: 'Gin',
+    model: 'Yeti',
+    size: '120',
+    status: 'PENDING',
+    createdAt: new Date('2025-08-20'),
     cost: 65,
   },
   {
-    service: "TRIM-001",
-    type: "Line Trim",
-    id: "TRIM-001-2024-004",
-    serialNb: "alpha-2024",
-    manufacturer: "Advance",
-    model: "Alpha 7",
-    size: "27",
-    status: "COMPLETED",
-    createdAt: new Date("2025-04-20"),
-    updatedAt: new Date("2025-04-25"),
+    service: 'TRIM-001',
+    type: 'Line Trim',
+    id: 'TRIM-001-2024-004',
+    serialNb: 'alpha-2024',
+    manufacturer: 'Advance',
+    model: 'Alpha 7',
+    size: '27',
+    status: 'COMPLETED',
+    createdAt: new Date('2025-04-20'),
+    updatedAt: new Date('2025-04-25'),
     cost: 120,
   },
   {
-    service: "SVC-001",
-    type: "Annual Service",
-    id: "SVC-001-2024-004",
-    serialNb: "12345wer1234",
-    manufacturer: "Ozone",
-    model: "Rush 5",
-    size: "ML",
-    status: "COMPLETED",
-    createdAt: new Date("2024-08-20"),
-    updatedAt: new Date("2024-08-24"),
+    service: 'SVC-001',
+    type: 'Annual Service',
+    id: 'SVC-001-2024-004',
+    serialNb: '12345wer1234',
+    manufacturer: 'Ozone',
+    model: 'Rush 5',
+    size: 'ML',
+    status: 'COMPLETED',
+    createdAt: new Date('2024-08-20'),
+    updatedAt: new Date('2024-08-24'),
     cost: 150,
   },
   {
-    service: "REP-001",
-    type: "Line Repair",
-    id: "REP-001-2024-002",
-    serialNb: "12345wer1234",
-    manufacturer: "Ozone",
-    model: "Rush 5",
-    size: "ML",
-    status: "COMPLETED",
-    createdAt: new Date("2024-03-10"),
-    updatedAt: new Date("2024-03-12"),
+    service: 'REP-001',
+    type: 'Line Repair',
+    id: 'REP-001-2024-002',
+    serialNb: '12345wer1234',
+    manufacturer: 'Ozone',
+    model: 'Rush 5',
+    size: 'ML',
+    status: 'COMPLETED',
+    createdAt: new Date('2024-03-10'),
+    updatedAt: new Date('2024-03-12'),
     cost: 45,
   },
 ];
@@ -75,101 +75,101 @@ const serviceRecordsTable: ServiceRecords[] = [
 // Equipment Table - Independent entities (like vehicles in a registry)
 const equipmentTable: Equipment[] = [
   {
-    id: "eq-001",
-    serialNumber: "12345wer1234",
-    type: "glider",
-    manufacturer: "Ozone",
-    model: "Rush 5",
-    size: "ML",
-    manufactureDate: new Date("2022-03-01"),
-    status: "active",
-    createdAt: new Date("2023-05-15"),
-    updatedAt: new Date("2024-08-24"),
+    id: 'eq-001',
+    serialNumber: '12345wer1234',
+    type: 'glider',
+    manufacturer: 'Ozone',
+    model: 'Rush 5',
+    size: 'ML',
+    manufactureDate: new Date('2022-03-01'),
+    status: 'active',
+    createdAt: new Date('2023-05-15'),
+    updatedAt: new Date('2024-08-24'),
   },
   {
-    id: "eq-002",
-    serialNumber: "rescue-001",
-    type: "reserve",
-    manufacturer: "Gin",
-    model: "Yeti",
-    size: "120",
-    manufactureDate: new Date("2023-01-15"),
-    status: "active",
-    createdAt: new Date("2023-06-01"),
-    updatedAt: new Date("2024-08-20"),
+    id: 'eq-002',
+    serialNumber: 'rescue-001',
+    type: 'reserve',
+    manufacturer: 'Gin',
+    model: 'Yeti',
+    size: '120',
+    manufactureDate: new Date('2023-01-15'),
+    status: 'active',
+    createdAt: new Date('2023-06-01'),
+    updatedAt: new Date('2024-08-20'),
   },
   {
-    id: "eq-003",
-    serialNumber: "alpha-2024",
-    type: "glider",
-    manufacturer: "Advance",
-    model: "Alpha 7",
-    size: "27",
-    manufactureDate: new Date("2023-11-01"),
-    status: "active",
-    createdAt: new Date("2024-01-10"),
-    updatedAt: new Date("2025-04-25"),
+    id: 'eq-003',
+    serialNumber: 'alpha-2024',
+    type: 'glider',
+    manufacturer: 'Advance',
+    model: 'Alpha 7',
+    size: '27',
+    manufactureDate: new Date('2023-11-01'),
+    status: 'active',
+    createdAt: new Date('2024-01-10'),
+    updatedAt: new Date('2025-04-25'),
   },
 ];
 
 // Ownership Junction Table - Who owns what and when (like car registrations)
 const customerEquipmentTable: CustomerEquipment[] = [
   {
-    id: "own-001",
-    customerId: "customer-001",
-    equipmentId: "eq-001",
-    equipmentSerialNumber: "12345wer1234",
-    ownedFrom: new Date("2023-05-15"),
+    id: 'own-001',
+    customerId: 'customer-001',
+    equipmentId: 'eq-001',
+    equipmentSerialNumber: '12345wer1234',
+    ownedFrom: new Date('2023-05-15'),
     ownedUntil: null, // Currently owned
-    purchaseDate: new Date("2023-05-15"),
+    purchaseDate: new Date('2023-05-15'),
     purchasePrice: 2800,
-    notes: "Bought new from dealer",
-    createdAt: new Date("2023-05-15"),
-    updatedAt: new Date("2023-05-15"),
+    notes: 'Bought new from dealer',
+    createdAt: new Date('2023-05-15'),
+    updatedAt: new Date('2023-05-15'),
   },
   {
-    id: "own-002",
-    customerId: "customer-001",
-    equipmentId: "eq-002",
-    equipmentSerialNumber: "rescue-001",
-    ownedFrom: new Date("2023-06-01"),
+    id: 'own-002',
+    customerId: 'customer-001',
+    equipmentId: 'eq-002',
+    equipmentSerialNumber: 'rescue-001',
+    ownedFrom: new Date('2023-06-01'),
     ownedUntil: null, // Currently owned
-    purchaseDate: new Date("2023-06-01"),
+    purchaseDate: new Date('2023-06-01'),
     purchasePrice: 850,
-    notes: "Reserve parachute",
-    createdAt: new Date("2023-06-01"),
-    updatedAt: new Date("2023-06-01"),
+    notes: 'Reserve parachute',
+    createdAt: new Date('2023-06-01'),
+    updatedAt: new Date('2023-06-01'),
   },
   {
-    id: "own-003",
-    customerId: "customer-001",
-    equipmentId: "eq-003",
-    equipmentSerialNumber: "alpha-2024",
-    ownedFrom: new Date("2024-01-10"),
+    id: 'own-003',
+    customerId: 'customer-001',
+    equipmentId: 'eq-003',
+    equipmentSerialNumber: 'alpha-2024',
+    ownedFrom: new Date('2024-01-10'),
     ownedUntil: null, // Currently owned
-    purchaseDate: new Date("2024-01-10"),
+    purchaseDate: new Date('2024-01-10'),
     purchasePrice: 3200,
-    notes: "Second-hand from club member",
-    createdAt: new Date("2024-01-10"),
-    updatedAt: new Date("2024-01-10"),
+    notes: 'Second-hand from club member',
+    createdAt: new Date('2024-01-10'),
+    updatedAt: new Date('2024-01-10'),
   },
 ];
 
 // Customer Table
 const customerTable: Customer[] = [
   {
-    id: "customer-001",
-    email: "skye@paramot.co.uk",
-    name: "Skye",
-    phone: "+44 7700 900000",
-    address: "123 Flight Path, Bristol, BS1 1AA",
-    createdAt: new Date("2023-05-01"),
-    updatedAt: new Date("2025-04-25"),
+    id: 'customer-001',
+    email: 'skye@paramot.co.uk',
+    name: 'Skye',
+    phone: '+44 7700 900000',
+    address: '123 Flight Path, Bristol, BS1 1AA',
+    createdAt: new Date('2023-05-01'),
+    updatedAt: new Date('2025-04-25'),
     serviceHistory: serviceRecordsTable.filter(
       (s) =>
-        s.serialNb === "12345wer1234" ||
-        s.serialNb === "rescue-001" ||
-        s.serialNb === "alpha-2024"
+        s.serialNb === '12345wer1234' ||
+        s.serialNb === 'rescue-001' ||
+        s.serialNb === 'alpha-2024',
     ),
   },
 ];
@@ -194,7 +194,7 @@ export const mockDatabase = {
       return {
         ...customer,
         serviceHistory: serviceRecordsTable.filter((service) =>
-          ownedEquipmentSerialNumbers.includes(service.serialNb)
+          ownedEquipmentSerialNumbers.includes(service.serialNb),
         ),
       };
     },
@@ -211,7 +211,7 @@ export const mockDatabase = {
       return {
         ...customer,
         serviceHistory: serviceRecordsTable.filter((service) =>
-          ownedEquipmentSerialNumbers.includes(service.serialNb)
+          ownedEquipmentSerialNumbers.includes(service.serialNb),
         ),
       };
     },
@@ -219,10 +219,10 @@ export const mockDatabase = {
 
   // Equipment queries
   equipment: {
-    findByCustomerId: (customerId: string, includeHistory?: boolean): Equipment[] => {
+    findByCustomerId: (customerId: string): Equipment[] => {
       // Get currently owned equipment via ownership table
       const ownerships = customerEquipmentTable.filter(
-        (ce) => ce.customerId === customerId && ce.ownedUntil === null
+        (ce) => ce.customerId === customerId && ce.ownedUntil === null,
       );
 
       return ownerships
@@ -233,7 +233,7 @@ export const mockDatabase = {
     findPreviouslyOwnedByCustomerId: (customerId: string): Equipment[] => {
       // Get previously owned equipment (ownedUntil is set)
       const ownerships = customerEquipmentTable.filter(
-        (ce) => ce.customerId === customerId && ce.ownedUntil !== null
+        (ce) => ce.customerId === customerId && ce.ownedUntil !== null,
       );
 
       return ownerships
@@ -247,7 +247,7 @@ export const mockDatabase = {
 
     getCurrentOwner: (serialNumber: string): Customer | undefined => {
       const ownership = customerEquipmentTable.find(
-        (ce) => ce.equipmentSerialNumber === serialNumber && ce.ownedUntil === null
+        (ce) => ce.equipmentSerialNumber === serialNumber && ce.ownedUntil === null,
       );
       if (!ownership) return undefined;
       return customerTable.find((c) => c.id === ownership.customerId);
@@ -262,18 +262,18 @@ export const mockDatabase = {
 
     findCurrentByCustomerId: (customerId: string): CustomerEquipment[] => {
       return customerEquipmentTable.filter(
-        (ce) => ce.customerId === customerId && ce.ownedUntil === null
+        (ce) => ce.customerId === customerId && ce.ownedUntil === null,
       );
     },
 
     transferOwnership: (
       serialNumber: string,
       newCustomerId: string,
-      transferDate: Date
+      transferDate: Date,
     ): void => {
       // Find current ownership
       const currentOwnership = customerEquipmentTable.find(
-        (ce) => ce.equipmentSerialNumber === serialNumber && ce.ownedUntil === null
+        (ce) => ce.equipmentSerialNumber === serialNumber && ce.ownedUntil === null,
       );
 
       if (currentOwnership) {
@@ -312,7 +312,7 @@ export const mockDatabase = {
         .map((ce) => ce.equipmentSerialNumber);
 
       return serviceRecordsTable.filter((s) =>
-        customerEquipmentSerialNumbers.includes(s.serialNb)
+        customerEquipmentSerialNumbers.includes(s.serialNb),
       );
     },
 
@@ -345,7 +345,7 @@ export function getCustomerByEmail(email: string): Customer | undefined {
  * Get all equipment currently owned by a customer
  */
 export function getCustomerEquipment(customerId?: string): Equipment[] {
-  const id = customerId || "customer-001";
+  const id = customerId || 'customer-001';
   return mockDatabase.equipment.findByCustomerId(id);
 }
 
@@ -367,20 +367,20 @@ export function getServiceById(serviceId: string): ServiceRecords | undefined {
  * Get all upcoming/scheduled services for a customer
  */
 export function getUpcomingServices(customerId?: string): ServiceRecords[] {
-  const id = customerId || "customer-001";
+  const id = customerId || 'customer-001';
   return mockDatabase.serviceRecords
     .findByCustomerId(id)
-    .filter((s) => s.status === "PENDING");
+    .filter((s) => s.status === 'PENDING');
 }
 
 /**
  * Get all completed services for a customer
  */
 export function getCompletedServices(customerId?: string): ServiceRecords[] {
-  const id = customerId || "customer-001";
+  const id = customerId || 'customer-001';
   return mockDatabase.serviceRecords
     .findByCustomerId(id)
-    .filter((s) => s.status === "COMPLETED");
+    .filter((s) => s.status === 'COMPLETED');
 }
 
 /**

@@ -1,16 +1,16 @@
-"use server";
+'use server';
 
-import { ContactFormData, ContactFormState } from "../types/contactForm";
-import { ContactDataSchema } from "../validation/contactForm";
+import { ContactFormState } from '../types/contactForm';
+import { ContactDataSchema } from '../validation/contactForm';
 
 export default async function submitContactForm(
   prevState: ContactFormState,
   formData: FormData,
 ): Promise<ContactFormState> {
   const formValues = {
-    name: formData.get("name"),
-    email: formData.get("email"),
-    message: formData.get("message"),
+    name: formData.get('name'),
+    email: formData.get('email'),
+    message: formData.get('message'),
   };
 
   const validation = ContactDataSchema.safeParse(formValues);
@@ -33,7 +33,7 @@ export default async function submitContactForm(
   const data = validation.data;
 
   try {
-    console.log("Contact form submitted:", data);
+    console.warn('Contact form submitted:', data); // TODO: clean the console warn
 
     // Simulate processing delay
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -44,19 +44,20 @@ export default async function submitContactForm(
 
     return {
       formData: {
-        name: "",
-        email: "",
-        message: "",
+        name: '',
+        email: '',
+        message: '',
       },
       errors: {},
       success: true,
     };
   } catch (error) {
+    console.error('Error submitting contact form:', error);
     return {
       ...prevState,
       errors: {
         ...prevState.errors,
-        general: "Something went wrong. Please try again later."
+        general: 'Something went wrong. Please try again later.',
       },
       success: false,
     };

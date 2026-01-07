@@ -1,10 +1,10 @@
 import { auth } from '@/auth';
-import { Customer } from '@/lib/schema';
 import { redirect } from 'next/navigation';
-import { getCustomerByEmail, mockDatabase } from '@/lib/mockData';
+import { getCustomerByEmail } from '@/lib/mockData';
 import ServiceHistoryTable from '@/components/dashboard/ServiceHistoryTable';
 import ServiceTable from '@/components/dashboard/ServiceTable';
 import { DashboardCTA } from '@/components/dashboard/DashboardCTA';
+import { CustomerProvider } from '@/contexts/CustomerContext';
 
 export default async function Dashboard() {
   const session = await auth();
@@ -19,7 +19,14 @@ export default async function Dashboard() {
   //   where: { email: session.user.email },
   //   include: { equipment: true, serviceRecords: true }
   // })
-  let customerData = getCustomerByEmail('skye@paramot.co.uk');
+
+  // Use test email in development, real email in production
+  const lookupEmail =
+    process.env.NODE_ENV === 'development'
+      ? 'skye@paramot.co.uk' // Test data for local development
+      : session.user.email || 'guest@example.com';
+
+  let customerData = getCustomerByEmail(lookupEmail);
 
   // First time user? Would create their record here
   if (!customerData) {
@@ -27,7 +34,7 @@ export default async function Dashboard() {
     // For now, use OAuth data as fallback
     customerData = {
       id: session.user.id || 'temp-id',
-      email: session.user.email || 'guest@example.com',
+      email: lookupEmail,
       name: session.user.name || 'Guest',
       phone: '',
       address: '',
@@ -38,37 +45,42 @@ export default async function Dashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-sky-50 py-8">
-      <div className="max-w-6xl mx-auto px-4">
-        {/* Header */}
-        <header className="bg-white rounded-lg shadow-sm border border-sky-200 p-6 mb-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-sky-900">
-                Welcome back, {customerData.name}
-              </h1>
-              <p className="text-sky-600 mt-1">Customer Portal</p>
+    <CustomerProvider customer={customerData}>
+      <main className="min-h-screen bg-sky-50 py-8" id="dashboard">
+        <div className="max-w-6xl mx-auto px-4" id="dashboard-content">
+          {/* Header */}
+          <header className="bg-white rounded-lg shadow-sm border border-sky-200 p-6 mb-6">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-sky-900">
+                  Welcome back, {customerData.name}
+                </h1>
+                <p className="text-sky-600 mt-1">Customer Portal</p>
+              </div>
+              <div className="text-right">
+                <p className="text-sm text-sky-600">Customer ID</p>
+                <p className="font-mono text-sky-800">{customerData.email}</p>
+              </div>
             </div>
-            <div className="text-right">
-              <p className="text-sm text-sky-600">Customer ID</p>
-              <p className="font-mono text-sky-800">{customerData.email}</p>
-            </div>
-          </div>
-          <DashboardCTA customer={customerData} />
-          {/* TODO: add settings button and contact details edition through a modal */}
-        </header>
+            <DashboardCTA />
+            {/* TODO: add settings button and contact details edition through a modal */}
+          </header>
 
-        <main className="mt-6">
-          {customerData.serviceHistory.length > 0 ? (
-            <>
-              <ServiceTable customer={customerData} />
-              <ServiceHistoryTable serviceHistory={customerData.serviceHistory} />
-            </>
-          ) : (
-            <p className="text-sky-600">No service history found.</p>
-          )}
-        </main>
-      </div>
-    </div>
+          <section className="mt-6" id="dashboard-content">
+            {customerData.serviceHistory.length > 0 ? (
+              <>
+                <ServiceTable />
+                <ServiceHistoryTable
+                  serviceHistory={customerData.serviceHistory}
+                  isOwner={true}
+                />
+              </>
+            ) : (
+              <p className="text-sky-600 text-center pt-5">No service history found.</p>
+            )}
+          </section>
+        </div>
+      </main>
+    </CustomerProvider>
   );
 }

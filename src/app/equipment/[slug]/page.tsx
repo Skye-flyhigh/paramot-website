@@ -5,6 +5,7 @@ import ServiceHistoryTable from '@/components/dashboard/ServiceHistoryTable';
 import { getServiceDescription, getStatusColor } from '@/lib/styling/services';
 import ServiceActionButtons from '@/components/dashboard/ServiceActionButtons';
 import { auth } from '@/auth';
+import { checkEquipmentOwnershipBySerial } from '@/lib/authorization';
 
 export default async function ServiceDetailPage({
   params,
@@ -21,6 +22,9 @@ export default async function ServiceDetailPage({
     notFound();
   }
 
+  // Check if authenticated user owns this equipment
+  const isOwner = checkEquipmentOwnershipBySerial(session, equipment.serialNumber);
+
   // Get complete service history for this equipment
   const serviceHistory = getEquipmentServiceHistory(equipment.serialNumber);
   const lastService = serviceHistory.length > 0 ? serviceHistory[0] : null;
@@ -30,8 +34,8 @@ export default async function ServiceDetailPage({
   }
 
   return (
-    <div className="min-h-screen bg-sky-50 py-8">
-      <div className="max-w-4xl mx-auto px-4">
+    <main className="min-h-screen bg-sky-50 py-8" id="equipment-dashboard">
+      <div className="max-w-4xl mx-auto px-4" id="equipment-placeholder">
         {/* Navigation */}
         {session && (
           <div className="mb-6">
@@ -45,7 +49,7 @@ export default async function ServiceDetailPage({
         )}
 
         {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm border border-sky-200 p-6 mb-8">
+        <header className="bg-white rounded-lg shadow-sm border border-sky-200 p-6 mb-8">
           <div className="flex justify-between items-start">
             <div>
               <h1 className="text-3xl font-bold text-sky-900 mb-2">
@@ -62,16 +66,23 @@ export default async function ServiceDetailPage({
               >
                 {lastService.status}
               </span>
-              <p className="text-2xl font-bold text-sky-900 mt-2">£{lastService.cost}</p>
+              {isOwner && (
+                <p className="text-2xl font-bold text-sky-900 mt-2">
+                  £{lastService.cost}
+                </p>
+              )}
             </div>
           </div>
-        </div>
+        </header>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <section className="grid grid-cols-1 lg:grid-cols-3 gap-8" id="service-grid">
           {/* Main Details */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 space-y-6" id="left-well">
             {/* Service Information */}
-            <div className="bg-white rounded-lg shadow-sm border border-sky-200">
+            <div
+              className="bg-white rounded-lg shadow-sm border border-sky-200"
+              id="service-details"
+            >
               <div className="p-6 border-b border-sky-100">
                 <h2 className="text-xl font-bold text-sky-900">Service Details</h2>
               </div>
@@ -101,7 +112,10 @@ export default async function ServiceDetailPage({
             </div>
 
             {/* Service Timeline */}
-            <div className="bg-white rounded-lg shadow-sm border border-sky-200">
+            <div
+              className="bg-white rounded-lg shadow-sm border border-sky-200"
+              id="timeline"
+            >
               <div className="p-6 border-b border-sky-100">
                 <h2 className="text-xl font-bold text-sky-900">Timeline</h2>
               </div>
@@ -164,7 +178,7 @@ export default async function ServiceDetailPage({
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-6">
+          <section className="space-y-6" id="sidebar">
             {/* Equipment Summary */}
             <div className="bg-white rounded-lg shadow-sm border border-sky-200">
               <div className="p-6 border-b border-sky-100">
@@ -200,15 +214,18 @@ export default async function ServiceDetailPage({
               session={session}
               equipment={equipment}
             />
-          </div>
+          </section>
 
           {/* Service History */}
-
-          <div className="col-span-3">
-            <ServiceHistoryTable serviceHistory={serviceHistory} equipment={equipment} />
-          </div>
-        </div>
+          <section className="col-span-3" id="service-history">
+            <ServiceHistoryTable
+              serviceHistory={serviceHistory}
+              equipment={equipment}
+              isOwner={isOwner}
+            />
+          </section>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }

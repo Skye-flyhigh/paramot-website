@@ -29,7 +29,7 @@ export default async function submitEquipmentForm(
     // Parse and validate the form data with Zod
     const validatedData = equipmentFormSchema.parse(data);
 
-    console.log('✅ Validated equipment data:', validatedData);
+    console.warn('✅ Validated equipment data:', validatedData); //TODO: clean the console warn
 
     // Simulate processing delay
     await new Promise((resolve) => setTimeout(resolve, 1000));

@@ -9,14 +9,19 @@ import { useBookingModal } from '@/hooks/useBookingModal';
 export default function ServiceHistoryTable({
   serviceHistory,
   equipment,
+  isOwner = false, // ← Add ownership flag
 }: {
   serviceHistory: ServiceRecords[];
   equipment?: Equipment;
+  isOwner?: boolean;
 }) {
   const { modalState, openModal, closeModal } = useBookingModal();
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-sky-200 mt-8">
+    <div
+      className="bg-white rounded-lg shadow-sm border border-sky-200 mt-8"
+      id="service-history-table"
+    >
       <div className="p-6 border-b border-sky-100">
         <h2 className="text-xl font-bold text-sky-900">Service History</h2>
       </div>
@@ -36,15 +41,19 @@ export default function ServiceHistoryTable({
               <th className="px-6 py-3 text-left text-xs font-medium text-sky-500 uppercase tracking-wider">
                 Status
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-sky-500 uppercase tracking-wider">
-                Cost
-              </th>
+              {isOwner && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-sky-500 uppercase tracking-wider">
+                  Cost
+                </th>
+              )}
               <th className="px-6 py-3 text-left text-xs font-medium text-sky-500 uppercase tracking-wider">
                 Service ID
               </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-sky-500 uppercase tracking-wider">
-                Action
-              </th>
+              {isOwner && (
+                <th className="px-6 py-3 text-left text-xs font-medium text-sky-500 uppercase tracking-wider">
+                  Action
+                </th>
+              )}
             </tr>
           </thead>
           <tbody className="divide-y divide-sky-100">
@@ -66,41 +75,44 @@ export default function ServiceHistoryTable({
                     {service.status}
                   </span>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap font-medium text-sky-900 before:content-['£']">
-                  {service.cost}
-                </td>
+                {isOwner && (
+                  <td className="px-6 py-4 whitespace-nowrap font-medium text-sky-900 before:content-['£']">
+                    {service.cost}
+                  </td>
+                )}
                 <td className="px-6 py-4 whitespace-nowrap text-xs font-mono text-sky-500">
                   {service.id}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  {service.status === 'PENDING' ? (
-                    <Button
-                      onClick={() => openModal('booking', service)}
-                      disabled={!equipment}
-                      variant="link"
-                      size="sm"
-                      className="text-sky-600 hover:text-sky-800 font-medium transition-colors"
-                    >
-                      Modify Booking →
-                    </Button>
-                  ) : (
-                    <Button
-                      className="text-sky-600 hover:text-sky-800 font-medium cursor-pointer"
-                      variant="link"
-                      size="sm"
-                    >
-                      Download Report →
-                    </Button>
-                  )}
-                </td>
+                {isOwner && (
+                  <td className="px-6 py-4 whitespace-nowrap text-sm">
+                    {service.status === 'PENDING' ? (
+                      <Button
+                        onClick={() => openModal('booking', service)}
+                        variant="link"
+                        size="sm"
+                        className="text-sky-600 hover:text-sky-800 font-medium transition-colors cursor-pointer"
+                      >
+                        Modify Booking →
+                      </Button>
+                    ) : (
+                      <Button
+                        className="text-sky-600 hover:text-sky-800 font-medium transition-colors cursor-pointer"
+                        variant="link"
+                        size="sm"
+                      >
+                        Download Report →
+                      </Button>
+                    )}
+                  </td>
+                )}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      {/* Request New Service Button - only show if we have equipment context */}
-      {equipment && (
+      {/* Request New Service Button - only show if owner */}
+      {isOwner && equipment && (
         <div className="p-6 border-t border-sky-100 bg-sky-25">
           <Button
             onClick={() => openModal('booking')}
@@ -113,8 +125,8 @@ export default function ServiceHistoryTable({
         </div>
       )}
 
-      {/* Booking Modal */}
-      {equipment && (
+      {/* Booking Modal - only for owners */}
+      {isOwner && equipment && (
         <BookingModal
           isOpen={modalState.isOpen}
           onClose={closeModal}

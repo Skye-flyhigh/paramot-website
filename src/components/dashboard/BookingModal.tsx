@@ -1,9 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import { X } from 'lucide-react';
-import { Equipment, ServiceRecords } from '@/lib/schema';
+import { Cog, LucideIcon, X } from 'lucide-react';
+import {
+  Equipment,
+  getServicePrice,
+  getServicesList,
+  ServiceRecords,
+  ServicesType,
+} from '@/lib/schema';
 import { Button } from '@/components/ui/button';
+import services from '@/data/services.json';
 
 export interface BookingModalProps {
   isOpen: boolean;
@@ -13,12 +20,20 @@ export interface BookingModalProps {
 }
 
 interface BookingFormData {
-  serviceType: string;
+  serviceType: ServicesType;
   preferredDate: string;
   deliveryMethod: string;
   specialInstructions: string;
   contactMethod: string;
 }
+
+const serviceTypeInit: ServicesType = {
+  icon: 'Cog',
+  title: '',
+  description: '',
+  code: 'PACK-001',
+  available: true,
+};
 
 export default function BookingModal({
   isOpen,
@@ -27,40 +42,38 @@ export default function BookingModal({
   existingBooking,
 }: BookingModalProps) {
   const [formData, setFormData] = useState<BookingFormData>({
-    serviceType: existingBooking?.service || '',
+    serviceType: existingBooking?.service || serviceTypeInit,
     preferredDate: '',
     deliveryMethod: 'drop-off',
     specialInstructions: '',
     contactMethod: 'email',
   });
 
-  // TODO: remove hard coded values, check with @/data/prices.json as it is similar values
-  const serviceTypes = [
-    {
-      value: 'SVC-001',
-      label: 'Full Service (£150)',
-      description: 'Complete inspection and maintenance',
-    },
-    {
-      value: 'TRIM-001',
-      label: 'Trim Only (£120)',
-      description: 'Line check and adjustments',
-    },
-    {
-      value: 'PACK-001',
-      label: 'Pack Check (£65)',
-      description: 'Packing inspection only',
-    },
-    {
-      value: 'REP-001',
-      label: 'Repair Work',
-      description: 'Contact us for quote',
-    },
-  ];
+  const serviceList = getServicesList();
+
+  // Filter services based on equipment type
+  const applicableServices = serviceList.filter((service) => {
+    switch (equipment.type) {
+      case 'glider':
+        // Gliders can have servicing, trimming, and repairs
+        return ['SVC-001', 'TRIM-001', 'REP-001'].includes(service.code);
+      case 'reserve':
+        // Reserves need repacking and repairs
+        return ['PACK-001', 'REP-001'].includes(service.code);
+      case 'harness':
+        // Harnesses only need repairs
+        return ['REP-001'].includes(service.code);
+      default:
+        return false;
+    }
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     // TODO: Handle form submission
+    console.log(
+      `📩 Equipment ${equipment.manufacturer} ${equipment.model} has been booked. id ${equipment.id}`,
+    );
     onClose();
   };
 
@@ -77,7 +90,7 @@ export default function BookingModal({
         className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto m-0"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b">
+        <header className="flex items-center justify-between p-6 border-b">
           <h2 className="text-xl font-semibold">Modify Booking</h2>
           <button
             onClick={onClose}
@@ -85,10 +98,10 @@ export default function BookingModal({
           >
             <X size={24} />
           </button>
-        </div>
+        </header>
 
         {/* Equipment Context */}
-        <div className="p-6 bg-gray-50 border-b">
+        <section className="p-6 bg-gray-50 border-b" id="equipment-context">
           <h3 className="font-medium text-gray-900 mb-2">Equipment Details</h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
             <div>
@@ -110,39 +123,46 @@ export default function BookingModal({
               <span className="ml-2 font-medium capitalize">{equipment.status}</span>
             </div>
           </div>
-        </div>
+        </section>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="p-6 space-y-6" id="booking-form">
           {/* Service Type */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-3">
               Service Type
             </label>
             <div className="space-y-3">
-              {serviceTypes.map(
-                (
-                  service, // FIXME: not all the services apply to all the equipment types
-                ) => (
+              {applicableServices.map((service) => {
+                const price = getServicePrice(service);
+
+                if (!service.available) return;
+
+                return (
                   <label
-                    key={service.value}
+                    key={service.code}
                     className="flex items-start space-x-3 cursor-pointer"
                   >
                     <input
                       type="radio"
                       name="serviceType"
-                      value={service.value}
-                      checked={formData.serviceType === service.value}
+                      value={service.code}
+                      disabled={!service.available}
                       onChange={(e) => handleInputChange('serviceType', e.target.value)}
                       className="mt-1"
                     />
-                    <div>
-                      <div className="font-medium text-gray-900">{service.label}</div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-3">
+                        <span className="font-medium text-gray-900">{service.title}</span>
+                        <span className="text-sm font-semibold text-sky-700">
+                          {typeof price === 'number' ? `£${price}` : price}
+                        </span>
+                      </div>
                       <div className="text-sm text-gray-600">{service.description}</div>
                     </div>
                   </label>
-                ),
-              )}
+                );
+              })}
             </div>
           </div>
 
@@ -171,7 +191,6 @@ export default function BookingModal({
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="drop-off">Drop off in person</option>
-              <option value="pickup">Collection service</option>
               <option value="post">Post/Courier</option>
             </select>
           </div>

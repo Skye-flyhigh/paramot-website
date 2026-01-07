@@ -1,4 +1,5 @@
-import { signIn } from "@/auth";
+import { signIn } from '@/auth';
+// TODO: add other ways to login like emails or apple etc. when there is a database
 
 export default function Login() {
   return (
@@ -10,8 +11,8 @@ export default function Login() {
         <div className="space-y-4">
           <form
             action={async () => {
-              "use server";
-              await signIn("google", { redirectTo: "/dashboard" });
+              'use server';
+              await signIn('google', { redirectTo: '/dashboard' });
             }}
           >
             <button
