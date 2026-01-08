@@ -20,7 +20,7 @@ export function DashboardCTA() {
 
   return (
     <>
-      <div className="mt-6 flex gap-3 space-around" id="dashboard-CTA">
+      <div className="mt-6 flex gap-3 space-around flex-wrap" id="dashboard-CTA">
         <Button onClick={() => openModal('picker')} variant="default" type="button">
           Schedule New Service
         </Button>
@@ -51,7 +51,9 @@ export function DashboardCTA() {
           Update contact details
         </Button>
       </div>
-      {openContact && <CustomerDetails customer={customer} />}
+      {openContact && (
+        <CustomerDetails customer={customer} onClose={() => setOpenContact(false)} />
+      )}
     </>
   );
 }

@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Cog, LucideIcon, X } from 'lucide-react';
 import {
   Equipment,
   getServicePrice,
@@ -10,7 +9,7 @@ import {
   ServicesType,
 } from '@/lib/schema';
 import { Button } from '@/components/ui/button';
-import services from '@/data/services.json';
+import { X } from 'lucide-react';
 
 export interface BookingModalProps {
   isOpen: boolean;

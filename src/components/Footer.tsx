@@ -6,9 +6,7 @@ export default function Footer() {
           <h3 className="text-2xl font-bold mb-3">
             para<span className="text-sky-300">MOT</span>
           </h3>
-          <p className="text-sky-200">
-            Professional paragliding servicing and repairs
-          </p>
+          <p className="text-sky-200">Professional paragliding servicing and repairs</p>
         </div>
         <div className="border-t border-sky-700/50 pt-6">
           <p className="text-sky-300/80">

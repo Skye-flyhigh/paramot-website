@@ -1,5 +1,5 @@
-import { auth } from "@/auth";
-import Login from "@/components/Login";
+import { auth } from '@/auth';
+import Login from '@/components/Login';
 
 export default async function LoginPage() {
   const session = await auth();

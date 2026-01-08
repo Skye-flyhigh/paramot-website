@@ -50,20 +50,14 @@ export default async function Dashboard() {
         <div className="max-w-6xl mx-auto px-4" id="dashboard-content">
           {/* Header */}
           <header className="bg-white rounded-lg shadow-sm border border-sky-200 p-6 mb-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <h1 className="text-3xl font-bold text-sky-900">
-                  Welcome back, {customerData.name}
-                </h1>
-                <p className="text-sky-600 mt-1">Customer Portal</p>
-              </div>
-              <div className="text-right">
-                <p className="text-sm text-sky-600">Customer ID</p>
-                <p className="font-mono text-sky-800">{customerData.email}</p>
-              </div>
+            <div>
+              <h1 className="text-3xl font-bold text-sky-900">
+                Welcome back, {customerData.name}
+              </h1>
+              <p className="text-sky-600 mt-1">Customer Portal</p>
             </div>
+
             <DashboardCTA />
-            {/* TODO: add settings button and contact details edition through a modal */}
           </header>
 
           <section className="mt-6" id="dashboard-content">

@@ -139,7 +139,6 @@ export interface CustomerEquipment {
 export function getServicePrice(servicesType: ServicesType): string | number {
   return prices[servicesType.code] || 'Contact us';
 }
-
 // Service list function helper
 export function getServicesList(): ServicesType[] {
   return Object.values(rawServicesData) as ServicesType[];

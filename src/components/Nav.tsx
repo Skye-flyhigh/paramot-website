@@ -1,5 +1,5 @@
-import { auth, signOut } from "@/auth";
-import Link from "next/link";
+import { auth, signOut } from '@/auth';
+import Link from 'next/link';
 
 export default async function Nav() {
   const session = await auth();
@@ -23,7 +23,7 @@ export default async function Nav() {
               </Link>
               <form
                 action={async () => {
-                  "use server";
+                  'use server';
                   await signOut();
                 }}
               >
