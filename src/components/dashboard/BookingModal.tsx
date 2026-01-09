@@ -8,8 +8,23 @@ import {
   ServiceRecords,
 } from '@/lib/schema';
 import { Button } from '@/components/ui/button';
-import { X } from 'lucide-react';
 import { isTandemGlider } from '@/lib/utils';
+import XButton from '../ui/x-button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Textarea } from '../ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+
+// type BookingType =
 
 export interface BookingModalProps {
   isOpen: boolean;
@@ -109,18 +124,14 @@ export default function BookingModal({
   return (
     <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
       <dialog
+        id="booking-modal"
         open={isOpen}
         className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto m-0"
       >
         {/* Header */}
         <header className="flex items-center justify-between p-6 border-b">
           <h2 className="text-xl font-semibold">Modify Booking</h2>
-          <button
-            onClick={onClose}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <X size={24} />
-          </button>
+          <XButton onClose={onClose} />
         </header>
 
         {/* Equipment Context */}
@@ -152,59 +163,67 @@ export default function BookingModal({
         <form onSubmit={handleSubmit} className="p-6 space-y-6" id="booking-form">
           {/* Service Type */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-3">
+            <Label className="block text-sm font-medium text-gray-700 mb-3">
               Service Type
-            </label>
+            </Label>
             <div className="space-y-3">
               {hasNoService ? (
                 <span>No available services</span>
               ) : (
-                applicableServices.map((service) => {
-                  const price = getServicePrice(service);
-                  return (
-                    <label
-                      key={service.code}
-                      className="flex items-start space-x-3 cursor-pointer"
-                    >
-                      <input
-                        type="radio"
-                        name="serviceType"
-                        value={service.code}
-                        disabled={!service.available}
-                        onChange={(e) => handleInputChange('serviceType', e.target.value)}
-                        className="mt-1"
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3">
-                          <span className="font-medium text-gray-900">
-                            {service.title}
-                          </span>
-                          <span className="text-sm font-semibold text-sky-700">
-                            {typeof price === 'number' ? `£${price}` : price}
-                          </span>
+                <RadioGroup
+                  onValueChange={(value) => handleInputChange('serviceType', value)}
+                >
+                  {applicableServices.map((service) => {
+                    const price = getServicePrice(service);
+                    return (
+                      <div className="grid grid-cols-[30px_1fr]" key={service.code}>
+                        <RadioGroupItem
+                          id={service.code}
+                          value={service.code}
+                          disabled={!service.available}
+                          className={'mt-1 col-start-1 bg-blue-100'}
+                        />
+                        <Label
+                          className="grid-col-2 flex cursor-pointer"
+                          htmlFor={service.code}
+                        >
+                          <div className="flex items-center gap-3">
+                            <span
+                              className={`font-medium ${service.available ? 'text-gray-900' : 'text-gray-400 cursor-not-allowed'}`}
+                            >
+                              {service.title}
+                            </span>
+                            <span
+                              className={`text-sm font-semibold ${service.available ? 'text-sky-700' : 'text-sky-200 cursor-not-allowed'}`}
+                            >
+                              {typeof price === 'number' ? `£${price}` : price}
+                            </span>
+                          </div>
+                        </Label>
+                        <div
+                          className={`text-sm text-gray-700 col-span-full ${service.available ? 'text-gray-900' : 'text-gray-100 cursor-not-allowed'}`}
+                        >
+                          {service.description}
                         </div>
-                        <div className="text-sm text-gray-600">{service.description}</div>
                       </div>
-                    </label>
-                  );
-                })
+                    );
+                  })}
+                </RadioGroup>
               )}
             </div>
           </div>
 
           {/* Preferred Date */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Preferred Date
-            </label>
-            <input
+            <Label className="">Preferred Delivery Date</Label>
+            <Input
               type="date"
               value={formData.preferredDate}
               onChange={(e) => handleInputChange('preferredDate', e.target.value)}
               min={new Date().toISOString().split('T')[0]}
               disabled={hasNoService}
               className={
-                'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500' +
+                'w-full px-3 py-2 border ' +
                 (hasNoService ? 'bg-gray-300 cursor-not-allowed text-gray-400' : '')
               }
             />
@@ -212,36 +231,38 @@ export default function BookingModal({
 
           {/* Delivery Method */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <Label className="block text-sm font-medium text-gray-700 mb-2">
               Delivery Method
-            </label>
-            <select
+            </Label>
+            <Select
               disabled={hasNoService}
               value={formData.deliveryMethod}
-              onChange={(e) => handleInputChange('deliveryMethod', e.target.value)}
-              className={
-                'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500' +
-                (hasNoService ? 'bg-gray-300 cursor-not-allowed text-gray-400' : '')
-              }
+              onValueChange={(value) => handleInputChange('deliveryMethod', value)}
             >
-              <option value="drop-off">Drop off in person</option>
-              <option value="post">Post/Courier</option>
-            </select>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a delivery method" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Delivery Method</SelectLabel>
+                  <SelectItem value="drop-off">Drop off in person</SelectItem>
+                  <SelectItem value="post">Post/Courier</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Special Instructions */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Special Instructions
-            </label>
-            <textarea
+            <Label>History and Special Instructions</Label>
+            <Textarea
               disabled={hasNoService}
               value={formData.specialInstructions}
               onChange={(e) => handleInputChange('specialInstructions', e.target.value)}
               rows={3}
-              placeholder="Any specific concerns, damage, or requirements..."
+              placeholder="Please tell us about number of hours/years. Any specific concerns, damage, or requirements..."
               className={
-                'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500' +
+                'w-full' +
                 (hasNoService ? 'bg-gray-300 cursor-not-allowed text-gray-400' : '')
               }
             />
@@ -249,22 +270,26 @@ export default function BookingModal({
 
           {/* Contact Method */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">
+            <Label className="block text-sm font-medium text-gray-700 mb-2">
               Preferred Contact Method
-            </label>
-            <select
+            </Label>
+            <Select
               disabled={hasNoService}
               value={formData.contactMethod}
-              onChange={(e) => handleInputChange('contactMethod', e.target.value)}
-              className={
-                'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500' +
-                (hasNoService ? 'bg-gray-300 cursor-not-allowed text-gray-400' : '')
-              }
+              onValueChange={(value) => handleInputChange('contactMethod', value)}
             >
-              <option value="email">Email</option>
-              <option value="phone">Phone call</option>
-              <option value="text">Text message</option>
-            </select>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a contact method" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Contact Method</SelectLabel>
+                  <SelectItem value="email">Email</SelectItem>
+                  <SelectItem value="phone">Phone call</SelectItem>
+                  <SelectItem value="text">Text message</SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Actions */}

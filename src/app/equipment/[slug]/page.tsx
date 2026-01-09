@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { getEquipmentBySerial, getEquipmentServiceHistory } from '@/lib/mockData';
 import ServiceHistoryTable from '@/components/dashboard/ServiceHistoryTable';
 import { getServiceDescription, getStatusColor } from '@/lib/styling/services';
-import ServiceActionButtons from '@/components/dashboard/ServiceActionButtons';
+import ServiceActionButtons from '@/components/equipment/ServiceActionButtons';
 import { auth } from '@/auth';
 import { checkEquipmentOwnershipBySerial } from '@/lib/authorization';
 
@@ -211,7 +211,7 @@ export default async function ServiceDetailPage({
             {/* Actions */}
             <ServiceActionButtons
               status={lastService.status}
-              session={session}
+              isOwner={isOwner}
               equipment={equipment}
             />
           </section>

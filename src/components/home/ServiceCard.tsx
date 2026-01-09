@@ -47,9 +47,11 @@ export function ServiceCard({ service, pricing, session }: ServiceCardProps) {
 
   return (
     <Card
-      onClick={handleCardClick}
-      className={`bg-white border-sky-100 hover:border-sky-200 hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer ${
-        !service.available ? 'opacity-75 cursor-not-allowed' : ''
+      onClick={!service.available ? undefined : handleCardClick}
+      className={`bg-white border-sky-100 hover:border-sky-200 ${
+        service.available
+          ? 'cursor-pointer transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl'
+          : 'opacity-60 cursor-not-allowed'
       }`}
     >
       <CardHeader className="text-center">

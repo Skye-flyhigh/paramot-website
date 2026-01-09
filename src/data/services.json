@@ -1,7 +1,7 @@
 {
   "trim-solo": {
     "icon": "Zap",
-    "title": "Solo Paraglider Trimming",
+    "title": "Paraglider Trimming",
     "description": "Precision trimming services to optimize your wing's performance using professional tension meters and line geometry analysis.",
     "code": "SVC-001",
     "available": true
@@ -15,7 +15,7 @@
   },
   "service-solo": {
     "icon": "Shield",
-    "title": "Solo Paraglider Full Service",
+    "title": "Paraglider Full Service",
     "description": "Complete servicing including canopy fabric inspection and strength testing, line strength analysis, riser state evaluation, and paraglider trimming.",
     "code": "SVC-011",
     "available": true
@@ -36,7 +36,7 @@
   },
   "repack-solo": {
     "icon": "PackageCheck",
-    "title": "Solo Parachute Repacking",
+    "title": "Parachute Repacking",
     "description": "Professional emergency parachute repacking following manufacturer specifications and safety protocols.",
     "code": "PACK-001",
     "available": false

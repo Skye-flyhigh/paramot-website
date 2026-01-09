@@ -8,6 +8,11 @@ export default async function Services() {
   const pricing = prices as Prices;
 
   const services = getServicesList();
+  const filteredServices = services.filter((service) => {
+    if (['SVC-001', 'SVC-031', 'PACK-001', 'REP-001'].includes(service.code)) {
+      return service;
+    }
+  });
 
   return (
     <section id="services" className="py-20 px-4 bg-gradient-to-b from-white to-sky-50">
@@ -21,7 +26,7 @@ export default async function Services() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {services.map((service) => (
+          {filteredServices.map((service) => (
             <ServiceCard
               key={service.code}
               service={service}

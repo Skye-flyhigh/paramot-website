@@ -2,10 +2,20 @@
 
 import { Equipment, EquipmentType } from '@/lib/schema';
 import { LoaderCircle, X } from 'lucide-react';
-import { useActionState, useCallback, useEffect, useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 import { Alert, AlertDescription } from '../ui/alert';
 import submitEquipmentForm from '@/lib/submit/submitEquipmentForm';
 import { Button } from '../ui/button';
+import XButton from '../ui/x-button';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '../ui/select';
+import { Label } from '../ui/label';
+import { Input } from '../ui/input';
 
 interface EquipmentPickerProps {
   isOpen: boolean;
@@ -36,6 +46,14 @@ export function EquipmentPicker({
 }: EquipmentPickerProps) {
   const [isNew, setIsNew] = useState<boolean>(false);
   const [selectedEquipmentId, setSelectedEquipmentId] = useState<string>('');
+  const [equipmentType, setEquipmentType] = useState<EquipmentType>('glider');
+
+  // Initialize with first equipment when modal opens
+  useEffect(() => {
+    if (isOpen && equipmentList.length > 0 && !selectedEquipmentId && !isNew) {
+      setSelectedEquipmentId(equipmentList[0].id);
+    }
+  }, [isOpen, equipmentList, selectedEquipmentId, isNew]);
 
   // Form logic
   const initialFormData: EquipmentPickerData = {
@@ -100,6 +118,7 @@ export function EquipmentPicker({
   return (
     <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
       <dialog
+        id="equipment-picker"
         open={isOpen}
         className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-auto m-0"
       >
@@ -107,38 +126,30 @@ export function EquipmentPicker({
           {/* Header */}
           <div className="flex items-center justify-between p-6 border-b">
             <h2 className="text-xl font-semibold">Choose Equipment</h2>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <X size={24} />
-            </button>
+            <XButton onClose={onClose} />
           </div>
 
           {/* Modal main */}
           <div className="p-6 bg-gray-50 border-b">
-            <h2 className="font-medium text-gray-900">Select Equipment</h2>
-            <select // FIXME: at the opening of the modal, the first option selected isn't loaded as equipment and there for the button is disabled. Load the first equipement too
-              onChange={(e) => handleSelectChange(e.target.value)}
+            <Label htmlFor="equipment-select">Select Equipment</Label>
+            <Select
               value={isNew ? 'new' : selectedEquipmentId || equipmentList[0]?.id}
-              className="mt-2 h-10 w-full bg-white p-2 border-sky-300 border-2 rounded-lg hover:border-sky-700"
+              onValueChange={handleSelectChange}
             >
-              {equipmentList.length > 0
-                ? equipmentList.map((equipment, index) => (
-                    <option
-                      key={equipment.id}
-                      value={equipment.id}
-                      selected={index === 0}
-                    >
+              <SelectTrigger id="equipment-select" className="mt-2">
+                <SelectValue placeholder="Choose equipment..." />
+              </SelectTrigger>
+              <SelectContent>
+                {equipmentList.length > 0 &&
+                  equipmentList.map((equipment) => (
+                    <SelectItem key={equipment.id} value={equipment.id}>
                       {equipment.manufacturer} {equipment.model} {equipment.size} (
                       {equipment.serialNumber})
-                    </option>
-                  ))
-                : null}
-              <option value="new" key="new">
-                + Add New Equipment
-              </option>
-            </select>
+                    </SelectItem>
+                  ))}
+                <SelectItem value="new">+ Add New Equipment</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           {isNew && (
             <div className="px-6 h-fit">
@@ -158,100 +169,85 @@ export function EquipmentPicker({
                 </Alert>
               )}
 
-              <div className="grid grid-cols-2 gap-4 text-sm my-5">
-                <label className="text-gray-600">
-                  Equipment type:
-                  <select
+              {/* New equipment input */}
+              <div className="grid grid-cols-2 gap-4 my-5" id="new-equipment-input">
+                <div className="space-y-2">
+                  <Label htmlFor="type">Equipment Type</Label>
+                  <Select
                     name="type"
-                    id="type"
-                    className="mt-2 h-10 w-full block bg-white p-2 border-sky-300 border-2 rounded-lg hover:border-sky-700"
+                    value={equipmentType}
+                    onValueChange={(value) => setEquipmentType(value as EquipmentType)}
                   >
-                    <option selected value="glider">
-                      Paraglider
-                    </option>
-                    <option value="harness">Harness</option>
-                    <option value="reserve">Reserve</option>
-                  </select>
-                </label>
-                <label className="text-gray-600">
-                  Manufacturer:
-                  <input
-                    type="text"
+                    <SelectTrigger id="type">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="glider">Paraglider</SelectItem>
+                      <SelectItem value="harness">Harness</SelectItem>
+                      <SelectItem value="reserve">Reserve</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <input type="hidden" name="type" value={equipmentType} />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="manufacturer">Manufacturer</Label>
+                  <Input
+                    id="manufacturer"
                     name="manufacturer"
+                    type="text"
                     required
-                    className={
-                      'mt-2 h-10 w-full block bg-white p-2 border-sky-300 border-2 rounded-lg hover:border-sky-700 ' +
-                      (state.errors.manufacturer
-                        ? 'border-red-300 focus:border-red-400 focus:ring-red-400'
-                        : '')
-                    }
+                    className={state.errors.manufacturer ? 'border-red-500' : ''}
                     defaultValue={state.formData.manufacturer}
                   />
                   {state.errors.manufacturer && (
-                    <span className="text-red-500 text-xs mt-1 block">
-                      {state.errors.manufacturer}
-                    </span>
+                    <p className="text-red-500 text-xs">{state.errors.manufacturer}</p>
                   )}
-                </label>
-                <label className="text-gray-600">
-                  Model:
-                  <input
-                    type="text"
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="model">Model</Label>
+                  <Input
+                    id="model"
                     name="model"
+                    type="text"
                     required
-                    className={
-                      'mt-2 h-10 w-full block bg-white p-2 border-sky-300 border-2 rounded-lg hover:border-sky-700 ' +
-                      (state.errors.model
-                        ? 'border-red-300 focus:border-red-400 focus:ring-red-400'
-                        : '')
-                    }
+                    className={state.errors.model ? 'border-red-500' : ''}
                     defaultValue={state.formData.model}
                   />
                   {state.errors.model && (
-                    <span className="text-red-500 text-xs mt-1 block">
-                      {state.errors.model}
-                    </span>
+                    <p className="text-red-500 text-xs">{state.errors.model}</p>
                   )}
-                </label>
-                <label className="text-gray-600">
-                  Size:
-                  <input
-                    type="text"
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="size">Size</Label>
+                  <Input
+                    id="size"
                     name="size"
+                    type="text"
                     required
-                    className={
-                      'mt-2 h-10 w-full block bg-white p-2 border-sky-300 border-2 rounded-lg hover:border-sky-700 ' +
-                      (state.errors.size
-                        ? 'border-red-300 focus:border-red-400 focus:ring-red-400'
-                        : '')
-                    }
+                    className={state.errors.size ? 'border-red-500' : ''}
                     defaultValue={state.formData.size}
                   />
                   {state.errors.size && (
-                    <span className="text-red-500 text-xs mt-1 block">
-                      {state.errors.size}
-                    </span>
+                    <p className="text-red-500 text-xs">{state.errors.size}</p>
                   )}
-                </label>
-                <label className="text-gray-600">
-                  Serial Number:
-                  <input
-                    type="text"
+                </div>
+
+                <div className="space-y-2 col-span-2">
+                  <Label htmlFor="serialNumber">Serial Number (Optional)</Label>
+                  <Input
+                    id="serialNumber"
                     name="serialNumber"
-                    className={
-                      'mt-2 h-10 w-full block bg-white p-2 border-sky-300 border-2 rounded-lg hover:border-sky-700 ' +
-                      (state.errors.serialNumber
-                        ? 'border-red-300 focus:border-red-400 focus:ring-red-400'
-                        : '')
-                    }
+                    type="text"
+                    className={state.errors.serialNumber ? 'border-red-500' : ''}
                     defaultValue={state.formData.serialNumber}
                   />
                   {state.errors.serialNumber && (
-                    <span className="text-red-500 text-xs mt-1 block">
-                      {state.errors.serialNumber}
-                    </span>
+                    <p className="text-red-500 text-xs">{state.errors.serialNumber}</p>
                   )}
-                </label>
+                </div>
               </div>
             </div>
           )}

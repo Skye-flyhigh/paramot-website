@@ -3,17 +3,19 @@ import { Equipment, ServiceStatus } from '@/lib/schema';
 import { Button } from '../ui/button';
 import { useBookingModal } from '@/hooks/useBookingModal';
 import { useState } from 'react';
-import { Session } from 'next-auth';
-import BookingModal from './BookingModal';
+import BookingModal from '../dashboard/BookingModal';
+import ContactForm from '../home/ContactForm';
+import { X } from 'lucide-react';
+import XButton from '../ui/x-button';
 
 export default function ServiceActionButtons({
   status,
   equipment,
-  session,
+  isOwner = false,
 }: {
   status: ServiceStatus;
   equipment: Equipment;
-  session: Session | null;
+  isOwner?: boolean;
 }) {
   const { modalState, openModal, closeModal } = useBookingModal();
   const [openSupport, setOpenSupport] = useState<boolean>(false);
@@ -25,13 +27,13 @@ export default function ServiceActionButtons({
       </div>
       <div className="p-6">
         <div className="space-y-3">
-          {session && ( // FIXME: check if the user own this kit for these actions
+          {status === 'COMPLETED' && (
+            <Button type="button" variant="default" className="w-full">
+              Download Service Report
+            </Button>
+          )}
+          {isOwner && ( // FIXME: check if the user own this kit for these actions
             <>
-              {status === 'COMPLETED' && (
-                <Button type="button" variant="default" className="w-full">
-                  Download Service Report
-                </Button>
-              )}
               {(status === 'PENDING' ||
                 status === 'CANCELLED' ||
                 status === 'IN_PROGRESS') && (
@@ -61,6 +63,23 @@ export default function ServiceActionButtons({
         onClose={closeModal}
         equipment={equipment}
       />
+
+      {/* Support Modal */}
+      {openSupport && (
+        <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <dialog
+            open={openSupport}
+            className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto m-0"
+          >
+            {/* Header */}
+            <header className="flex items-center justify-between p-6 border-b">
+              <h2 className="text-xl font-semibold">Contact support</h2>
+              <XButton onClose={() => setOpenSupport(false)} />
+            </header>
+            <ContactForm equipment={equipment} onClose={() => setOpenSupport(false)} />
+          </dialog>
+        </div>
+      )}
     </div>
   );
 }

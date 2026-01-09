@@ -43,7 +43,7 @@ export default function ServiceTable() {
                     key={service.id}
                     className="border border-green-200 rounded-lg p-4 bg-green-50"
                   >
-                    <Link href={`/dashboard/${service.serialNb}`}>
+                    <Link href={`/equipment/${service.serialNb}`}>
                       <div className="flex justify-between items-start">
                         <div>
                           <h3 className="font-semibold text-sky-900">{service.type}</h3>

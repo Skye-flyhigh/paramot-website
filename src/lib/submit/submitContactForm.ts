@@ -3,16 +3,34 @@
 import { ContactFormState } from '../types/contactForm';
 import { ContactDataSchema } from '../validation/contactForm';
 
+export interface ContactFormData {
+  name: string;
+  email: string;
+  message: string;
+  equipmentContext?: string;
+}
+
+export interface ContactFormState {
+  formData: ContactFormData;
+  errors: Record<string, string>;
+  success: boolean;
+}
+
 export default async function submitContactForm(
   prevState: ContactFormState,
   formData: FormData,
 ): Promise<ContactFormState> {
+  if (!formData)
+    return { ...prevState, errors: { Error: 'Missing data' }, success: false };
+
   const formValues = {
     name: formData.get('name'),
     email: formData.get('email'),
     message: formData.get('message'),
+    equipmentContext: formData.get('equipmentContext') || null,
   };
 
+  //Zod validation and HTML sanitation
   const validation = ContactDataSchema.safeParse(formValues);
   if (!validation.success) {
     // Convert Zod errors to our error format
@@ -22,7 +40,6 @@ export default async function submitContactForm(
         fieldErrors[issue.path[0] as string] = issue.message;
       }
     });
-
     return {
       ...prevState,
       errors: fieldErrors,
@@ -33,7 +50,9 @@ export default async function submitContactForm(
   const data = validation.data;
 
   try {
-    console.warn('Contact form submitted:', data); // TODO: clean the console warn
+    console.warn('Contact form submitted:', {
+      ...data,
+    }); // TODO: clean the console warn
 
     // Simulate processing delay
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -41,6 +60,7 @@ export default async function submitContactForm(
     // Here you would typically handle the form submission,
     // e.g., by sending the data to a database or an email service.
     // For now, we'll just simulate success
+    // When sending email/notification, prepend equipmentContext to message if present
 
     return {
       formData: {

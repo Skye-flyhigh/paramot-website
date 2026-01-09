@@ -1,7 +1,7 @@
 import Hero from '@/components/Hero';
 import Motto from '@/components/home/Motto';
 import Services from '@/components/home/Services';
-import ContactForm from '@/components/home/ContactForm';
+import Contact from '@/components/home/Contact';
 import Location from '@/components/home/Location';
 
 export default function Home() {
@@ -10,7 +10,7 @@ export default function Home() {
       <Hero />
       <Motto />
       <Services />
-      <ContactForm />
+      <Contact />
       <Location />
     </main>
   );

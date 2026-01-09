@@ -3,7 +3,9 @@
 import { EquipmentPickerFormState } from '@/components/dashboard/EquipmentPicker';
 import { z } from 'zod';
 import { zfd } from 'zod-form-data';
-import { Equipment, EquipmentType } from '../schema';
+import { EquipmentType } from '../schema';
+import { auth } from '@/auth';
+import { getCustomerByEmail } from '../mockData';
 
 // Define the schema for equipment form validation
 const equipmentFormSchema = zfd.formData({
@@ -25,8 +27,33 @@ export default async function submitEquipmentForm(
   prevState: EquipmentPickerFormState,
   data: FormData,
 ): Promise<EquipmentPickerFormState> {
+  // ✅ STEP 1: Authentication check - verify user is logged in
+  // Equipment is added through customer dashboard, so must be authenticated
+  const session = await auth();
+  if (!session?.user?.email) {
+    return {
+      formData: prevState.formData,
+      errors: {
+        general: '🔒 Unauthorized: You must be logged in to add equipment',
+      },
+      success: false,
+    };
+  }
+
+  // ✅ STEP 2: Verify customer exists
+  const customer = getCustomerByEmail(session.user.email);
+  if (!customer) {
+    return {
+      formData: prevState.formData,
+      errors: {
+        general: '❌ Customer account not found',
+      },
+      success: false,
+    };
+  }
+
   try {
-    // Parse and validate the form data with Zod
+    // ✅ STEP 3: Parse and validate the form data with Zod
     const validatedData = equipmentFormSchema.parse(data);
 
     console.warn('✅ Validated equipment data:', validatedData); //TODO: clean the console warn
@@ -34,8 +61,27 @@ export default async function submitEquipmentForm(
     // Simulate processing delay
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // TODO: Save to database and get real ID back
-    // const newEquipment = await mockDatabase.equipment.create(validatedData);
+    // TODO: 💾 Save to database and link to customer
+    // const newEquipment = await prisma.equipment.create({
+    //   data: {
+    //     manufacturer: validatedData.manufacturer,
+    //     model: validatedData.model,
+    //     size: validatedData.size,
+    //     type: validatedData.type as EquipmentType,
+    //     serialNumber: validatedData.serialNumber || `AUTO-${Date.now()}`,
+    //     status: 'active',
+    //   }
+    // });
+    //
+    // // Link equipment to customer
+    // await prisma.customerEquipment.create({
+    //   data: {
+    //     customerId: customer.id, // ← From authenticated session!
+    //     equipmentId: newEquipment.id,
+    //     ownedSince: new Date(),
+    //     ownedUntil: null, // Still owns it
+    //   }
+    // });
 
     return {
       formData: {

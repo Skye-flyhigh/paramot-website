@@ -8,6 +8,7 @@ import { Alert, AlertDescription } from '../ui/alert';
 import { Textarea } from '../ui/textarea';
 import { SubmitButton } from '../ui/submit-button';
 import submitCustomerDetails from '@/lib/submit/submitCustomerDetails';
+import { Button } from '../ui/button';
 
 export interface CustomerFormState {
   data: Customer;
@@ -91,8 +92,14 @@ export default function CustomerDetails({
         </div>
       </section>
 
-      {/* Submit Button */}
-      <SubmitButton isPending={isPending}>Save details</SubmitButton>
+      <div id="button-container" className="w-full flex justify-end">
+        {/* Cancel Button */}
+        <Button type="button" variant="ghost" onClick={onClose} className="mr-3">
+          Cancel
+        </Button>
+        {/* Submit Button */}
+        <SubmitButton isPending={isPending}>Save details</SubmitButton>
+      </div>
     </form>
   );
 }
