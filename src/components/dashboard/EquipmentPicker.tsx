@@ -2,7 +2,7 @@
 
 import { Equipment, EquipmentType } from '@/lib/schema';
 import { LoaderCircle, X } from 'lucide-react';
-import { useActionState, useEffect, useState } from 'react';
+import { useActionState, useCallback, useEffect, useState } from 'react';
 import { Alert, AlertDescription } from '../ui/alert';
 import submitEquipmentForm from '@/lib/submit/submitEquipmentForm';
 import { Button } from '../ui/button';
@@ -57,6 +57,14 @@ export function EquipmentPicker({
     initialState,
   );
 
+  // Handle "Continue" button for existing equipment
+  const handleContinue = () => {
+    const equipment = equipmentList.find((eq) => eq.id === selectedEquipmentId);
+    if (equipment) {
+      onEquipmentSelected(equipment);
+    }
+  };
+
   useEffect(() => {
     if (state.success) {
       const newEquipment: Equipment = {
@@ -89,14 +97,6 @@ export function EquipmentPicker({
     }
   }
 
-  // Handle "Continue" button for existing equipment
-  function handleContinue() {
-    const equipment = equipmentList.find((eq) => eq.id === selectedEquipmentId);
-    if (equipment) {
-      onEquipmentSelected(equipment);
-    }
-  }
-
   return (
     <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
       <dialog
@@ -124,8 +124,12 @@ export function EquipmentPicker({
               className="mt-2 h-10 w-full bg-white p-2 border-sky-300 border-2 rounded-lg hover:border-sky-700"
             >
               {equipmentList.length > 0
-                ? equipmentList.map((equipment) => (
-                    <option key={equipment.id} value={equipment.id}>
+                ? equipmentList.map((equipment, index) => (
+                    <option
+                      key={equipment.id}
+                      value={equipment.id}
+                      selected={index === 0}
+                    >
                       {equipment.manufacturer} {equipment.model} {equipment.size} (
                       {equipment.serialNumber})
                     </option>

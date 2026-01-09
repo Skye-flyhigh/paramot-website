@@ -6,7 +6,7 @@
 // - Customer (from OAuth) has many Gliders
 // - Customer has many ServiceRecords
 // - Glider has many ServiceRecords
-// - Service defines types (SVC-001, TRIM-001, etc.) with pricing/details
+// - Service defines types (SVC-001, SVC-002, SVC-011, etc.) with pricing/details
 // - ServiceRecord connects Customer + Glider + Service + booking details
 import prices from '@/data/prices.json';
 import rawServicesData from '@/data/services.json';
@@ -33,7 +33,15 @@ export interface ServicesType {
 
 export type Prices = Record<string, number | string>;
 
-export const SERVICE_CODE = ['SVC-001', 'TRIM-001', 'PACK-001', 'REP-001'] as const;
+export const SERVICE_CODE = [
+  'SVC-001',
+  'SVC-002',
+  'SVC-011',
+  'SVC-012',
+  'PACK-001',
+  'PACK-002',
+  'REP-001',
+] as const;
 export type ServiceCode = (typeof SERVICE_CODE)[number];
 
 export const SERVICE_STATUSES = [
@@ -49,7 +57,7 @@ export type EquipmentType = (typeof EQUIPMENT_TYPES)[number];
 
 export interface ServiceRecords {
   //This schema could be used for a glider, a reserve parachute or a harness
-  service: ServicesType;
+  service: ServiceCode;
   type: string;
   id: string; // Start with SERVICE_TYPE + unique time ref. This ID will be able to generate a report on the workbench side like opening a new record.
   serialNb: string; // Get the unique serial number of the kit

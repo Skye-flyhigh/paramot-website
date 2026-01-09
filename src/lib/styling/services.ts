@@ -14,11 +14,17 @@ export const getStatusColor = (status: string) => {
 export const getServiceDescription = (serviceType: string) => {
   switch (serviceType) {
     case 'SVC-001':
-      return 'Complete annual service including line inspection, canopy check, and trim verification';
-    case 'TRIM-001':
-      return 'Line length verification and trim adjustment for optimal glider performance';
+      return 'Line length verification and trim adjustment for solo paraglider';
+    case 'SVC-002':
+      return 'Line length verification and trim adjustment for tandem paraglider';
+    case 'SVC-011':
+      return 'Complete annual service for solo glider including line inspection, canopy check, and trim';
+    case 'SVC-012':
+      return 'Complete annual service for tandem glider including line inspection, canopy check, and trim';
     case 'PACK-001':
-      return 'Reserve parachute inspection and repacking according to manufacturer guidelines';
+      return 'Solo reserve parachute inspection and repacking according to manufacturer guidelines';
+    case 'PACK-002':
+      return 'Steerable parachute inspection and repacking according to manufacturer guidelines';
     case 'REP-001':
       return 'Repair services for glider damage including fabric and line replacement';
     default:

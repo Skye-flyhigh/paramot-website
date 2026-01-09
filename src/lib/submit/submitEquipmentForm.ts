@@ -3,7 +3,7 @@
 import { EquipmentPickerFormState } from '@/components/dashboard/EquipmentPicker';
 import { z } from 'zod';
 import { zfd } from 'zod-form-data';
-import { EquipmentType } from '../schema';
+import { Equipment, EquipmentType } from '../schema';
 
 // Define the schema for equipment form validation
 const equipmentFormSchema = zfd.formData({

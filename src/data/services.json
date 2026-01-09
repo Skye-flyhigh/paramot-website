@@ -1,24 +1,52 @@
 {
-  "servicing": {
-    "icon": "Shield",
-    "title": "Paragliding Servicing",
-    "description": "Complete servicing including canopy fabric inspection and strength testing, line strength analysis, riser state evaluation, and paraglider trimming.",
+  "trim-solo": {
+    "icon": "Zap",
+    "title": "Solo Paraglider Trimming",
+    "description": "Precision trimming services to optimize your wing's performance using professional tension meters and line geometry analysis.",
     "code": "SVC-001",
     "available": true
   },
-  "trim": {
+  "trim-tandem": {
     "icon": "Zap",
-    "title": "Paraglider Trimming",
-    "description": "Precision trimming services to optimize your wing's performance using professional tension meters and line geometry analysis.",
-    "code": "TRIM-001",
+    "title": "Tandem Paraglider Trimming",
+    "description": "Precision trimming services to optimize your tandem wing's performance using professional tension meters and line geometry analysis.",
+    "code": "SVC-002",
     "available": true
   },
-  "repack": {
+  "service-solo": {
+    "icon": "Shield",
+    "title": "Solo Paraglider Full Service",
+    "description": "Complete servicing including canopy fabric inspection and strength testing, line strength analysis, riser state evaluation, and paraglider trimming.",
+    "code": "SVC-011",
+    "available": true
+  },
+  "service-tandem": {
+    "icon": "Shield",
+    "title": "Tandem Paraglider Full Service",
+    "description": "Complete servicing including canopy fabric inspection and strength testing, line strength analysis, riser state evaluation, and paraglider trimming.",
+    "code": "SVC-012",
+    "available": true
+  },
+  "service-harness": {
+    "icon": "Shield",
+    "title": "Harness Service & Inspection",
+    "description": "Complete inspection and service of the harness to ensure airworthiness.",
+    "code": "SVC-031",
+    "available": true
+  },
+  "repack-solo": {
     "icon": "PackageCheck",
-    "title": "Parachute Repacking",
+    "title": "Solo Parachute Repacking",
     "description": "Professional emergency parachute repacking following manufacturer specifications and safety protocols.",
     "code": "PACK-001",
-    "available": true
+    "available": false
+  },
+  "repack-steerable": {
+    "icon": "PackageCheck",
+    "title": "Steerable Parachute Repacking",
+    "description": "Professional steerable parachute repacking following manufacturer specifications and safety protocols.",
+    "code": "PACK-002",
+    "available": false
   },
   "repair": {
     "icon": "Wrench",

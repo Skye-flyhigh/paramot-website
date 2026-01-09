@@ -1,15 +1,15 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Equipment,
   getServicePrice,
   getServicesList,
   ServiceRecords,
-  ServicesType,
 } from '@/lib/schema';
 import { Button } from '@/components/ui/button';
 import { X } from 'lucide-react';
+import { isTandemGlider } from '@/lib/utils';
 
 export interface BookingModalProps {
   isOpen: boolean;
@@ -19,20 +19,14 @@ export interface BookingModalProps {
 }
 
 interface BookingFormData {
-  serviceType: ServicesType;
+  serviceType: string;
   preferredDate: string;
   deliveryMethod: string;
   specialInstructions: string;
   contactMethod: string;
 }
 
-const serviceTypeInit: ServicesType = {
-  icon: 'Cog',
-  title: '',
-  description: '',
-  code: 'PACK-001',
-  available: true,
-};
+const serviceTypeInit = '';
 
 export default function BookingModal({
   isOpen,
@@ -55,30 +49,60 @@ export default function BookingModal({
     switch (equipment.type) {
       case 'glider':
         // Gliders can have servicing, trimming, and repairs
-        return ['SVC-001', 'TRIM-001', 'REP-001'].includes(service.code);
+
+        const isTandem = isTandemGlider(equipment);
+        if (isTandem) {
+          return ['SVC-002', 'SVC-012', 'REP-001'].includes(service.code);
+        } else {
+          return ['SVC-001', 'SVC-011', 'REP-001'].includes(service.code);
+        }
       case 'reserve':
         // Reserves need repacking and repairs
-        return ['PACK-001', 'REP-001'].includes(service.code);
+        return ['PACK-001', 'PACK-002', 'REP-001'].includes(service.code);
       case 'harness':
-        // Harnesses only need repairs
-        return ['REP-001'].includes(service.code);
+        // Harnesses only need servicing
+        return ['SVC-031'].includes(service.code);
       default:
         return false;
     }
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    // TODO: Handle form submission
-    console.log(
-      `📩 Equipment ${equipment.manufacturer} ${equipment.model} has been booked. id ${equipment.id}`,
-    );
-    onClose();
-  };
+  const hasNoService: boolean =
+    applicableServices.filter((service) => service.available === true).length === 0;
+
+  const handleSubmit = useCallback(
+    (e: React.FormEvent) => {
+      e.preventDefault();
+      // TODO: Handle form submission
+      console.log(
+        `📩 Equipment ${equipment.manufacturer} ${equipment.model} has been booked. id ${equipment.id}`,
+      );
+      onClose();
+    },
+    [equipment, onClose],
+  );
 
   const handleInputChange = (field: keyof BookingFormData, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
+
+  // Event listening for pressing enter to submit the modal
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const pressEnter = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleSubmit(e as unknown as React.FormEvent);
+      }
+    };
+
+    window.addEventListener('keydown', pressEnter);
+
+    return () => {
+      window.removeEventListener('keydown', pressEnter);
+    };
+  }, [isOpen, handleSubmit]);
 
   if (!isOpen) return null;
 
@@ -132,36 +156,39 @@ export default function BookingModal({
               Service Type
             </label>
             <div className="space-y-3">
-              {applicableServices.map((service) => {
-                const price = getServicePrice(service);
-
-                if (!service.available) return;
-
-                return (
-                  <label
-                    key={service.code}
-                    className="flex items-start space-x-3 cursor-pointer"
-                  >
-                    <input
-                      type="radio"
-                      name="serviceType"
-                      value={service.code}
-                      disabled={!service.available}
-                      onChange={(e) => handleInputChange('serviceType', e.target.value)}
-                      className="mt-1"
-                    />
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3">
-                        <span className="font-medium text-gray-900">{service.title}</span>
-                        <span className="text-sm font-semibold text-sky-700">
-                          {typeof price === 'number' ? `£${price}` : price}
-                        </span>
+              {hasNoService ? (
+                <span>No available services</span>
+              ) : (
+                applicableServices.map((service) => {
+                  const price = getServicePrice(service);
+                  return (
+                    <label
+                      key={service.code}
+                      className="flex items-start space-x-3 cursor-pointer"
+                    >
+                      <input
+                        type="radio"
+                        name="serviceType"
+                        value={service.code}
+                        disabled={!service.available}
+                        onChange={(e) => handleInputChange('serviceType', e.target.value)}
+                        className="mt-1"
+                      />
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3">
+                          <span className="font-medium text-gray-900">
+                            {service.title}
+                          </span>
+                          <span className="text-sm font-semibold text-sky-700">
+                            {typeof price === 'number' ? `£${price}` : price}
+                          </span>
+                        </div>
+                        <div className="text-sm text-gray-600">{service.description}</div>
                       </div>
-                      <div className="text-sm text-gray-600">{service.description}</div>
-                    </div>
-                  </label>
-                );
-              })}
+                    </label>
+                  );
+                })
+              )}
             </div>
           </div>
 
@@ -175,7 +202,11 @@ export default function BookingModal({
               value={formData.preferredDate}
               onChange={(e) => handleInputChange('preferredDate', e.target.value)}
               min={new Date().toISOString().split('T')[0]}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              disabled={hasNoService}
+              className={
+                'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500' +
+                (hasNoService ? 'bg-gray-300 cursor-not-allowed text-gray-400' : '')
+              }
             />
           </div>
 
@@ -185,9 +216,13 @@ export default function BookingModal({
               Delivery Method
             </label>
             <select
+              disabled={hasNoService}
               value={formData.deliveryMethod}
               onChange={(e) => handleInputChange('deliveryMethod', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={
+                'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500' +
+                (hasNoService ? 'bg-gray-300 cursor-not-allowed text-gray-400' : '')
+              }
             >
               <option value="drop-off">Drop off in person</option>
               <option value="post">Post/Courier</option>
@@ -200,11 +235,15 @@ export default function BookingModal({
               Special Instructions
             </label>
             <textarea
+              disabled={hasNoService}
               value={formData.specialInstructions}
               onChange={(e) => handleInputChange('specialInstructions', e.target.value)}
               rows={3}
               placeholder="Any specific concerns, damage, or requirements..."
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={
+                'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500' +
+                (hasNoService ? 'bg-gray-300 cursor-not-allowed text-gray-400' : '')
+              }
             />
           </div>
 
@@ -214,9 +253,13 @@ export default function BookingModal({
               Preferred Contact Method
             </label>
             <select
+              disabled={hasNoService}
               value={formData.contactMethod}
               onChange={(e) => handleInputChange('contactMethod', e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className={
+                'w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500' +
+                (hasNoService ? 'bg-gray-300 cursor-not-allowed text-gray-400' : '')
+              }
             >
               <option value="email">Email</option>
               <option value="phone">Phone call</option>
@@ -229,7 +272,7 @@ export default function BookingModal({
             <Button type="button" variant="ghost" onClick={onClose}>
               Cancel
             </Button>
-            <Button type="submit" variant="default">
+            <Button type="submit" variant="default" disabled={hasNoService}>
               Update Booking
             </Button>
           </div>
