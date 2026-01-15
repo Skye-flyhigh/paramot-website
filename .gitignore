@@ -48,3 +48,6 @@ CLAUDE-*.md
 # Docs
 /docs
 PRD.md
+
+# React Email (ignore entire starter template directory)
+/react-email-starter/

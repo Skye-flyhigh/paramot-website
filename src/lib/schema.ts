@@ -21,6 +21,7 @@ export interface Customer {
   createdAt: Date;
   updatedAt: Date;
   serviceHistory: ServiceRecords[];
+  communicationPreferences: Record<string, string>;
 }
 
 export interface ServicesType {

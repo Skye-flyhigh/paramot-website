@@ -109,7 +109,17 @@ export default [
   },
 
   // ============================================
-  // 4. PRETTIER (must be last)
+  // 4. SCRIPTS OVERRIDE (allow console.log in test scripts)
+  // ============================================
+  {
+    files: ['src/scripts/**/*.{js,ts}'],
+    rules: {
+      'no-console': 'off', // Allow all console methods in scripts
+    },
+  },
+
+  // ============================================
+  // 5. PRETTIER (must be last)
   // ============================================
   // Disables ESLint formatting rules that conflict with Prettier
   prettierConfig,

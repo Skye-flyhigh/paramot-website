@@ -19,18 +19,26 @@
       "name": "Launch localhost",
       "url": "http://localhost:3000",
       "webRoot": "${workspaceFolder}"
+    },
+    {
+      "name": "Next.js: debug server-side",
+      "type": "node",
+      "request": "attach",
+      "port": 9229,
+      "skipFiles": ["<node_internals>/**"]
+    },
+    {
+      "name": "Debug Script (tsx)",
+      "type": "node",
+      "request": "launch",
+      "program": "${workspaceFolder}/node_modules/.bin/tsx",
+      "args": ["${file}"],
+      "skipFiles": ["<node_internals>/**"],
+      "cwd": "${workspaceFolder}",
+      "console": "integratedTerminal",
+      "env": {
+        "NODE_ENV": "development"
+      }
     }
-    // {
-    //     "type": "node",
-    //     "request": "launch",
-    //     "name": "Launch Program",
-    //     "skipFiles": [
-    //         "<node_internals>/**"
-    //     ],
-    //     "program": "${workspaceFolder}/src/app/dashboard/page.tsx",
-    //     "outFiles": [
-    //         "${workspaceFolder}/**/*.js"
-    //     ]
-    // }
   ]
 }
