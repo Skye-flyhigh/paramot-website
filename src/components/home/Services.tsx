@@ -1,7 +1,9 @@
-import prices from '@/data/prices.json';
+import { Prices, getServicesList } from '@/lib/schema';
+
 import { auth } from '@/auth';
+import prices from '@/data/prices.json';
+
 import { ServiceCard } from './ServiceCard';
-import { getServicesList, Prices } from '@/lib/schema';
 
 export default async function Services() {
   const session = await auth();

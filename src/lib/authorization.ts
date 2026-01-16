@@ -1,5 +1,6 @@
-import { getCustomerByEmail, getCustomerEquipment } from './mockData';
 import type { Session } from 'next-auth';
+
+import { getCustomerByEmail, getCustomerEquipment } from './mockData';
 
 /**
  * Check if the authenticated user owns the specified equipment
@@ -17,10 +18,11 @@ export function checkEquipmentOwnership(
   session: Session | null,
   equipmentId: string,
 ): boolean {
-  if (!session?.user?.email) return false;
+  if (!session?.user?.email) return false; // TODO: use auth-check.ts here
 
   // Get customer by session email
   const customer = getCustomerByEmail(session.user.email);
+
   if (!customer) return false;
 
   // Get equipment owned by this customer
@@ -52,6 +54,7 @@ export function checkEquipmentOwnershipBySerial(
       : session.user.email;
 
   const customer = getCustomerByEmail(lookupEmail);
+
   if (!customer) return false;
 
   const ownedEquipment = getCustomerEquipment(customer.id);

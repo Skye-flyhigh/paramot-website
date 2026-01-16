@@ -1,6 +1,6 @@
-import * as React from 'react';
 import * as NavigationMenuPrimitive from '@radix-ui/react-navigation-menu';
 import { ChevronDownIcon } from 'lucide-react';
+import * as React from 'react';
 
 // Simple className utility to replace clsx/cn
 function cn(...classes: (string | undefined | false)[]): string {

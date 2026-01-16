@@ -1,7 +1,8 @@
 'use client';
 
 import { createContext, useContext, ReactNode } from 'react';
-import { Customer } from '@/lib/schema';
+
+import type { Customer } from '@/lib/schema';
 
 // Create the context
 const CustomerContext = createContext<Customer | null>(null);
@@ -20,8 +21,10 @@ export function CustomerProvider({
 // Custom hook for easy access
 export function useCustomer() {
   const context = useContext(CustomerContext);
+
   if (!context) {
     throw new Error('useCustomer must be used within CustomerProvider');
   }
+
   return context;
 }

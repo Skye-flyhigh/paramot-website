@@ -1,10 +1,13 @@
 'use client';
 
-import { ServiceRecords, Equipment } from '@/lib/schema';
-import { getStatusColor } from '@/lib/styling/services';
-import BookingModal from './BookingModal';
+import type { ServiceRecords } from '@/lib/schema';
+import type { Equipment } from '@/lib/validation/equipmentSchema';
+
 import { Button } from '@/components/ui/button';
 import { useBookingModal } from '@/hooks/useBookingModal';
+import { getStatusColor } from '@/lib/styling/services';
+
+import BookingModal from './BookingModal';
 
 export default function ServiceHistoryTable({
   serviceHistory,

@@ -1,13 +1,7 @@
 'use client';
 
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/card';
 import type { Session } from 'next-auth';
+
 import {
   Wrench,
   Shield,
@@ -17,7 +11,16 @@ import {
   type LucideIcon,
   AlertCircle,
 } from 'lucide-react';
-import { ServicesType } from '@/lib/schema';
+
+import type { ServicesType } from '@/lib/schema';
+
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardTitle,
+  CardDescription,
+} from '@/components/ui/card';
 
 interface ServiceCardProps {
   service: ServicesType;

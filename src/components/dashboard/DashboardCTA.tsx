@@ -1,14 +1,18 @@
 'use client';
 
-import { Customer, Equipment } from '@/lib/schema';
 import { useState } from 'react';
-import { EquipmentPicker } from './EquipmentPicker';
-import { getCustomerEquipment } from '@/lib/mockData';
-import BookingModal from './BookingModal';
-import { Button } from '../ui/button';
-import { useBookingModal } from '@/hooks/useBookingModal';
-import CustomerDetails from '../customer/CustomerDetails';
+
+import type { Customer } from '@/lib/schema';
+import type { Equipment } from '@/lib/validation/equipmentSchema';
+
 import { useCustomer } from '@/contexts/CustomerContext';
+import { useBookingModal } from '@/hooks/useBookingModal';
+import { getCustomerEquipment } from '@/lib/mockData';
+
+import CustomerDetails from '../customer/CustomerDetails';
+import { Button } from '../ui/button';
+import BookingModal from './BookingModal';
+import { EquipmentPicker } from './EquipmentPicker';
 
 export function DashboardCTA() {
   const { modalState, openModal, closeModal } = useBookingModal();

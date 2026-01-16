@@ -1,10 +1,11 @@
-import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
-import { getCustomerByEmail } from '@/lib/mockData';
+
+import { auth } from '@/auth';
+import { DashboardCTA } from '@/components/dashboard/DashboardCTA';
 import ServiceHistoryTable from '@/components/dashboard/ServiceHistoryTable';
 import ServiceTable from '@/components/dashboard/ServiceTable';
-import { DashboardCTA } from '@/components/dashboard/DashboardCTA';
 import { CustomerProvider } from '@/contexts/CustomerContext';
+import { getCustomerByEmail } from '@/lib/mockData';
 
 export default async function Dashboard() {
   const session = await auth();
@@ -41,6 +42,7 @@ export default async function Dashboard() {
       createdAt: new Date(),
       updatedAt: new Date(),
       serviceHistory: [],
+      communicationPreferences: {},
     };
   }
 

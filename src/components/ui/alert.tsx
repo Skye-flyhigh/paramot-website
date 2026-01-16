@@ -1,4 +1,5 @@
 import * as React from 'react';
+
 import { cn } from '@/lib/utils';
 
 const Alert = React.forwardRef<
@@ -27,6 +28,7 @@ const Alert = React.forwardRef<
     />
   );
 });
+
 Alert.displayName = 'Alert';
 
 const AlertTitle = React.forwardRef<
@@ -39,6 +41,7 @@ const AlertTitle = React.forwardRef<
     {...props}
   />
 ));
+
 AlertTitle.displayName = 'AlertTitle';
 
 const AlertDescription = React.forwardRef<
@@ -47,6 +50,7 @@ const AlertDescription = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div ref={ref} className={cn('text-sm [&_p]:leading-relaxed', className)} {...props} />
 ));
+
 AlertDescription.displayName = 'AlertDescription';
 
 export { Alert, AlertTitle, AlertDescription };

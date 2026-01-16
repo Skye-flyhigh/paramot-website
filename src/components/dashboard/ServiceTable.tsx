@@ -1,14 +1,18 @@
 'use client';
 
-import { Customer, Equipment } from '@/lib/schema';
-import StatsCards from './StatsCards';
+import Link from 'next/link';
+
+import type { Customer } from '@/lib/schema';
+import type { Equipment } from '@/lib/validation/equipmentSchema';
+
+import { useCustomer } from '@/contexts/CustomerContext';
 import {
   getCompletedServices,
   getCustomerEquipment,
   getUpcomingServices,
 } from '@/lib/mockData';
-import Link from 'next/link';
-import { useCustomer } from '@/contexts/CustomerContext';
+
+import StatsCards from './StatsCards';
 
 export default function ServiceTable() {
   const customer: Customer = useCustomer();

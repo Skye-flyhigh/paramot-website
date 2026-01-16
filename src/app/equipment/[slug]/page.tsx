@@ -1,11 +1,12 @@
-import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { getEquipmentBySerial, getEquipmentServiceHistory } from '@/lib/mockData';
-import ServiceHistoryTable from '@/components/dashboard/ServiceHistoryTable';
-import { getServiceDescription, getStatusColor } from '@/lib/styling/services';
-import ServiceActionButtons from '@/components/equipment/ServiceActionButtons';
+import { notFound } from 'next/navigation';
+
 import { auth } from '@/auth';
+import ServiceHistoryTable from '@/components/dashboard/ServiceHistoryTable';
+import ServiceActionButtons from '@/components/equipment/ServiceActionButtons';
 import { checkEquipmentOwnershipBySerial } from '@/lib/authorization';
+import { getEquipmentByField, getEquipmentServiceHistory } from '@/lib/mockData';
+import { getServiceDescription, getStatusColor } from '@/lib/styling/services';
 
 export default async function ServiceDetailPage({
   params,
@@ -16,7 +17,7 @@ export default async function ServiceDetailPage({
 
   // Find equipment by serial number
   const { slug } = await params;
-  const equipment = getEquipmentBySerial(slug);
+  const equipment = getEquipmentByField(slug);
 
   if (!equipment) {
     notFound();

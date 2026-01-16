@@ -1,7 +1,8 @@
 'use client';
 
-import { Button } from './button';
 import { LoaderCircle } from 'lucide-react';
+
+import { Button } from './button';
 
 export function SubmitButton({
   isPending,

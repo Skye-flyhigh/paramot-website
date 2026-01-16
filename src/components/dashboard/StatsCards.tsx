@@ -1,4 +1,5 @@
-import { Equipment, ServiceRecords } from '@/lib/schema';
+import type { ServiceRecords } from '@/lib/schema';
+import type { Equipment } from '@/lib/validation/equipmentSchema';
 
 export default function StatsCards({
   upcomingServices,

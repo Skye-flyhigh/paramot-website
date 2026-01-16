@@ -9,6 +9,9 @@ import tseslint from 'typescript-eslint';
 import prettierConfig from 'eslint-config-prettier';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
+import nextPlugin from '@next/eslint-plugin-next'
+import stylistic from '@stylistic/eslint-plugin'
+import perfectionist from 'eslint-plugin-perfectionist'
 
 export default [
   // ============================================
@@ -43,6 +46,9 @@ export default [
     plugins: {
       react,
       'react-hooks': reactHooks,
+      '@next/next': nextPlugin,
+      '@stylistic': stylistic,
+      'perfectionist': perfectionist,
     },
 
     settings: {
@@ -73,8 +79,52 @@ export default [
         },
       ],
       '@typescript-eslint/no-explicit-any': 'warn',
-      'no-unused-vars': 'off', // Use TS version
-
+      '@typescript-eslint/consistent-type-imports': 'off',
+      '@typescript-eslint/explicit-module-boundary-types': 'off',
+      '@typescript-eslint/no-non-null-assertion': 'warn',
+      // ----------------------------------------
+      // Stylistic Rules
+      // ----------------------------------------
+      '@stylistic/quotes': ['error', 'single', { avoidEscape: true }],
+      '@stylistic/member-delimiter-style': [
+        'error',
+        {
+          multiline: {
+            delimiter: 'none',
+            requireLast: false,
+          },
+          singleline: {
+            delimiter: 'comma',
+            requireLast: false,
+          },
+        },
+      ],
+      '@stylistic/brace-style': ['error', 'stroustrup'],
+      '@stylistic/comma-spacing': ['error', { before: false, after: true }],
+      '@stylistic/keyword-spacing': ['error', { before: true, after: true }],
+      '@stylistic/object-curly-spacing': ['error', 'always'],
+      '@stylistic/array-bracket-spacing': ['error', 'never'],
+      '@stylistic/space-before-function-paren': [
+        'error',
+        {
+          anonymous: 'always',
+          named: 'never',
+          asyncArrow: 'always',
+        },
+      ],
+      '@stylistic/space-in-parens': ['error', 'never'],
+      '@stylistic/space-infix-ops': 'error',
+      '@stylistic/no-multi-spaces': 'error',
+      '@stylistic/eol-last': ['error', 'always'],
+      '@stylistic/no-trailing-spaces': 'error',
+      '@stylistic/no-multiple-empty-lines': ['error', { max: 1, maxEOF: 0 }],
+      '@stylistic/padding-line-between-statements': [
+        'error',
+        { blankLine: 'always', prev: '*', next: 'return' },
+        { blankLine: 'always', prev: ['const', 'let', 'var'], next: '*' },
+        { blankLine: 'any', prev: ['const', 'let', 'var'], next: ['const', 'let', 'var'] },
+      ],
+      '@stylistic/semi': 'warn',
       // ----------------------------------------
       // Code Quality Rules
       // ----------------------------------------
@@ -82,11 +132,12 @@ export default [
       'no-debugger': 'error',
       'prefer-const': 'error',
       'no-var': 'error',
-      eqeqeq: ['error', 'always', { null: 'ignore' }],
+      'eqeqeq': ['error', 'always', { null: 'ignore' }],
       'no-duplicate-imports': 'error',
       'no-template-curly-in-string': 'warn',
       'require-await': 'warn',
-
+      'curly': ['error', 'multi'],
+      'semi': ['error', 'never'],
       // ----------------------------------------
       // React Rules
       // ----------------------------------------
@@ -99,12 +150,19 @@ export default [
       'react/no-deprecated': 'error',
       'react/no-unknown-property': 'error',
       'react/self-closing-comp': 'error', // Enforce <Component /> style
-
       // ----------------------------------------
       // React Hooks Rules
       // ----------------------------------------
       'react-hooks/rules-of-hooks': 'error', // Enforce hook rules
       'react-hooks/exhaustive-deps': 'warn', // Check effect dependencies
+      // ----------------------------------------
+      // Next Rules
+      // ----------------------------------------
+      '@next/next/no-html-link-for-pages': 'error',
+      '@next/next/no-img-element': 'error',
+      '@next/next/inline-script-id': 'error',
+      '@next/next/no-async-client-component': 'error',
+      '@next/next/no-typos': 'error',
     },
   },
 

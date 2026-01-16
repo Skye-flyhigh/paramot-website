@@ -1,11 +1,14 @@
 'use client';
-import { Equipment, ServiceStatus } from '@/lib/schema';
-import { Button } from '../ui/button';
-import { useBookingModal } from '@/hooks/useBookingModal';
 import { useState } from 'react';
+
+import type { ServiceStatus } from '@/lib/schema';
+import type { Equipment } from '@/lib/validation/equipmentSchema';
+
+import { useBookingModal } from '@/hooks/useBookingModal';
+
 import BookingModal from '../dashboard/BookingModal';
 import ContactForm from '../home/ContactForm';
-import { X } from 'lucide-react';
+import { Button } from '../ui/button';
 import XButton from '../ui/x-button';
 
 export default function ServiceActionButtons({

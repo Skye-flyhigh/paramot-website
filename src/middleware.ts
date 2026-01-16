@@ -1,5 +1,6 @@
-import { auth } from '@/auth';
 import { NextResponse } from 'next/server';
+
+import { auth } from '@/auth';
 
 export default auth((req) => {
   const { nextUrl } = req;
@@ -19,6 +20,7 @@ export default auth((req) => {
   if (isLoggedIn && nextUrl.pathname === '/login') {
     const callbackUrl = nextUrl.searchParams.get('callbackUrl');
     const redirectUrl = callbackUrl || '/dashboard';
+
     return NextResponse.redirect(new URL(redirectUrl, nextUrl.origin));
   }
 
