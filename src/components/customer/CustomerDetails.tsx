@@ -1,20 +1,18 @@
 'use client';
 
-import { Customer } from '@/lib/schema';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
 import { useActionState, useEffect } from 'react';
-import { Alert, AlertDescription } from '../ui/alert';
-import { Textarea } from '../ui/textarea';
-import { SubmitButton } from '../ui/submit-button';
-import submitCustomerDetails from '@/lib/submit/submitCustomerDetails';
-import { Button } from '../ui/button';
 
-export interface CustomerFormState {
-  data: Customer;
-  errors: string | null;
-  success: boolean;
-}
+import type { Customer } from '@/lib/schema';
+import type { CustomerFormState } from '@/lib/validation/customerSchema';
+
+import submitCustomerDetails from '@/lib/submit/submitCustomerDetails';
+
+import { Alert, AlertDescription } from '../ui/alert';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { SubmitButton } from '../ui/submit-button';
+import { Textarea } from '../ui/textarea';
 
 export default function CustomerDetails({
   customer,
@@ -32,6 +30,7 @@ export default function CustomerDetails({
     createdAt: customer.createdAt || '',
     updatedAt: customer.updatedAt || new Date(),
     serviceHistory: customer.serviceHistory || [],
+    communicationPreferences: customer.communicationPreferences || {},
   };
 
   const initialState: CustomerFormState = {
@@ -50,6 +49,7 @@ export default function CustomerDetails({
       const timer = setTimeout(() => {
         onClose();
       }, 5000);
+
       return () => {
         clearTimeout(timer);
       };

@@ -1,44 +1,35 @@
 'use server';
 
-import { CustomerFormState } from '@/components/customer/CustomerDetails';
-import { Customer } from '../schema';
-import { auth } from '@/auth';
-import { CustomerDataSchema } from '../validation/customerSchema';
-import { getCustomerByEmail } from '../mockData';
 import { z } from 'zod';
+
+import type { Customer } from '../schema';
+
+import { ensureCustomer } from '../security/auth-check';
+import { CustomerDataSchema, CustomerFormState } from '../validation/customerSchema';
 
 export default async function submitCustomerDetails(
   prevState: CustomerFormState,
   formData: FormData,
 ): Promise<CustomerFormState> {
-  // ✅ STEP 1: Authentication check - verify user is logged in
-  const session = await auth();
-  if (!session?.user?.email) {
+  // ✅ STEP 1 & 2: Authentication + Authorization (DRY!)
+  const authResult = await ensureCustomer();
+
+  if (!authResult.authorized) {
     return {
       data: prevState.data,
-      errors: '🔒 Unauthorized: You must be logged in to update customer details',
+      errors: authResult.error,
       success: false,
     };
   }
 
-  // ✅ STEP 2: Authorization check - verify user owns this customer record
-  // Get the customer email from session (not from form - don't trust client!)
-  const authenticatedEmail = session.user.email;
-  const customer = getCustomerByEmail(authenticatedEmail);
-
-  if (!customer) {
-    return {
-      data: prevState.data,
-      errors: '❌ Customer not found',
-      success: false,
-    };
-  }
+  const { customer } = authResult;
 
   // Verify they're only updating their own data (Insecure Direct Object Reference prevention)
   if (customer.id !== prevState.data.id) {
     console.warn(
-      `🚨 SECURITY: User ${authenticatedEmail} attempted to modify customer ${prevState.data.id} (owns ${customer.id})`,
+      `🚨 SECURITY: User ${customer.email} attempted to modify customer ${prevState.data.id} (owns ${customer.id})`,
     );
+
     return {
       data: prevState.data,
       errors: '🔒 Forbidden: You can only update your own information',
@@ -60,6 +51,7 @@ export default async function submitCustomerDetails(
       ...prevState.data,
       ...validatedData,
       updatedAt: new Date(),
+      communicationPreferences: {},
     };
 
     // TODO: 💾 Save to database
@@ -84,6 +76,7 @@ export default async function submitCustomerDetails(
     // Handle Zod validation errors
     if (error instanceof z.ZodError) {
       const errorMessages = error.issues.map((issue) => issue.message).join(', ');
+
       return {
         data: prevState.data,
         errors: `Validation failed: ${errorMessages}`,

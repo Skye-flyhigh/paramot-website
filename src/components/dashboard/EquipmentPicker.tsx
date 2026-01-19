@@ -1,12 +1,21 @@
 'use client';
 
-import { Equipment, EquipmentType } from '@/lib/schema';
-import { LoaderCircle, X } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
 import { useActionState, useEffect, useState } from 'react';
-import { Alert, AlertDescription } from '../ui/alert';
+
+import type {
+  Equipment,
+  EquipmentPickerData,
+  EquipmentPickerFormState,
+  EquipmentType,
+} from '@/lib/validation/equipmentSchema';
+
 import submitEquipmentForm from '@/lib/submit/submitEquipmentForm';
+
+import { Alert, AlertDescription } from '../ui/alert';
 import { Button } from '../ui/button';
-import XButton from '../ui/x-button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 import {
   Select,
   SelectContent,
@@ -14,28 +23,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
-import { Label } from '../ui/label';
-import { Input } from '../ui/input';
+import XButton from '../ui/x-button';
 
 interface EquipmentPickerProps {
   isOpen: boolean;
   onClose: () => void;
   equipmentList: Equipment[];
   onEquipmentSelected: (equipment: Equipment) => void; // Callback when equipment chosen
-}
-
-export interface EquipmentPickerFormState {
-  formData: EquipmentPickerData;
-  errors: Record<string, string>;
-  success: boolean;
-}
-
-export interface EquipmentPickerData {
-  type: EquipmentType;
-  manufacturer: string;
-  model: string;
-  size: string;
-  serialNumber?: string;
 }
 
 export function EquipmentPicker({
@@ -78,6 +72,7 @@ export function EquipmentPicker({
   // Handle "Continue" button for existing equipment
   const handleContinue = () => {
     const equipment = equipmentList.find((eq) => eq.id === selectedEquipmentId);
+
     if (equipment) {
       onEquipmentSelected(equipment);
     }

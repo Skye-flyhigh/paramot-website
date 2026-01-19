@@ -1,4 +1,4 @@
-import { ServiceRecords, Customer, Equipment, CustomerEquipment } from './schema';
+import type { ServiceRecords, Customer, Equipment, CustomerEquipment } from './schema';
 
 // ============================================
 // MOCK DATABASE - Simulates PostgreSQL/SQLite
@@ -171,6 +171,7 @@ const customerTable: Customer[] = [
         s.serialNb === 'rescue-001' ||
         s.serialNb === 'alpha-2024',
     ),
+    communicationPreferences: {},
   },
 ];
 
@@ -183,6 +184,7 @@ export const mockDatabase = {
   customer: {
     findByEmail: (email: string): Customer | undefined => {
       const customer = customerTable.find((c) => c.email === email);
+
       if (!customer) return undefined;
 
       // Get equipment they currently own (via ownership table)
@@ -201,6 +203,7 @@ export const mockDatabase = {
 
     findById: (id: string): Customer | undefined => {
       const customer = customerTable.find((c) => c.id === id);
+
       if (!customer) return undefined;
 
       // Get equipment they currently own
@@ -241,6 +244,10 @@ export const mockDatabase = {
         .filter((eq): eq is Equipment => eq !== undefined);
     },
 
+    findById: (id: string): Equipment | undefined => {
+      return equipmentTable.find((eq) => eq.id === id);
+    },
+
     findBySerialNumber: (serialNumber: string): Equipment | undefined => {
       return equipmentTable.find((eq) => eq.serialNumber === serialNumber);
     },
@@ -249,7 +256,9 @@ export const mockDatabase = {
       const ownership = customerEquipmentTable.find(
         (ce) => ce.equipmentSerialNumber === serialNumber && ce.ownedUntil === null,
       );
+
       if (!ownership) return undefined;
+
       return customerTable.find((c) => c.id === ownership.customerId);
     },
   },
@@ -283,6 +292,7 @@ export const mockDatabase = {
 
         // Create new ownership record
         const equipment = equipmentTable.find((eq) => eq.serialNumber === serialNumber);
+
         if (equipment) {
           customerEquipmentTable.push({
             id: `own-${Date.now()}`,
@@ -346,14 +356,24 @@ export function getCustomerByEmail(email: string): Customer | undefined {
  */
 export function getCustomerEquipment(customerId?: string): Equipment[] {
   const id = customerId || 'customer-001';
+
   return mockDatabase.equipment.findByCustomerId(id);
 }
 
 /**
- * Get equipment by serial number (full equipment record with complete service history)
+ * Get equipment by our own equipment id (full equipment record with complete service history)
  */
-export function getEquipmentBySerial(serialNb: string): Equipment | undefined {
-  return mockDatabase.equipment.findBySerialNumber(serialNb);
+export function getEquipmentById(field: string): Equipment | undefined {
+  return mockDatabase.equipment.findById(field);
+}
+
+/**
+ * Get equipment by manufacturer serial number (full equipment record with complete service history)
+ * @param serial Serial Number of the equipment
+ * @returns
+ */
+export function getEquipmentBySerialNumber(serial: string): Equipment | undefined {
+  return mockDatabase.equipment.findBySerialNumber(serial);
 }
 
 /**
@@ -368,6 +388,7 @@ export function getServiceById(serviceId: string): ServiceRecords | undefined {
  */
 export function getUpcomingServices(customerId?: string): ServiceRecords[] {
   const id = customerId || 'customer-001';
+
   return mockDatabase.serviceRecords
     .findByCustomerId(id)
     .filter((s) => s.status === 'PENDING');
@@ -378,6 +399,7 @@ export function getUpcomingServices(customerId?: string): ServiceRecords[] {
  */
 export function getCompletedServices(customerId?: string): ServiceRecords[] {
   const id = customerId || 'customer-001';
+
   return mockDatabase.serviceRecords
     .findByCustomerId(id)
     .filter((s) => s.status === 'COMPLETED');

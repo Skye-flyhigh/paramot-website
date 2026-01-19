@@ -1,6 +1,7 @@
-import sendEmail, { Email } from '@/lib/services/user-mailing';
 import * as dotenv from 'dotenv';
 import path from 'path';
+
+import sendEmail, { Email } from '@/lib/services/user-mailing';
 
 dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
 

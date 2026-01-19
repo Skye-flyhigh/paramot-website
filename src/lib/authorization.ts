@@ -45,7 +45,7 @@ export function checkEquipmentOwnershipBySerial(
   session: Session | null,
   serialNumber: string,
 ): boolean {
-  if (!session?.user?.email) return false;
+  if (!session?.user?.email) return false; // TODO: use auth-check.ts
 
   // Use test email in development, real email in production
   const lookupEmail =

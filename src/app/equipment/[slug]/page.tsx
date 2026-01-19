@@ -5,7 +5,11 @@ import { auth } from '@/auth';
 import ServiceHistoryTable from '@/components/dashboard/ServiceHistoryTable';
 import ServiceActionButtons from '@/components/equipment/ServiceActionButtons';
 import { checkEquipmentOwnershipBySerial } from '@/lib/authorization';
-import { getEquipmentByField, getEquipmentServiceHistory } from '@/lib/mockData';
+import {
+  getEquipmentById,
+  getEquipmentBySerialNumber,
+  getEquipmentServiceHistory,
+} from '@/lib/mockData';
 import { getServiceDescription, getStatusColor } from '@/lib/styling/services';
 
 export default async function ServiceDetailPage({
@@ -17,7 +21,7 @@ export default async function ServiceDetailPage({
 
   // Find equipment by serial number
   const { slug } = await params;
-  const equipment = getEquipmentByField(slug);
+  const equipment = getEquipmentBySerialNumber(slug);
 
   if (!equipment) {
     notFound();

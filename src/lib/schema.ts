@@ -53,9 +53,6 @@ export const SERVICE_STATUSES = [
 ] as const;
 export type ServiceStatus = (typeof SERVICE_STATUSES)[number];
 
-export const EQUIPMENT_TYPES = ['glider', 'reserve', 'harness'] as const;
-export type EquipmentType = (typeof EQUIPMENT_TYPES)[number];
-
 export interface ServiceRecords {
   //This schema could be used for a glider, a reserve parachute or a harness
   service: ServiceCode;
@@ -114,21 +111,6 @@ export interface DetailedServiceRecord extends ServiceRecords {
   inspectionData?: WorkbenchInspectionSession;
 }
 
-// Equipment registry (independent of ownership - like a car with a reg number)
-export interface Equipment {
-  id: string; // Internal ID
-  serialNumber: string; // The "registration number" - unique identifier
-  type: EquipmentType;
-  manufacturer: string;
-  model: string;
-  size: string;
-  manufactureDate?: Date;
-  status: 'active' | 'retired' | 'damaged' | 'decommissioned';
-  createdAt: Date;
-  updatedAt: Date;
-  // NO customerId - ownership is tracked separately!
-}
-
 // Ownership junction table - tracks who owns what and when (like DVLA registration)
 export interface CustomerEquipment {
   id: string;
@@ -145,8 +127,8 @@ export interface CustomerEquipment {
 }
 
 // Pricing lookup helper
-export function getServicePrice(servicesType: ServicesType): string | number {
-  return prices[servicesType.code] || 'Contact us';
+export function getServicePrice(serviceCode: ServiceCode): string | number {
+  return prices[serviceCode] || 'Contact us';
 }
 // Service list function helper
 export function getServicesList(): ServicesType[] {

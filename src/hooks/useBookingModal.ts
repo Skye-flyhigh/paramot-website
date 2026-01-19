@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { ServiceRecords } from '../lib/schema';
+
+import type { ServiceRecords } from '../lib/schema';
 
 interface ModalState {
   isOpen: boolean;

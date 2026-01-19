@@ -1,20 +1,6 @@
 'use server';
 
-import { ContactFormState } from '../types/contactForm';
-import { ContactDataSchema } from '../validation/contactForm';
-
-export interface ContactFormData {
-  name: string;
-  email: string;
-  message: string;
-  equipmentContext?: string;
-}
-
-export interface ContactFormState {
-  formData: ContactFormData;
-  errors: Record<string, string>;
-  success: boolean;
-}
+import { ContactDataSchema, ContactFormState } from '../validation/contactForm';
 
 export default async function submitContactForm(
   prevState: ContactFormState,
@@ -32,14 +18,17 @@ export default async function submitContactForm(
 
   //Zod validation and HTML sanitation
   const validation = ContactDataSchema.safeParse(formValues);
+
   if (!validation.success) {
     // Convert Zod errors to our error format
     const fieldErrors: Record<string, string> = {};
+
     validation.error.issues.forEach((issue) => {
       if (issue.path[0]) {
         fieldErrors[issue.path[0] as string] = issue.message;
       }
     });
+
     return {
       ...prevState,
       errors: fieldErrors,
@@ -73,6 +62,7 @@ export default async function submitContactForm(
     };
   } catch (error) {
     console.error('Error submitting contact form:', error);
+
     return {
       ...prevState,
       errors: {

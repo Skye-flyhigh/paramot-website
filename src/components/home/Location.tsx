@@ -42,18 +42,16 @@ export default function Location() {
           </div>
 
           <div className="text-center p-6 rounded-2xl bg-gradient-to-b from-sky-50 to-white border border-sky-100 hover:shadow-lg transition-all duration-300">
-            <div className="w-16 h-16 bg-gradient-to-br from-sky-100 to-sky-200 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner">
-              <Mail className="w-8 h-8 text-sky-600" />
-            </div>
-            <h3 className="text-xl font-bold mb-3 text-sky-900">Email</h3>
-            <p className="text-sky-700">
-              <a
-                href="mailto:info@paramot.uk"
-                className="hover:text-sky-800 font-medium transition-colors"
-              >
-                info@paramot.co.uk
-              </a>
-            </p>
+            <a
+              href="mailto:hello@paramot.uk"
+              className="hover:text-sky-800 font-medium transition-colors"
+            >
+              <div className="w-16 h-16 bg-gradient-to-br from-sky-100 to-sky-200 rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-inner">
+                <Mail className="w-8 h-8 text-sky-600" />
+              </div>
+              <h3 className="text-xl font-bold mb-3 text-sky-900">Email</h3>
+              <p className="text-sky-700">hello@paramot.co.uk</p>
+            </a>
           </div>
         </div>
       </div>

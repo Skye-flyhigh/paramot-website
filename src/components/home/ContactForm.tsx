@@ -1,11 +1,11 @@
 'use client';
 
-import submitContactForm from '@/lib/submit/submitContactForm';
-import { ContactFormData, ContactFormState } from '@/lib/types/contactForm';
+import { Send } from 'lucide-react';
 import { useActionState, useEffect } from 'react';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Label } from '@/components/ui/label';
+
+import type { ContactFormData, ContactFormState } from '@/lib/validation/contactForm';
+import type { Equipment } from '@/lib/validation/equipmentSchema';
+
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Card,
@@ -14,9 +14,12 @@ import {
   CardTitle,
   CardDescription,
 } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import submitContactForm from '@/lib/submit/submitContactForm';
+
 import { SubmitButton } from '../ui/submit-button';
-import { Equipment } from '@/lib/schema';
-import { Send } from 'lucide-react';
 
 interface ContactFormProps {
   equipment?: Equipment;
@@ -46,6 +49,7 @@ export default function ContactForm({ equipment, onClose }: ContactFormProps) {
       const timer = setTimeout(() => {
         onClose();
       }, 3000);
+
       return () => clearTimeout(timer);
     }
   }, [state.success, onClose]);

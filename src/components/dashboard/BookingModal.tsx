@@ -1,28 +1,28 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
-import {
-  Equipment,
-  getServicePrice,
-  getServicesList,
-  ServiceRecords,
-} from '@/lib/schema';
+import { useEffect, useActionState, useState } from 'react';
+
+import type { BookingFormData, BookingFormState } from '@/lib/validation/bookingForm';
+import type { Equipment } from '@/lib/validation/equipmentSchema';
+
 import { Button } from '@/components/ui/button';
+import { ServiceRecords, getServicePrice, getServicesList } from '@/lib/schema';
+import submitBookingForm from '@/lib/submit/submitBookingForm';
 import { isTandemGlider } from '@/lib/utils';
-import XButton from '../ui/x-button';
+
+import { Alert, AlertDescription } from '../ui/alert';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
-import { Textarea } from '../ui/textarea';
+import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
-import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
+import { Textarea } from '../ui/textarea';
+import XButton from '../ui/x-button';
 
 // type BookingType =
 
@@ -33,14 +33,6 @@ export interface BookingModalProps {
   existingBooking?: ServiceRecords;
 }
 
-interface BookingFormData {
-  serviceType: string;
-  preferredDate: string;
-  deliveryMethod: string;
-  specialInstructions: string;
-  contactMethod: string;
-}
-
 const serviceTypeInit = '';
 
 export default function BookingModal({
@@ -49,13 +41,56 @@ export default function BookingModal({
   equipment,
   existingBooking,
 }: BookingModalProps) {
-  const [formData, setFormData] = useState<BookingFormData>({
+  const initialValue: BookingFormData = {
     serviceType: existingBooking?.service || serviceTypeInit,
     preferredDate: '',
     deliveryMethod: 'drop-off',
     specialInstructions: '',
     contactMethod: 'email',
-  });
+    equipmentId: equipment.id,
+  };
+
+  const initialState: BookingFormState = {
+    data: initialValue,
+    success: false,
+    errors: {},
+  };
+
+  const [state, formAction, isPending] = useActionState(submitBookingForm, initialState);
+
+  // Local state for shadcn components (they don't have name attributes)
+  const [serviceType, setServiceType] = useState(state.data.serviceType);
+  const [deliveryMethod, setDeliveryMethod] = useState(state.data.deliveryMethod);
+  const [contactMethod, setContactMethod] = useState(state.data.contactMethod);
+
+  useEffect(() => {
+    if (state.success && onClose) {
+      const timer = setTimeout(() => {
+        onClose();
+      }, 5000);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }
+  }, [state.success, onClose]);
+
+  // Event listening for pressing enter to submit the modal
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const pressEnter = (e: KeyboardEvent) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+      }
+    };
+
+    window.addEventListener('keydown', pressEnter);
+
+    return () => {
+      window.removeEventListener('keydown', pressEnter);
+    };
+  }, [isOpen]);
 
   const serviceList = getServicesList();
 
@@ -66,6 +101,7 @@ export default function BookingModal({
         // Gliders can have servicing, trimming, and repairs
 
         const isTandem = isTandemGlider(equipment);
+
         if (isTandem) {
           return ['SVC-002', 'SVC-012', 'REP-001'].includes(service.code);
         } else {
@@ -84,40 +120,6 @@ export default function BookingModal({
 
   const hasNoService: boolean =
     applicableServices.filter((service) => service.available === true).length === 0;
-
-  const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault();
-      // TODO: Handle form submission
-      console.log(
-        `📩 Equipment ${equipment.manufacturer} ${equipment.model} has been booked. id ${equipment.id}`,
-      );
-      onClose();
-    },
-    [equipment, onClose],
-  );
-
-  const handleInputChange = (field: keyof BookingFormData, value: string) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-  };
-
-  // Event listening for pressing enter to submit the modal
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const pressEnter = (e: KeyboardEvent) => {
-      if (e.key === 'Enter') {
-        e.preventDefault();
-        handleSubmit(e as unknown as React.FormEvent);
-      }
-    };
-
-    window.addEventListener('keydown', pressEnter);
-
-    return () => {
-      window.removeEventListener('keydown', pressEnter);
-    };
-  }, [isOpen, handleSubmit]);
 
   if (!isOpen) return null;
 
@@ -160,9 +162,28 @@ export default function BookingModal({
         </section>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-6" id="booking-form">
+        <form action={formAction} className="p-6 space-y-6" id="booking-form">
           {/* Service Type */}
           <div>
+            {/* Success Message */}
+            {state.success && (
+              <Alert variant="success">
+                <AlertDescription>
+                  Booking successfully submitted. Closing in 5 seconds...
+                </AlertDescription>
+              </Alert>
+            )}
+
+            {/* Error Message */}
+            {state.errors.general && (
+              <Alert variant="error">
+                <AlertDescription>{state.errors.general}</AlertDescription>
+              </Alert>
+            )}
+
+            {/* Hidden Equipment data */}
+            <input type="hidden" name="equipment-id" value={equipment.id} />
+
             <Label className="block text-sm font-medium text-gray-700 mb-3">
               Service Type
             </Label>
@@ -170,135 +191,146 @@ export default function BookingModal({
               {hasNoService ? (
                 <span>No available services</span>
               ) : (
-                <RadioGroup
-                  onValueChange={(value) => handleInputChange('serviceType', value)}
-                >
-                  {applicableServices.map((service) => {
-                    const price = getServicePrice(service);
-                    return (
-                      <div className="grid grid-cols-[30px_1fr]" key={service.code}>
-                        <RadioGroupItem
-                          id={service.code}
-                          value={service.code}
-                          disabled={!service.available}
-                          className={'mt-1 col-start-1 bg-blue-100'}
-                        />
-                        <Label
-                          className="grid-col-2 flex cursor-pointer"
-                          htmlFor={service.code}
-                        >
-                          <div className="flex items-center gap-3">
-                            <span
-                              className={`font-medium ${service.available ? 'text-gray-900' : 'text-gray-400 cursor-not-allowed'}`}
-                            >
-                              {service.title}
-                            </span>
-                            <span
-                              className={`text-sm font-semibold ${service.available ? 'text-sky-700' : 'text-sky-200 cursor-not-allowed'}`}
-                            >
-                              {typeof price === 'number' ? `£${price}` : price}
-                            </span>
+                <>
+                  <RadioGroup value={serviceType} onValueChange={setServiceType}>
+                    {applicableServices.map((service) => {
+                      const price = getServicePrice(service.code);
+
+                      return (
+                        <div className="grid grid-cols-[30px_1fr]" key={service.code}>
+                          <RadioGroupItem
+                            id={service.code}
+                            value={service.code}
+                            disabled={!service.available}
+                            className={'mt-1 col-start-1 bg-blue-100'}
+                          />
+                          <Label
+                            className="grid-col-2 flex cursor-pointer"
+                            htmlFor={service.code}
+                          >
+                            <div className="flex items-center gap-3">
+                              <span
+                                className={`font-medium ${service.available ? 'text-gray-900' : 'text-gray-400 cursor-not-allowed'}`}
+                              >
+                                {service.title}
+                              </span>
+                              <span
+                                className={`text-sm font-semibold ${service.available ? 'text-sky-700' : 'text-sky-200 cursor-not-allowed'}`}
+                              >
+                                {typeof price === 'number' ? `£${price}` : price}
+                              </span>
+                            </div>
+                          </Label>
+                          <div
+                            className={`text-sm text-gray-700 col-span-full ${service.available ? 'text-gray-900' : 'text-gray-100 cursor-not-allowed'}`}
+                          >
+                            {service.description}
                           </div>
-                        </Label>
-                        <div
-                          className={`text-sm text-gray-700 col-span-full ${service.available ? 'text-gray-900' : 'text-gray-100 cursor-not-allowed'}`}
-                        >
-                          {service.description}
                         </div>
-                      </div>
-                    );
-                  })}
-                </RadioGroup>
+                      );
+                    })}
+                  </RadioGroup>
+                  {/* Hidden input for FormData */}
+                  <input type="hidden" name="serviceType" value={serviceType} />
+                </>
               )}
             </div>
+            {state.errors.serviceType && (
+              <p className="text-sm text-red-600 mt-1">{state.errors.serviceType}</p>
+            )}
           </div>
 
           {/* Preferred Date */}
           <div>
-            <Label className="">Preferred Delivery Date</Label>
+            <Label htmlFor="preferredDate">Preferred Delivery Date</Label>
             <Input
               type="date"
-              value={formData.preferredDate}
-              onChange={(e) => handleInputChange('preferredDate', e.target.value)}
+              id="preferredDate"
+              name="preferredDate"
+              defaultValue={state.data.preferredDate}
               min={new Date().toISOString().split('T')[0]}
-              disabled={hasNoService}
-              className={
-                'w-full px-3 py-2 border ' +
-                (hasNoService ? 'bg-gray-300 cursor-not-allowed text-gray-400' : '')
-              }
+              disabled={hasNoService || isPending}
             />
+            {state.errors.preferredDate && (
+              <p className="text-sm text-red-600 mt-1">{state.errors.preferredDate}</p>
+            )}
           </div>
 
           {/* Delivery Method */}
           <div>
-            <Label className="block text-sm font-medium text-gray-700 mb-2">
-              Delivery Method
-            </Label>
+            <Label>Delivery Method</Label>
             <Select
-              disabled={hasNoService}
-              value={formData.deliveryMethod}
-              onValueChange={(value) => handleInputChange('deliveryMethod', value)}
+              value={deliveryMethod}
+              onValueChange={setDeliveryMethod}
+              disabled={hasNoService || isPending}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select a delivery method" />
               </SelectTrigger>
               <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Delivery Method</SelectLabel>
-                  <SelectItem value="drop-off">Drop off in person</SelectItem>
-                  <SelectItem value="post">Post/Courier</SelectItem>
-                </SelectGroup>
+                <SelectItem value="drop-off">Drop off in person</SelectItem>
+                <SelectItem value="post">Post/Courier</SelectItem>
               </SelectContent>
             </Select>
+            {/* Hidden input for FormData */}
+            <input type="hidden" name="deliveryMethod" value={deliveryMethod} />
+            {state.errors.deliveryMethod && (
+              <p className="text-sm text-red-600 mt-1">{state.errors.deliveryMethod}</p>
+            )}
           </div>
 
           {/* Special Instructions */}
           <div>
-            <Label>History and Special Instructions</Label>
+            <Label htmlFor="specialInstructions">History and Special Instructions</Label>
             <Textarea
-              disabled={hasNoService}
-              value={formData.specialInstructions}
-              onChange={(e) => handleInputChange('specialInstructions', e.target.value)}
+              id="specialInstructions"
+              name="specialInstructions"
+              defaultValue={state.data.specialInstructions}
               rows={3}
               placeholder="Please tell us about number of hours/years. Any specific concerns, damage, or requirements..."
-              className={
-                'w-full' +
-                (hasNoService ? 'bg-gray-300 cursor-not-allowed text-gray-400' : '')
-              }
+              disabled={hasNoService || isPending}
             />
+            {state.errors.specialInstructions && (
+              <p className="text-sm text-red-600 mt-1">
+                {state.errors.specialInstructions}
+              </p>
+            )}
           </div>
 
           {/* Contact Method */}
           <div>
-            <Label className="block text-sm font-medium text-gray-700 mb-2">
-              Preferred Contact Method
-            </Label>
+            <Label>Preferred Contact Method</Label>
             <Select
-              disabled={hasNoService}
-              value={formData.contactMethod}
-              onValueChange={(value) => handleInputChange('contactMethod', value)}
+              value={contactMethod}
+              onValueChange={setContactMethod}
+              disabled={hasNoService || isPending}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select a contact method" />
               </SelectTrigger>
               <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Contact Method</SelectLabel>
-                  <SelectItem value="email">Email</SelectItem>
-                  <SelectItem value="phone">Phone call</SelectItem>
-                  <SelectItem value="text">Text message</SelectItem>
-                </SelectGroup>
+                <SelectItem value="email">Email</SelectItem>
+                <SelectItem value="phone">Phone call</SelectItem>
+                <SelectItem value="text">Text message</SelectItem>
               </SelectContent>
             </Select>
+            {/* Hidden input for FormData */}
+            <input type="hidden" name="contactMethod" value={contactMethod} />
+            {state.errors.contactMethod && (
+              <p className="text-sm text-red-600 mt-1">{state.errors.contactMethod}</p>
+            )}
           </div>
+
+          {/* Hidden equipment data */}
+          <input type="hidden" name="equipmentId" value={equipment.id} />
 
           {/* Actions */}
           <div className="flex justify-end space-x-4 pt-4 border-t">
-            <Button type="button" variant="ghost" onClick={onClose}>
+            <Button type="button" variant="ghost" onClick={onClose} disabled={isPending}>
               Cancel
             </Button>
-            <Button type="submit" variant="default" disabled={hasNoService}>
-              Update Booking
+            <Button type="submit" variant="default" disabled={hasNoService || isPending}>
+              {isPending ? 'Submitting...' : 'Update Booking'}
             </Button>
           </div>
         </form>

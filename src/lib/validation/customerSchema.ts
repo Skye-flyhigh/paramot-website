@@ -1,5 +1,26 @@
 import { z } from 'zod';
+
+import type { ServiceRecords } from '../schema';
+
 import { escapeHTML } from '../security/escapeHTML';
+
+export interface Customer {
+  id: string; // OAuth email or generated ID
+  email: string; // from OAuth
+  name: string; // from OAuth
+  phone?: string; // optional contact info
+  address?: string; // for service collection/delivery
+  createdAt: Date;
+  updatedAt: Date;
+  serviceHistory: ServiceRecords[];
+  communicationPreferences: Record<string, string>;
+}
+
+export interface CustomerFormState {
+  data: Customer;
+  errors: string | null;
+  success: boolean;
+}
 
 /**
  * Zod schema for customer details validation

@@ -30,6 +30,11 @@ interface EmailResponse {
   error?: string | null;
 }
 
+/**
+ * Calling email provider service to send an email
+ * @param param0
+ * @returns
+ */
 export default async function sendEmail({
   from = 'paraMOT <hello@paramot.co.uk>',
   to,
@@ -49,6 +54,7 @@ export default async function sendEmail({
   // Validate API key exists (server misconfiguration)
   if (!process.env.RESEND_API_KEY) {
     console.error('🚨 RESEND_API_KEY not configured');
+
     return {
       statusCode: 500,
       data: {
@@ -74,6 +80,7 @@ export default async function sendEmail({
   // Validate: must provide either message OR template
   if (!message && !template) {
     console.error('🚨 Must provide either message (HTML) or template (dashboard ID)');
+
     return {
       statusCode: 400,
       data: {
@@ -116,7 +123,7 @@ export default async function sendEmail({
           to: [to.email],
           subject,
           replyTo,
-          html: message!,
+          html: message || '',
         });
 
     // Resend returns { data: {...}, error: null } on success
