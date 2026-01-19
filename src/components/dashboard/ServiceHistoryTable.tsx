@@ -1,12 +1,14 @@
 'use client';
 
-import type { ServiceRecords } from '@/lib/schema';
 import type { Equipment } from '@/lib/validation/equipmentSchema';
 
 import { Button } from '@/components/ui/button';
 import { useBookingModal } from '@/hooks/useBookingModal';
+import { getEquipmentById } from '@/lib/mockData';
 import { getStatusColor } from '@/lib/styling/services';
 
+import { getServicesList } from '@/lib/schema';
+import { ServiceRecords } from '@/lib/validation/serviceSchema';
 import BookingModal from './BookingModal';
 
 export default function ServiceHistoryTable({
@@ -19,6 +21,23 @@ export default function ServiceHistoryTable({
   isOwner?: boolean;
 }) {
   const { modalState, openModal, closeModal } = useBookingModal();
+  const servicesList = getServicesList();
+
+  // Helper to get equipment for a service record
+  const getEquipmentForService = (service: ServiceRecords): Equipment | undefined => {
+    // If equipment prop provided (single equipment view), use that
+    if (equipment && equipment.id === service.equipmentId) return equipment;
+
+    // Otherwise look it up
+    return getEquipmentById(service.equipmentId);
+  };
+
+  // Helper to get service title from code
+  const getServiceTitle = (serviceCode: string): string => {
+    const service = servicesList.find((s) => s.code === serviceCode);
+
+    return service?.title || serviceCode;
+  };
 
   return (
     <div
@@ -60,56 +79,62 @@ export default function ServiceHistoryTable({
             </tr>
           </thead>
           <tbody className="divide-y divide-sky-100">
-            {serviceHistory.map((service) => (
-              <tr key={service.id} className="hover:bg-sky-50">
-                <td className="px-6 py-4 whitespace-nowrap font-medium text-sky-900">
-                  {service.type}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sky-600">
-                  {service.manufacturer} {service.model} {service.size}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sky-600">
-                  {service.createdAt.toDateString()}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span
-                    className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(service.status)}`}
-                  >
-                    {service.status}
-                  </span>
-                </td>
-                {isOwner && (
-                  <td className="px-6 py-4 whitespace-nowrap font-medium text-sky-900 before:content-['£']">
-                    {service.cost}
+            {serviceHistory.map((service) => {
+              const serviceEquipment = getEquipmentForService(service);
+
+              return (
+                <tr key={service.id} className="hover:bg-sky-50">
+                  <td className="px-6 py-4 whitespace-nowrap font-medium text-sky-900">
+                    {getServiceTitle(service.serviceCode)}
                   </td>
-                )}
-                <td className="px-6 py-4 whitespace-nowrap text-xs font-mono text-sky-500">
-                  {service.id}
-                </td>
-                {isOwner && (
-                  <td className="px-6 py-4 whitespace-nowrap text-sm">
-                    {service.status === 'PENDING' ? (
-                      <Button
-                        onClick={() => openModal('booking', service)}
-                        variant="link"
-                        size="sm"
-                        className="text-sky-600 hover:text-sky-800 font-medium transition-colors cursor-pointer"
-                      >
-                        Modify Booking →
-                      </Button>
-                    ) : (
-                      <Button
-                        className="text-sky-600 hover:text-sky-800 font-medium transition-colors cursor-pointer"
-                        variant="link"
-                        size="sm"
-                      >
-                        Download Report →
-                      </Button>
-                    )}
+                  <td className="px-6 py-4 whitespace-nowrap text-sky-600">
+                    {serviceEquipment
+                      ? `${serviceEquipment.manufacturer} ${serviceEquipment.model} ${serviceEquipment.size}`
+                      : 'Unknown Equipment'}
                   </td>
-                )}
-              </tr>
-            ))}
+                  <td className="px-6 py-4 whitespace-nowrap text-sky-600">
+                    {service.createdAt.toDateString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span
+                      className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(service.status)}`}
+                    >
+                      {service.status}
+                    </span>
+                  </td>
+                  {isOwner && (
+                    <td className="px-6 py-4 whitespace-nowrap font-medium text-sky-900 before:content-['£']">
+                      {service.cost}
+                    </td>
+                  )}
+                  <td className="px-6 py-4 whitespace-nowrap text-xs font-mono text-sky-500">
+                    {service.id}
+                  </td>
+                  {isOwner && (
+                    <td className="px-6 py-4 whitespace-nowrap text-sm">
+                      {service.status === 'PENDING' ? (
+                        <Button
+                          onClick={() => openModal('booking', service)}
+                          variant="link"
+                          size="sm"
+                          className="text-sky-600 hover:text-sky-800 font-medium transition-colors cursor-pointer"
+                        >
+                          Modify Booking →
+                        </Button>
+                      ) : (
+                        <Button
+                          className="text-sky-600 hover:text-sky-800 font-medium transition-colors cursor-pointer"
+                          variant="link"
+                          size="sm"
+                        >
+                          Download Report →
+                        </Button>
+                      )}
+                    </td>
+                  )}
+                </tr>
+              );
+            })}
           </tbody>
         </table>
       </div>

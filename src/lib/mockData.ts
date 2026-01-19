@@ -1,4 +1,10 @@
-import type { ServiceRecords, Customer, Equipment, CustomerEquipment } from './schema';
+import type {
+  Customer,
+  CustomerEquipment,
+  DateBlock,
+  Equipment,
+  ServiceRecords,
+} from './schema';
 
 // ============================================
 // MOCK DATABASE - Simulates PostgreSQL/SQLite
@@ -8,67 +14,77 @@ import type { ServiceRecords, Customer, Equipment, CustomerEquipment } from './s
 // Service Records Table
 const serviceRecordsTable: ServiceRecords[] = [
   {
-    service: 'SVC-011',
-    type: 'Annual Service',
-    id: 'SVC-011-2025-004',
-    serialNb: '12345wer1234',
-    manufacturer: 'Ozone',
-    model: 'Rush 5',
-    size: 'ML',
+    id: 'SVC-011-1724198400000',
+    customerId: 'customer-001',
+    equipmentId: 'eq-001',
+    serviceCode: 'SVC-011',
     status: 'PENDING',
-    createdAt: new Date('2025-08-20'),
+    preferredDate: '2025-08-20',
+    deliveryMethod: 'drop-off',
+    contactMethod: 'email',
+    specialInstructions: 'Please check A-lines carefully',
     cost: 190,
+    createdAt: new Date('2025-08-15'),
+    updatedAt: new Date('2025-08-15'),
   },
   {
-    service: 'PACK-001',
-    type: 'Parachute repacking',
-    id: 'PACK-001-2024-005',
-    serialNb: 'rescue-001',
-    manufacturer: 'Gin',
-    model: 'Yeti',
-    size: '120',
+    id: 'PACK-001-1724198400001',
+    customerId: 'customer-001',
+    equipmentId: 'eq-002',
+    serviceCode: 'PACK-001',
     status: 'PENDING',
-    createdAt: new Date('2025-08-20'),
+    preferredDate: '2025-09-01',
+    deliveryMethod: 'post',
+    contactMethod: 'phone',
     cost: 90,
+    createdAt: new Date('2025-08-18'),
+    updatedAt: new Date('2025-08-18'),
   },
   {
-    service: 'SVC-001',
-    type: 'Line Trim',
-    id: 'SVC-001-2025-005',
-    serialNb: 'alpha-2024',
-    manufacturer: 'Advance',
-    model: 'Alpha 7',
-    size: '27',
+    id: 'SVC-001-1713657600000',
+    customerId: 'customer-001',
+    equipmentId: 'eq-003',
+    serviceCode: 'SVC-001',
     status: 'COMPLETED',
-    createdAt: new Date('2025-04-20'),
-    updatedAt: new Date('2025-04-25'),
+    preferredDate: '2025-04-20',
+    deliveryMethod: 'drop-off',
+    contactMethod: 'email',
     cost: 160,
+    actualServiceDate: new Date('2025-04-21'),
+    completedBy: 'Tech-001',
+    createdAt: new Date('2025-04-15'),
+    updatedAt: new Date('2025-04-25'),
   },
   {
-    service: 'SVC-011',
-    type: 'Annual Service',
-    id: 'SVC-011-2024-004',
-    serialNb: '12345wer1234',
-    manufacturer: 'Ozone',
-    model: 'Rush 5',
-    size: 'ML',
+    id: 'SVC-011-1692576000000',
+    customerId: 'customer-001',
+    equipmentId: 'eq-001',
+    serviceCode: 'SVC-011',
     status: 'COMPLETED',
-    createdAt: new Date('2024-08-20'),
-    updatedAt: new Date('2024-08-24'),
+    preferredDate: '2024-08-20',
+    deliveryMethod: 'drop-off',
+    contactMethod: 'text',
     cost: 190,
+    actualServiceDate: new Date('2024-08-22'),
+    completedBy: 'Tech-002',
+    createdAt: new Date('2024-08-15'),
+    updatedAt: new Date('2024-08-24'),
   },
   {
-    service: 'REP-001',
-    type: 'Line Repair',
-    id: 'REP-001-2024-002',
-    serialNb: '12345wer1234',
-    manufacturer: 'Ozone',
-    model: 'Rush 5',
-    size: 'ML',
+    id: 'REP-001-1678406400000',
+    customerId: 'customer-001',
+    equipmentId: 'eq-001',
+    serviceCode: 'REP-001',
     status: 'COMPLETED',
-    createdAt: new Date('2024-03-10'),
-    updatedAt: new Date('2024-03-12'),
+    preferredDate: '2024-03-10',
+    deliveryMethod: 'drop-off',
+    contactMethod: 'email',
+    specialInstructions: 'Line damage from tree landing',
     cost: 45,
+    actualServiceDate: new Date('2024-03-11'),
+    completedBy: 'Tech-001',
+    createdAt: new Date('2024-03-08'),
+    updatedAt: new Date('2024-03-12'),
   },
 ];
 
@@ -155,6 +171,34 @@ const customerEquipmentTable: CustomerEquipment[] = [
   },
 ];
 
+// Date Blocks Table - Manual unavailability set by admin
+const dateBlocksTable: DateBlock[] = [
+  {
+    id: 'block-001',
+    startDate: '2026-12-24',
+    endDate: '2026-12-26',
+    reason: 'Christmas closure',
+    type: 'holiday',
+    createdAt: new Date('2026-01-01'),
+  },
+  {
+    id: 'block-002',
+    startDate: '2026-01-01',
+    endDate: '2026-01-01',
+    reason: "New Year's Day",
+    type: 'holiday',
+    createdAt: new Date('2026-01-01'),
+  },
+  {
+    id: 'block-003',
+    startDate: '2026-02-15',
+    endDate: '2026-02-15',
+    reason: 'Workshop equipment maintenance',
+    type: 'maintenance',
+    createdAt: new Date('2026-01-10'),
+  },
+];
+
 // Customer Table
 const customerTable: Customer[] = [
   {
@@ -187,16 +231,11 @@ export const mockDatabase = {
 
       if (!customer) return undefined;
 
-      // Get equipment they currently own (via ownership table)
-      const ownedEquipmentSerialNumbers = customerEquipmentTable
-        .filter((ce) => ce.customerId === customer.id && ce.ownedUntil === null)
-        .map((ce) => ce.equipmentSerialNumber);
-
-      // Get service history for their equipment
+      // Get service history for this customer
       return {
         ...customer,
-        serviceHistory: serviceRecordsTable.filter((service) =>
-          ownedEquipmentSerialNumbers.includes(service.serialNb),
+        serviceHistory: serviceRecordsTable.filter(
+          (service) => service.customerId === customer.id,
         ),
       };
     },
@@ -206,15 +245,11 @@ export const mockDatabase = {
 
       if (!customer) return undefined;
 
-      // Get equipment they currently own
-      const ownedEquipmentSerialNumbers = customerEquipmentTable
-        .filter((ce) => ce.customerId === customer.id && ce.ownedUntil === null)
-        .map((ce) => ce.equipmentSerialNumber);
-
+      // Get service history for this customer
       return {
         ...customer,
-        serviceHistory: serviceRecordsTable.filter((service) =>
-          ownedEquipmentSerialNumbers.includes(service.serialNb),
+        serviceHistory: serviceRecordsTable.filter(
+          (service) => service.customerId === customer.id,
         ),
       };
     },
@@ -316,19 +351,12 @@ export const mockDatabase = {
     },
 
     findByCustomerId: (customerId: string): ServiceRecords[] => {
-      // Get all equipment this customer owns/owned
-      const customerEquipmentSerialNumbers = customerEquipmentTable
-        .filter((ce) => ce.customerId === customerId)
-        .map((ce) => ce.equipmentSerialNumber);
-
-      return serviceRecordsTable.filter((s) =>
-        customerEquipmentSerialNumbers.includes(s.serialNb),
-      );
+      return serviceRecordsTable.filter((s) => s.customerId === customerId);
     },
 
-    findBySerialNumber: (serialNb: string): ServiceRecords[] => {
-      // Returns complete service history regardless of ownership
-      return serviceRecordsTable.filter((s) => s.serialNb === serialNb);
+    findByEquipmentId: (equipmentId: string): ServiceRecords[] => {
+      // Returns complete service history for equipment regardless of ownership
+      return serviceRecordsTable.filter((s) => s.equipmentId === equipmentId);
     },
 
     findByStatus: (status: string): ServiceRecords[] => {
@@ -407,9 +435,51 @@ export function getCompletedServices(customerId?: string): ServiceRecords[] {
 
 /**
  * Get complete service history for a piece of equipment (regardless of ownership)
+ * @param serialNumber - Equipment serial number (public identifier)
  */
 export function getEquipmentServiceHistory(serialNumber: string): ServiceRecords[] {
-  return mockDatabase.serviceRecords.findBySerialNumber(serialNumber);
+  // Look up equipment by serial number first
+  const equipment = mockDatabase.equipment.findBySerialNumber(serialNumber);
+
+  if (!equipment) return [];
+
+  // Then get service records by equipment ID
+  return mockDatabase.serviceRecords.findByEquipmentId(equipment.id);
+}
+
+/**
+ * Create a new service record (booking)
+ * In production this would be: await prisma.serviceRecords.create({ data })
+ */
+export function createServiceRecord(
+  data: Omit<ServiceRecords, 'id' | 'createdAt' | 'updatedAt'>,
+): ServiceRecords {
+  const newRecord: ServiceRecords = {
+    ...data,
+    id: `${data.serviceCode}-${Date.now()}`,
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  };
+
+  serviceRecordsTable.push(newRecord);
+
+  return newRecord;
+}
+
+/**
+ * Get all date blocks (manual unavailability)
+ */
+export function getDateBlocks(): DateBlock[] {
+  return dateBlocksTable;
+}
+
+/**
+ * Get bookings for a specific date
+ */
+export function getBookingsForDate(date: string): ServiceRecords[] {
+  return serviceRecordsTable.filter(
+    (s) => s.preferredDate === date && s.status === 'PENDING',
+  );
 }
 
 // ============================================

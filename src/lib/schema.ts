@@ -10,63 +10,7 @@
 // - ServiceRecord connects Customer + Glider + Service + booking details
 import prices from '@/data/prices.json';
 import rawServicesData from '@/data/services.json';
-
-// Example structure to get you started:
-export interface Customer {
-  id: string; // OAuth email or generated ID
-  email: string; // from OAuth
-  name: string; // from OAuth
-  phone?: string; // optional contact info
-  address?: string; // for service collection/delivery
-  createdAt: Date;
-  updatedAt: Date;
-  serviceHistory: ServiceRecords[];
-  communicationPreferences: Record<string, string>;
-}
-
-export interface ServicesType {
-  icon: string; // Icon name as string (mapped to component in ServiceCard)
-  title: string;
-  description: string;
-  code: ServiceCode;
-  available: boolean;
-}
-
-export type Prices = Record<string, number | string>;
-
-export const SERVICE_CODE = [
-  'SVC-001',
-  'SVC-002',
-  'SVC-011',
-  'SVC-012',
-  'PACK-001',
-  'PACK-002',
-  'REP-001',
-] as const;
-export type ServiceCode = (typeof SERVICE_CODE)[number];
-
-export const SERVICE_STATUSES = [
-  'PENDING',
-  'IN_PROGRESS',
-  'COMPLETED',
-  'CANCELLED',
-] as const;
-export type ServiceStatus = (typeof SERVICE_STATUSES)[number];
-
-export interface ServiceRecords {
-  //This schema could be used for a glider, a reserve parachute or a harness
-  service: ServiceCode;
-  type: string;
-  id: string; // Start with SERVICE_TYPE + unique time ref. This ID will be able to generate a report on the workbench side like opening a new record.
-  serialNb: string; // Get the unique serial number of the kit
-  manufacturer: string; // Could be linked to workbench database
-  model: string; // Could be linked to workbench database
-  size: string; // Could be linked to workbench database
-  status: ServiceStatus;
-  cost: number; // in £
-  createdAt: Date;
-  updatedAt?: Date;
-}
+import { ServiceCode, ServiceRecords, ServicesType } from './validation/serviceSchema';
 
 // Service data (line trim, parachute repack, etc.) would come from the workbench side of the business.
 // export interface GliderService {
@@ -111,26 +55,36 @@ export interface DetailedServiceRecord extends ServiceRecords {
   inspectionData?: WorkbenchInspectionSession;
 }
 
-// Ownership junction table - tracks who owns what and when (like DVLA registration)
-export interface CustomerEquipment {
+// Workshop availability - manual date blocks set by admin
+export const BLOCK_TYPES = [
+  'holiday',
+  'maintenance',
+  'training',
+  'emergency',
+  'other',
+] as const;
+export type BlockType = (typeof BLOCK_TYPES)[number];
+
+export interface DateBlock {
   id: string;
-  customerId: string; // Links to Customer
-  equipmentId: string; // Links to Equipment
-  equipmentSerialNumber: string; // Denormalized for quick lookup
-  ownedFrom: Date; // When they acquired it
-  ownedUntil: Date | null; // null = currently owned, date = sold/transferred
-  purchaseDate?: Date; // Optional: actual purchase date (might differ from ownedFrom)
-  purchasePrice?: number;
-  notes?: string; // "Bought second-hand", "Gift from friend", etc.
+  startDate: string; // ISO date format YYYY-MM-DD
+  endDate: string; // ISO date format YYYY-MM-DD
+  reason: string;
+  type: BlockType;
   createdAt: Date;
-  updatedAt: Date;
 }
 
 // Pricing lookup helper
 export function getServicePrice(serviceCode: ServiceCode): string | number {
   return prices[serviceCode] || 'Contact us';
 }
+
 // Service list function helper
 export function getServicesList(): ServicesType[] {
   return Object.values(rawServicesData) as ServicesType[];
+}
+
+// Get service details by code
+export function getServiceByCode(serviceCode: ServiceCode): ServicesType | undefined {
+  return getServicesList().find((service) => service.code === serviceCode);
 }

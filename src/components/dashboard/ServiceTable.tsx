@@ -2,16 +2,18 @@
 
 import Link from 'next/link';
 
-import type { Customer } from '@/lib/schema';
 import type { Equipment } from '@/lib/validation/equipmentSchema';
 
 import { useCustomer } from '@/contexts/CustomerContext';
 import {
   getCompletedServices,
   getCustomerEquipment,
+  getEquipmentById,
   getUpcomingServices,
 } from '@/lib/mockData';
+import { getServicesList } from '@/lib/schema';
 
+import { Customer } from '@/lib/validation/customerSchema';
 import StatsCards from './StatsCards';
 
 export default function ServiceTable() {
@@ -20,6 +22,14 @@ export default function ServiceTable() {
   const upcomingServices = getUpcomingServices(customer.id);
   const completedServices = getCompletedServices(customer.id);
   const equipmentList: Equipment[] = getCustomerEquipment(customer.id);
+  const servicesList = getServicesList();
+
+  // Helper to get service title from code
+  const getServiceTitle = (serviceCode: string): string => {
+    const service = servicesList.find((s) => s.code === serviceCode);
+
+    return service?.title || serviceCode;
+  };
 
   return (
     <>
@@ -42,32 +52,44 @@ export default function ServiceTable() {
           <div className="p-6">
             {upcomingServices.length > 0 ? (
               <div className="space-y-4">
-                {upcomingServices.map((service) => (
-                  <div
-                    key={service.id}
-                    className="border border-green-200 rounded-lg p-4 bg-green-50"
-                  >
-                    <Link href={`/equipment/${service.serialNb}`}>
-                      <div className="flex justify-between items-start">
-                        <div>
-                          <h3 className="font-semibold text-sky-900">{service.type}</h3>
-                          <p className="text-sky-600">
-                            {service.manufacturer} {service.model} {service.size}
-                          </p>
-                          <p className="text-sm text-sky-500 mt-1">
-                            Service ID: {service.id}
-                          </p>
+                {upcomingServices.map((service) => {
+                  const equipment = getEquipmentById(service.equipmentId);
+
+                  return (
+                    <div
+                      key={service.id}
+                      className="border border-green-200 rounded-lg p-4 bg-green-50"
+                    >
+                      <Link
+                        href={equipment ? `/equipment/${equipment.serialNumber}` : '#'}
+                      >
+                        <div className="flex justify-between items-start">
+                          <div>
+                            <h3 className="font-semibold text-sky-900">
+                              {getServiceTitle(service.serviceCode)}
+                            </h3>
+                            <p className="text-sky-600">
+                              {equipment
+                                ? `${equipment.manufacturer} ${equipment.model} ${equipment.size}`
+                                : 'Unknown Equipment'}
+                            </p>
+                            <p className="text-sm text-sky-500 mt-1">
+                              Service ID: {service.id}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
+                              {service.status}
+                            </span>
+                            <p className="text-sm text-sky-600 mt-1">
+                              {service.preferredDate}
+                            </p>
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <span className="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs font-medium">
-                            {service.status}
-                          </span>
-                          {/* <p className="text-sm text-sky-600 mt-1">{service.scheduledDate}</p> */}
-                        </div>
-                      </div>
-                    </Link>
-                  </div>
-                ))}
+                      </Link>
+                    </div>
+                  );
+                })}
               </div>
             ) : (
               <p className="text-sky-600 text-center py-8">

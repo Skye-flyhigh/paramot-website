@@ -1,0 +1,65 @@
+export interface ServicesType {
+  icon: string; // Icon name as string (mapped to component in ServiceCard)
+  title: string;
+  description: string;
+  code: ServiceCode;
+  available: boolean;
+}
+
+export interface ServicesType {
+  icon: string; // Icon name as string (mapped to component in ServiceCard)
+  title: string;
+  description: string;
+  code: ServiceCode;
+  available: boolean;
+}
+
+export type Prices = Record<string, number | string>;
+
+export const SERVICE_CODE = [
+  'SVC-001',
+  'SVC-002',
+  'SVC-011',
+  'SVC-012',
+  'PACK-001',
+  'PACK-002',
+  'REP-001',
+] as const;
+export type ServiceCode = (typeof SERVICE_CODE)[number];
+
+export const SERVICE_STATUSES = [
+  'PENDING',
+  'IN_PROGRESS',
+  'AWAITING',
+  'COMPLETED',
+  'CANCELLED',
+] as const;
+export type ServiceStatus = (typeof SERVICE_STATUSES)[number];
+
+export interface ServiceRecords {
+  // Identifiers
+  id: string; // Format: {SERVICE_CODE}-{TIMESTAMP} for workbench integration
+
+  // Foreign Keys (joining table)
+  customerId: string; // Who booked this service
+  equipmentId: string; // What equipment is being serviced
+
+  // Service details
+  serviceCode: ServiceCode; // What type of service (SVC-001, PACK-001, etc.)
+  status: ServiceStatus; // PENDING, IN_PROGRESS, COMPLETED, CANCELLED
+
+  // Booking details (from customer form)
+  preferredDate: string; // Customer's preferred service date
+  deliveryMethod: 'drop-off' | 'post'; // How they'll send equipment
+  contactMethod: 'email' | 'phone' | 'text'; // Preferred contact
+  specialInstructions?: string; // Customer notes (optional)
+
+  // Business/operational data
+  cost: number; // Price in £ (calculated from serviceCode + discounts)
+  actualServiceDate?: Date; // When service was actually performed (null until completed)
+  completedBy?: string; // Technician who completed the service
+
+  // Timestamps
+  createdAt: Date; // When booking was created
+  updatedAt?: Date; // Last modification
+}

@@ -5,11 +5,7 @@ import { auth } from '@/auth';
 import ServiceHistoryTable from '@/components/dashboard/ServiceHistoryTable';
 import ServiceActionButtons from '@/components/equipment/ServiceActionButtons';
 import { checkEquipmentOwnershipBySerial } from '@/lib/authorization';
-import {
-  getEquipmentById,
-  getEquipmentBySerialNumber,
-  getEquipmentServiceHistory,
-} from '@/lib/mockData';
+import { getEquipmentBySerialNumber, getEquipmentServiceHistory } from '@/lib/mockData';
 import { getServiceDescription, getStatusColor } from '@/lib/styling/services';
 
 export default async function ServiceDetailPage({
@@ -98,14 +94,14 @@ export default async function ServiceDetailPage({
                       Service Description
                     </h3>
                     <p className="text-sky-700">
-                      {getServiceDescription(lastService.service)}
+                      {getServiceDescription(lastService.serviceCode)}
                     </p>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
                       <p className="text-sm text-sky-600 font-medium">Service Code</p>
-                      <p className="text-sky-900">{lastService.service}</p>
+                      <p className="text-sky-900">{lastService.serviceCode}</p>
                     </div>
                     <div>
                       <p className="text-sm text-sky-600 font-medium">Service ID</p>

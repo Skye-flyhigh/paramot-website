@@ -16,9 +16,8 @@ export default function Hero() {
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <a href="#services">
             <Button
-              variant="outline"
               size="lg"
-              className="bg-white text-sky-800 border-white hover:bg-sky-50 w-full sm:w-auto"
+              className="bg-white text-sky-800 border-white hover:bg-sky-50"
             >
               Our Services
             </Button>
@@ -27,7 +26,7 @@ export default function Hero() {
             <Button
               variant="outline"
               size="lg"
-              className="border-sky-200 text-sky-100 hover:bg-sky-200 hover:text-sky-800 backdrop-blur-sm w-full sm:w-auto"
+              className="border-sky-200 text-sky-100 hover:bg-sky-200 hover:text-sky-800 backdrop-blur-sm"
             >
               Get Quote
             </Button>

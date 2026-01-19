@@ -1,17 +1,17 @@
 'use client';
 
-import { useEffect, useActionState, useState } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 
 import type { BookingFormData, BookingFormState } from '@/lib/validation/bookingForm';
 import type { Equipment } from '@/lib/validation/equipmentSchema';
 
 import { Button } from '@/components/ui/button';
-import { ServiceRecords, getServicePrice, getServicesList } from '@/lib/schema';
+import { getServicePrice, getServicesList } from '@/lib/schema';
 import submitBookingForm from '@/lib/submit/submitBookingForm';
 import { isTandemGlider } from '@/lib/utils';
 
+import { ServiceCode, ServiceRecords } from '@/lib/validation/serviceSchema';
 import { Alert, AlertDescription } from '../ui/alert';
-import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
 import {
@@ -21,10 +21,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '../ui/select';
+import { ServiceDatePicker } from '../ui/service-date-picker';
 import { Textarea } from '../ui/textarea';
 import XButton from '../ui/x-button';
-
-// type BookingType =
 
 export interface BookingModalProps {
   isOpen: boolean;
@@ -42,11 +41,11 @@ export default function BookingModal({
   existingBooking,
 }: BookingModalProps) {
   const initialValue: BookingFormData = {
-    serviceType: existingBooking?.service || serviceTypeInit,
-    preferredDate: '',
-    deliveryMethod: 'drop-off',
-    specialInstructions: '',
-    contactMethod: 'email',
+    serviceType: existingBooking?.serviceCode || serviceTypeInit,
+    preferredDate: existingBooking?.preferredDate || '',
+    deliveryMethod: existingBooking?.deliveryMethod || 'drop-off',
+    specialInstructions: existingBooking?.specialInstructions || '',
+    contactMethod: existingBooking?.contactMethod || 'email',
     equipmentId: equipment.id,
   };
 
@@ -132,7 +131,9 @@ export default function BookingModal({
       >
         {/* Header */}
         <header className="flex items-center justify-between p-6 border-b">
-          <h2 className="text-xl font-semibold">Modify Booking</h2>
+          <h2 className="text-xl font-semibold">
+            {existingBooking ? 'Modify Booking' : 'New Booking'}
+          </h2>
           <XButton onClose={onClose} />
         </header>
 
@@ -192,7 +193,10 @@ export default function BookingModal({
                 <span>No available services</span>
               ) : (
                 <>
-                  <RadioGroup value={serviceType} onValueChange={setServiceType}>
+                  <RadioGroup
+                    value={serviceType}
+                    onValueChange={(value) => setServiceType(value as ServiceCode | '')}
+                  >
                     {applicableServices.map((service) => {
                       const price = getServicePrice(service.code);
 
@@ -242,18 +246,12 @@ export default function BookingModal({
 
           {/* Preferred Date */}
           <div>
-            <Label htmlFor="preferredDate">Preferred Delivery Date</Label>
-            <Input
-              type="date"
-              id="preferredDate"
+            <ServiceDatePicker
               name="preferredDate"
               defaultValue={state.data.preferredDate}
-              min={new Date().toISOString().split('T')[0]}
               disabled={hasNoService || isPending}
+              error={state.errors.preferredDate}
             />
-            {state.errors.preferredDate && (
-              <p className="text-sm text-red-600 mt-1">{state.errors.preferredDate}</p>
-            )}
           </div>
 
           {/* Delivery Method */}
@@ -261,7 +259,7 @@ export default function BookingModal({
             <Label>Delivery Method</Label>
             <Select
               value={deliveryMethod}
-              onValueChange={setDeliveryMethod}
+              onValueChange={(value) => setDeliveryMethod(value as 'drop-off' | 'post')}
               disabled={hasNoService || isPending}
             >
               <SelectTrigger>
@@ -302,7 +300,9 @@ export default function BookingModal({
             <Label>Preferred Contact Method</Label>
             <Select
               value={contactMethod}
-              onValueChange={setContactMethod}
+              onValueChange={(value) =>
+                setContactMethod(value as 'email' | 'phone' | 'text')
+              }
               disabled={hasNoService || isPending}
             >
               <SelectTrigger>
@@ -326,11 +326,20 @@ export default function BookingModal({
 
           {/* Actions */}
           <div className="flex justify-end space-x-4 pt-4 border-t">
-            <Button type="button" variant="ghost" onClick={onClose} disabled={isPending}>
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={onClose}
+              disabled={isPending || state.success}
+            >
               Cancel
             </Button>
             <Button type="submit" variant="default" disabled={hasNoService || isPending}>
-              {isPending ? 'Submitting...' : 'Update Booking'}
+              {isPending
+                ? 'Submitting...'
+                : existingBooking
+                  ? 'Update Booking'
+                  : 'Submit Booking'}
             </Button>
           </div>
         </form>

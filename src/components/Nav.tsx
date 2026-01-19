@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { auth, signOut } from '@/auth';
+import { Button } from './ui/button';
 
 export default async function Nav() {
   const session = await auth();
@@ -16,11 +17,8 @@ export default async function Nav() {
         <div className="flex items-center space-x-4">
           {session?.user ? (
             <>
-              <Link
-                href="/dashboard"
-                className="text-sky-700 hover:text-sky-800 font-medium"
-              >
-                Dashboard
+              <Link href="/dashboard">
+                <Button variant="link">Dashboard</Button>
               </Link>
               <form
                 action={async () => {
@@ -28,12 +26,7 @@ export default async function Nav() {
                   await signOut();
                 }}
               >
-                <button
-                  type="submit"
-                  className="bg-sky-600 text-white px-4 py-2 rounded hover:bg-sky-700"
-                >
-                  Sign Out
-                </button>
+                <Button type="submit">Sign Out</Button>
               </form>
             </>
           ) : (

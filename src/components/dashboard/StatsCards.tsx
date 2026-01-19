@@ -60,7 +60,7 @@ export default function StatsCards({
               <p className="text-2xl font-bold text-sky-900">
                 {Object.keys(equipmentList).length}
               </p>
-              <p className="text-sky-600">Active Gliders</p>
+              <p className="text-sky-600">Active Equipment</p>
             </div>
           </div>
         </div>

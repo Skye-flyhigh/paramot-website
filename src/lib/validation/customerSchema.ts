@@ -1,8 +1,7 @@
 import { z } from 'zod';
 
-import type { ServiceRecords } from '../schema';
-
 import { escapeHTML } from '../security/escapeHTML';
+import { ServiceRecords } from './serviceSchema';
 
 export interface Customer {
   id: string; // OAuth email or generated ID
@@ -12,6 +11,7 @@ export interface Customer {
   address?: string; // for service collection/delivery
   createdAt: Date;
   updatedAt: Date;
+  lastConnection: Date;
   serviceHistory: ServiceRecords[];
   communicationPreferences: Record<string, string>;
 }

@@ -1,15 +1,13 @@
 'use server';
 
-import { ServiceCode, getServicePrice } from '../schema';
+import { getServiceByCode, getServicePrice } from '../schema';
 import sendEmail, { Email } from '../services/user-mailing';
-import {
-  BookingFormData,
-  BookingFormState,
-  bookingFormSchema,
-} from '../validation/bookingForm';
+import { BookingFormState, bookingFormSchema } from '../validation/bookingForm';
 import type { Equipment } from '../validation/equipmentSchema';
 
-import { getEquipmentById } from '../mockData';
+import { generateServiceCode } from '@/lib/helper/id-generator';
+import z from 'zod';
+import { createServiceRecord, getEquipmentById } from '../mockData';
 import { ensureCustomer } from '../security/auth-check';
 
 export default async function submitBookingForm(
@@ -27,24 +25,16 @@ export default async function submitBookingForm(
   }
   const customer = authResult.customer;
 
-  // Retrieve formData
-  if (!formData)
-    return { ...prevState, errors: { general: 'Missing data' }, success: false };
+  // Convert FormData to plain object for Zod validation
+  const rawFormData = Object.fromEntries(formData);
 
-  const formValues: BookingFormData = {
-    serviceType: formData.get('service-type') as ServiceCode,
-    preferredDate: formData.get('preferred-date') as string,
-    deliveryMethod: formData.get('delivery-method') as string,
-    specialInstructions: formData.get('special-instructions') as string,
-    contactMethod: formData.get('contact-method') as string,
-    equipmentId: formData.get('equipment-id') as string,
-  };
+  // Validate and parse form data
+  const { data, error, success } = bookingFormSchema.safeParse(rawFormData);
 
-  // Validate formData
-  const { data, error, success } = bookingFormSchema.safeParse(formValues);
+  if (!success || error) {
+    const formattedError = z.prettifyError(error) || 'Error in validating data';
 
-  if (!success) {
-    return { ...prevState, errors: { general: error.message }, success: false };
+    return { ...prevState, errors: { general: formattedError }, success: false };
   }
 
   // Retrieve Equipment data & compare with the database
@@ -54,19 +44,38 @@ export default async function submitBookingForm(
     return { ...prevState, errors: { general: 'Equipment not found' }, success: false };
 
   try {
-    // TODO: Attributing a unique service code for the booking:
-    const serviceCode = data.serviceType;
+    // Get service details
+    const service = getServiceByCode(data.serviceType);
 
-    // TODO: Send data to the server
+    if (!service)
+      return {
+        ...prevState,
+        errors: { general: 'Invalid service type' },
+        success: false,
+      };
 
-    // TODO: Attributing a service description following the code
-    const serviceType = data.serviceType;
+    const serviceCode = data.serviceType + '-' + generateServiceCode();
+    const serviceTitle = service.title;
+    const serviceDescription = service.description;
+    const price = getServicePrice(data.serviceType);
+
+    // Create service record in database
+    const newServiceRecord = createServiceRecord({
+      customerId: customer.id,
+      equipmentId: equipment.id,
+      serviceCode: data.serviceType,
+      status: 'PENDING',
+      preferredDate: data.preferredDate,
+      deliveryMethod: data.deliveryMethod,
+      contactMethod: data.contactMethod,
+      specialInstructions: data.specialInstructions,
+      cost: typeof price === 'number' ? price : 0,
+    });
 
     // Email confirmation to the customer
     const equipmentName = `${equipment.manufacturer} ${equipment.model} ${equipment.size} ${equipment.serialNumber ? '- ' + equipment.serialNumber : ''}`;
     // TODO: transform that preferredDate into UK friendly format
     const bookingDate = data.preferredDate;
-    const price = getServicePrice(data.serviceType);
 
     const email: Email = {
       to: {
@@ -77,7 +86,9 @@ export default async function submitBookingForm(
       template: 'booking-confirmation',
       templateVariables: {
         recipientName: customer.name,
-        serviceType,
+        serviceCode,
+        serviceTitle,
+        serviceDescription,
         equipmentName,
         bookingDate,
         price,

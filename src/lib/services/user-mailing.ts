@@ -1,12 +1,34 @@
 import { Resend } from 'resend';
 
-export interface Email {
+import type { ServiceCode } from '../schema';
+
+interface Recipient {
+  name: string;
+  email: string;
+}
+
+// Template-specific variable types
+interface BookingConfirmationVariables {
+  recipientName: string;
+  serviceCode: ServiceCode;
+  serviceTitle: string;
+  serviceDescription: string;
+  equipmentName: string;
+  bookingDate: string;
+  price: string | number;
+}
+
+interface ContactFormVariables {
+  recipientName: string;
+  senderEmail: string;
+  message: string;
+}
+
+// Base email fields (common to all emails)
+interface BaseEmail {
   from?: string;
   to: Recipient;
   subject: string;
-  message?: string; // Optional - use this OR template
-  template?: string; // Resend dashboard template ID
-  templateVariables?: Record<string, unknown>; // Variables for dashboard template
   attachments?: string[];
   cc?: string[];
   bcc?: string[];
@@ -18,14 +40,37 @@ export interface Email {
   id?: string;
 }
 
-interface Recipient {
-  name: string;
-  email: string;
-}
+// Discriminated union: template determines which variables are required
+type TemplatedEmail =
+  | (BaseEmail & {
+      template: 'booking-confirmation';
+      templateVariables: BookingConfirmationVariables;
+      message?: never;
+    })
+  | (BaseEmail & {
+      template: 'contact-form';
+      templateVariables: ContactFormVariables;
+      message?: never;
+    });
+
+// Plain HTML email (no template)
+type PlainEmail = BaseEmail & {
+  message: string;
+  template?: never;
+  templateVariables?: never;
+};
+
+// Union of all email types
+export type Email = TemplatedEmail | PlainEmail;
 
 interface EmailResponse {
   statusCode: number;
-  data: Email;
+  data: Partial<BaseEmail> & {
+    message?: string;
+    template?: string;
+    templateVariables?: Record<string, unknown>;
+    id?: string;
+  };
   success: boolean;
   error?: string | null;
 }
