@@ -1,0 +1,231 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// ENUMS - Define fixed value sets
+// ============================================
+
+enum ServiceStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum DeliveryMethod {
+  DROP_OFF
+  POST
+}
+
+enum ContactMethod {
+  EMAIL
+  PHONE
+  TEXT
+}
+
+enum EquipmentStatus {
+  ACTIVE
+  RETIRED
+  SOLD
+  LOST
+}
+
+enum EquipmentType {
+  GLIDER
+  RESERVE
+  HARNESS
+}
+
+enum BlockType {
+  HOLIDAY
+  MAINTENANCE
+  TRAINING
+  EMERGENCY
+  OTHER
+}
+
+// ============================================
+// CUSTOMER & PROFILE DATA
+// ============================================
+
+model Customer {
+  id        String   @id @default(uuid())  // Matches generateUserId()
+  email     String   @unique
+  firstName String
+  lastName  String
+  phone     String?
+
+  // Optional address (one-to-one)
+  addressId String?   @unique
+  address   Address?  @relation(fields: [addressId], references: [id])
+
+  // Optional communication preferences (one-to-one)
+  communicationPreferencesId String?         @unique
+  communicationPreferences   Communication?  @relation(fields: [communicationPreferencesId], references: [id])
+
+  // Reverse relations (what this customer owns/has done)
+  serviceRecords    ServiceRecords[]
+  customerEquipment CustomerEquipment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
+model Address {
+  id       String    @id @default(cuid())
+  street   String
+  city     String
+  county   String?   // UK has counties, not states
+  postcode String    // UK postcodes are alphanumeric (SW1A 1AA)
+  country  String    @default("United Kingdom")
+
+  customer Customer? // One-to-one reverse relation
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Communication {
+  id        String  @id @default(cuid())
+  marketing Boolean @default(false)
+  email     Boolean @default(true)
+  phone     Boolean @default(false)
+  post      Boolean @default(false)
+  text      Boolean @default(false)
+
+  customer Customer? // One-to-one reverse relation
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================
+// EQUIPMENT REGISTRY (Public data like VIN)
+// ============================================
+
+model Equipment {
+  id             String          @id @default(uuid())  // Matches generateEquipmentId()
+  serialNumber   String          @unique // Manufacturer's serial (public identifier)
+  type           EquipmentType
+  manufacturer   String
+  model          String
+  size           String
+  manufactureDate DateTime?
+  status         EquipmentStatus @default(ACTIVE)
+
+  // Reverse relations
+  serviceRecords    ServiceRecords[]
+  customerEquipment CustomerEquipment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([serialNumber])
+  @@index([type])
+}
+
+// ============================================
+// OWNERSHIP REGISTRY (Many-to-Many with history)
+// ============================================
+
+model CustomerEquipment {
+  id String @id @default(cuid())
+
+  // Foreign keys with relations
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  equipmentId String
+  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+
+  // Ownership metadata
+  equipmentSerialNumber String    // Denormalized for convenience
+  ownedFrom             DateTime
+  ownedUntil            DateTime? // null = currently owned
+  purchaseDate          DateTime?
+  purchasePrice         Float?
+  notes                 String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([customerId, equipmentId, ownedFrom]) // Prevent duplicate ownership records
+  @@index([customerId])
+  @@index([equipmentId])
+  @@index([equipmentSerialNumber])
+}
+
+// ============================================
+// SERVICE RECORDS (Bookings & History)
+// ============================================
+
+model ServiceRecords {
+  id               String @id @default(cuid()) // Internal database ID
+  bookingReference String @unique              // Customer-facing: "SVC-001-260512-3F5D"
+
+  // Foreign keys with relations
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  equipmentId String
+  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+
+  // Service details
+  serviceCode String        // SVC-001, SVC-002, etc. (validated in app code)
+  status      ServiceStatus @default(PENDING)
+
+  // Booking form data
+  preferredDate       String // YYYY-MM-DD format (matches validation schema)
+  deliveryMethod      DeliveryMethod
+  contactMethod       ContactMethod
+  specialInstructions String?
+
+  // Business data
+  cost              Float
+  actualServiceDate DateTime?
+  completedBy       String? // Technician name/ID
+  notes             String? // Internal notes
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([customerId])
+  @@index([equipmentId])
+  @@index([status])
+  @@index([preferredDate])
+}
+
+// ============================================
+// WORKSHOP AVAILABILITY
+// ============================================
+
+model DateBlock {
+  id        String    @id @default(cuid())
+  startDate String    // YYYY-MM-DD format
+  endDate   String    // YYYY-MM-DD format
+  reason    String
+  type      BlockType
+
+  createdAt DateTime @default(now())
+
+  @@index([startDate, endDate])
+}
+
+// ============================================
+// TYPE DEFINITIONS (for reference)
+// ============================================
+
+// ServiceCode is defined in your TypeScript code (lib/validation/serviceSchema.ts)
+// Values: SVC-001, SVC-002, SVC-011, PACK-001, REP-001, etc.
+// Stored as String in DB, validated in application code

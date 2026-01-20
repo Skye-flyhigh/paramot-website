@@ -38,7 +38,8 @@ export type ServiceStatus = (typeof SERVICE_STATUSES)[number];
 
 export interface ServiceRecords {
   // Identifiers
-  id: string; // Format: {SERVICE_CODE}-{TIMESTAMP} for workbench integration
+  id: string; // Internal database ID (CUID)
+  bookingReference: string; // Customer-facing reference for invoices: "SVC-001-260512-3F5D"
 
   // Foreign Keys (joining table)
   customerId: string; // Who booked this service

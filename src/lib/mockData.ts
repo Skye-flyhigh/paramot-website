@@ -12,7 +12,8 @@ import { ServiceRecords } from './validation/serviceSchema';
 // Service Records Table
 const serviceRecordsTable: ServiceRecords[] = [
   {
-    id: 'SVC-011-1724198400000',
+    id: 'clz1a2b3c4d5e6f7g8h9i0j1',
+    bookingReference: 'SVC-011-250815-A7F2',
     customerId: 'customer-001',
     equipmentId: 'eq-001',
     serviceCode: 'SVC-011',
@@ -26,7 +27,8 @@ const serviceRecordsTable: ServiceRecords[] = [
     updatedAt: new Date('2025-08-15'),
   },
   {
-    id: 'PACK-001-1724198400001',
+    id: 'clz2k3l4m5n6o7p8q9r0s1t2',
+    bookingReference: 'PACK-001-250818-B3D8',
     customerId: 'customer-001',
     equipmentId: 'eq-002',
     serviceCode: 'PACK-001',
@@ -39,7 +41,8 @@ const serviceRecordsTable: ServiceRecords[] = [
     updatedAt: new Date('2025-08-18'),
   },
   {
-    id: 'SVC-001-1713657600000',
+    id: 'clz3u4v5w6x7y8z9a0b1c2d3',
+    bookingReference: 'SVC-001-250415-C9E4',
     customerId: 'customer-001',
     equipmentId: 'eq-003',
     serviceCode: 'SVC-001',
@@ -54,7 +57,8 @@ const serviceRecordsTable: ServiceRecords[] = [
     updatedAt: new Date('2025-04-25'),
   },
   {
-    id: 'SVC-011-1692576000000',
+    id: 'clz4e5f6g7h8i9j0k1l2m3n4',
+    bookingReference: 'SVC-011-240815-D2A9',
     customerId: 'customer-001',
     equipmentId: 'eq-001',
     serviceCode: 'SVC-011',
@@ -69,7 +73,8 @@ const serviceRecordsTable: ServiceRecords[] = [
     updatedAt: new Date('2024-08-24'),
   },
   {
-    id: 'REP-001-1678406400000',
+    id: 'clz5o6p7q8r9s0t1u2v3w4x5',
+    bookingReference: 'REP-001-240308-E5F1',
     customerId: 'customer-001',
     equipmentId: 'eq-001',
     serviceCode: 'REP-001',
@@ -450,11 +455,26 @@ export function getEquipmentServiceHistory(serialNumber: string): ServiceRecords
  * In production this would be: await prisma.serviceRecords.create({ data })
  */
 export function createServiceRecord(
-  data: Omit<ServiceRecords, 'id' | 'createdAt' | 'updatedAt'>,
+  data: Omit<ServiceRecords, 'id' | 'bookingReference' | 'createdAt' | 'updatedAt'>,
 ): ServiceRecords {
+  // Generate CUID-like ID for mock data (in production, Prisma auto-generates)
+  const mockCuid = `clz${Date.now().toString(36)}${Math.random().toString(36).slice(2, 9)}`;
+
+  // Generate customer-facing booking reference
+  const date = new Date();
+  const year = date.getFullYear().toString().slice(-2);
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const day = date.getDate().toString().padStart(2, '0');
+  const random = Math.floor(Math.random() * 0x10000)
+    .toString(16)
+    .toUpperCase()
+    .padStart(4, '0');
+  const bookingReference = `${data.serviceCode}-${year}${month}${day}-${random}`;
+
   const newRecord: ServiceRecords = {
     ...data,
-    id: `${data.serviceCode}-${Date.now()}`,
+    id: mockCuid,
+    bookingReference,
     createdAt: new Date(),
     updatedAt: new Date(),
   };
