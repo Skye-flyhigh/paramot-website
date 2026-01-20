@@ -1,15 +1,13 @@
-import type {
-  Customer,
-  CustomerEquipment,
-  DateBlock,
-  Equipment,
-  ServiceRecords,
-} from './schema';
-
 // ============================================
 // MOCK DATABASE - Simulates PostgreSQL/SQLite
 // Using the "Car Registration" pattern for ownership
 // ============================================
+
+import { DateBlock } from './schema';
+import { Customer } from './validation/customerSchema';
+import { CustomerEquipment } from './validation/dataLinkSchema';
+import { Equipment } from './validation/equipmentSchema';
+import { ServiceRecords } from './validation/serviceSchema';
 
 // Service Records Table
 const serviceRecordsTable: ServiceRecords[] = [
