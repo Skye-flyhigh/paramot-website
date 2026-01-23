@@ -1,4 +1,4 @@
-import { getBookingsForDate, getDateBlocks } from '../mockData';
+import { findBookingsForDate, findAllDateBlocks } from '../db';
 
 // Workshop configuration
 export const WORKSHOP_CONFIG = {
@@ -25,7 +25,7 @@ export interface DateAvailability {
  * @param dateString - ISO date string (YYYY-MM-DD)
  * @returns Availability details for the date
  */
-export function getAvailability(dateString: string): DateAvailability {
+export async function getAvailability(dateString: string): Promise<DateAvailability> {
   const date = new Date(dateString);
   const dayOfWeek = date.getDay();
 
@@ -43,7 +43,7 @@ export function getAvailability(dateString: string): DateAvailability {
   }
 
   // 2. Check manual date blocks (holidays, maintenance, etc.)
-  const dateBlocks = getDateBlocks();
+  const dateBlocks = await findAllDateBlocks();
   const isBlocked = dateBlocks.some(
     (block) => dateString >= block.startDate && dateString <= block.endDate,
   );
@@ -65,7 +65,7 @@ export function getAvailability(dateString: string): DateAvailability {
   }
 
   // 3. Check capacity (existing bookings)
-  const bookings = getBookingsForDate(dateString);
+  const bookings = await findBookingsForDate(dateString);
   const bookedCount = bookings.length;
   const capacity = WORKSHOP_CONFIG.maxServicesPerDay;
   const remaining = capacity - bookedCount;
@@ -103,10 +103,10 @@ export function getAvailability(dateString: string): DateAvailability {
  * @param endDate - ISO date string (YYYY-MM-DD)
  * @returns Array of availability details for each date in range
  */
-export function getAvailabilityRange(
+export async function getAvailabilityRange(
   startDate: string,
   endDate: string,
-): DateAvailability[] {
+): Promise<DateAvailability[]> {
   const start = new Date(startDate);
   const end = new Date(endDate);
   const availabilities: DateAvailability[] = [];
@@ -114,7 +114,7 @@ export function getAvailabilityRange(
   for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
     const dateStr = d.toISOString().split('T')[0];
 
-    availabilities.push(getAvailability(dateStr));
+    availabilities.push(await getAvailability(dateStr));
   }
 
   return availabilities;
@@ -126,7 +126,7 @@ export function getAvailabilityRange(
  * @param dateString - ISO date string (YYYY-MM-DD)
  * @returns True if the date can be selected for booking
  */
-export function isDateSelectable(dateString: string): boolean {
+export async function isDateSelectable(dateString: string): Promise<boolean> {
   // Don't allow past dates
   const today = new Date();
 
@@ -137,7 +137,7 @@ export function isDateSelectable(dateString: string): boolean {
     return false;
   }
 
-  const availability = getAvailability(dateString);
+  const availability = await getAvailability(dateString);
 
   return availability.available;
 }

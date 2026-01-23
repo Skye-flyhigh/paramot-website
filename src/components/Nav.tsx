@@ -30,11 +30,8 @@ export default async function Nav() {
               </form>
             </>
           ) : (
-            <Link
-              href="/login"
-              className="bg-sky-600 text-white px-4 py-2 rounded hover:bg-sky-700"
-            >
-              Sign In
+            <Link href="/login">
+              <Button>Sign In</Button>
             </Link>
           )}
         </div>
