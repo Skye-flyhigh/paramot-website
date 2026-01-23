@@ -54,15 +54,81 @@ enum BlockType {
 }
 
 // ============================================
-// CUSTOMER & PROFILE DATA
+// NEXTAUTH ADAPTER SCHEMA (Authentication)
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+
+  accounts Account[]
+  sessions Session[]
+
+  // Link to business model (one-to-one)
+  customerId String?   @unique
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============================================
+// CUSTOMER & PROFILE DATA (Business Model)
 // ============================================
 
 model Customer {
-  id        String   @id @default(uuid())  // Matches generateUserId()
-  email     String   @unique
+  id        String @id @default(uuid())
   firstName String
   lastName  String
   phone     String?
+
+  // Link back to auth User
+  userId String? @unique
+  user   User?
 
   // Optional address (one-to-one)
   addressId String?   @unique
@@ -78,8 +144,6 @@ model Customer {
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  @@index([email])
 }
 
 model Address {
