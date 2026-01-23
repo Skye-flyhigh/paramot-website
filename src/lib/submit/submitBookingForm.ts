@@ -5,8 +5,8 @@ import sendEmail, { Email } from '../services/user-mailing';
 import { BookingFormState, bookingFormSchema } from '../validation/bookingForm';
 import type { Equipment } from '../validation/equipmentSchema';
 
-import { generateServiceCode } from '@/lib/helper/id-generator';
 import z from 'zod';
+import { generateBookingReference } from '../helper/id-generator';
 import { createServiceRecord, getEquipmentById } from '../mockData';
 import { ensureCustomer } from '../security/auth-check';
 
@@ -54,7 +54,7 @@ export default async function submitBookingForm(
         success: false,
       };
 
-    const serviceCode = data.serviceType + '-' + generateServiceCode();
+    const serviceCode = generateBookingReference(data.serviceType);
     const serviceTitle = service.title;
     const serviceDescription = service.description;
     const price = getServicePrice(data.serviceType);

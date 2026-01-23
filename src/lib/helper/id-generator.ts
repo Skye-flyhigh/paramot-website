@@ -1,9 +1,11 @@
 /**
- * Generates a human-readable service code with date + hex random
- * Format: YYMMDD-XXXX (e.g., "260119-A3F2")
- * 65,536 unique codes per day (0000-FFFF)
+ * Generates a customer-facing booking reference for invoices/accounting
+ * Format: SVC-001-YYMMDD-XXXX (e.g., "SVC-001-260512-3F5D")
+ * 65,536 unique codes per day per service type (0000-FFFF)
+ *
+ * @param serviceCode The service code (e.g., "SVC-001", "PACK-001")
  */
-function generateServiceCode(): string {
+function generateBookingReference(serviceCode: string): string {
   const date = new Date();
   const year = date.getFullYear().toString().slice(-2);
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -15,7 +17,7 @@ function generateServiceCode(): string {
     .toUpperCase()
     .padStart(4, '0');
 
-  return `${year}${month}${day}-${random}`;
+  return `${serviceCode}-${year}${month}${day}-${random}`;
 }
 
 /**
@@ -34,4 +36,4 @@ function generateEquipmentId(): string {
   return crypto.randomUUID();
 }
 
-export { generateServiceCode, generateUserId, generateEquipmentId };
+export { generateBookingReference, generateUserId, generateEquipmentId };
