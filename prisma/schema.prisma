@@ -130,6 +130,10 @@ model Customer {
   userId String? @unique
   user   User?
 
+  // Legal consent tracking (required for GDPR compliance)
+  termsAcceptedAt         DateTime
+  privacyPolicyAcceptedAt DateTime
+
   // Optional address (one-to-one)
   addressId String?   @unique
   address   Address?  @relation(fields: [addressId], references: [id])
