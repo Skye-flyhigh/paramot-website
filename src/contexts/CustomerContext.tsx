@@ -1,8 +1,7 @@
 'use client';
 
-import { createContext, useContext, ReactNode } from 'react';
-
-import type { Customer } from '@/lib/schema';
+import { Customer } from '@/lib/validation/customerSchema';
+import { createContext, ReactNode, useContext } from 'react';
 
 // Create the context
 const CustomerContext = createContext<Customer | null>(null);

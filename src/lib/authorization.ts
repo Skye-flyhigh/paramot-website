@@ -48,10 +48,7 @@ export function checkEquipmentOwnershipBySerial(
   if (!session?.user?.email) return false; // TODO: use auth-check.ts
 
   // Use test email in development, real email in production
-  const lookupEmail =
-    process.env.NODE_ENV === 'development'
-      ? 'skye@paramot.co.uk' // Test data for local development
-      : session.user.email;
+  const lookupEmail = session.user.email;
 
   const customer = getCustomerByEmail(lookupEmail);
 

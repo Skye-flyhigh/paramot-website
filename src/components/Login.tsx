@@ -1,4 +1,5 @@
 import { signIn } from '@/auth';
+import { Button } from './ui/button';
 // TODO: add other ways to login like emails or apple etc. when there is a database
 
 export default function Login() {
@@ -15,12 +16,9 @@ export default function Login() {
               await signIn('google', { redirectTo: '/dashboard' });
             }}
           >
-            <button
-              type="submit"
-              className="w-full bg-sky-600 text-white py-2 px-4 rounded hover:bg-sky-700 transition-colors"
-            >
+            <Button type="submit" className="w-full">
               Sign in with Google
-            </button>
+            </Button>
           </form>
 
           <div className="text-center">
