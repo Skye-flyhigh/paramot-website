@@ -1,7 +1,5 @@
-import type { Customer } from '@/lib/schema';
-
 import { auth } from '@/auth';
-import { getCustomerByEmail } from '@/lib/mockData';
+import { findCustomerByEmail, type Customer } from '@/lib/db';
 
 /**
  * Authentication result with session email
@@ -63,9 +61,7 @@ export async function ensureCustomer(): Promise<AuthzResult | AuthzError> {
     };
   }
 
-  const customer = getCustomerByEmail(
-    process.env.NODE_ENV === 'development' ? 'skye@paramot.co.uk' : authResult.email,
-  );
+  const customer = await findCustomerByEmail(authResult.email);
 
   if (!customer) {
     return {
