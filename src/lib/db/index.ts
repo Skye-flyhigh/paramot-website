@@ -7,19 +7,20 @@
  */
 
 // Re-export everything from module files
+export * from './availability';
 export * from './client';
 export * from './customers';
 export * from './equipment';
 export * from './serviceRecords';
-export * from './availability';
+export * from './users';
 
 // Type exports for convenience
 export type {
-  Customer,
-  Equipment,
-  ServiceRecords,
-  CustomerEquipment,
-  DateBlock,
   Address,
   Communication,
+  Customer,
+  CustomerEquipment,
+  DateBlock,
+  Equipment,
+  ServiceRecords,
 } from '@/generated/prisma';

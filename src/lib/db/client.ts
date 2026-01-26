@@ -11,8 +11,13 @@ declare global {
 // Singleton pattern: Prevents connection pool exhaustion during development hot-reloads
 export const prisma =
   process.env.NODE_ENV === 'production'
-    ? new PrismaClient() // Production: new instance (deployed once)
-    : (globalThis.prisma ?? (globalThis.prisma = new PrismaClient())); // Dev: reuse global instance
+    ? new PrismaClient({
+        accelerateUrl: process.env.DATABASE_URL!,
+      }) // Production: new instance (deployed once)
+    : (globalThis.prisma ??
+      (globalThis.prisma = new PrismaClient({
+        accelerateUrl: process.env.DATABASE_URL!,
+      }))); // Dev: reuse global instance
 
 // Nullish coalescing (??) checks if globalThis.prisma is null/undefined
 // If it exists, use it; otherwise create new client and store in globalThis.prisma
