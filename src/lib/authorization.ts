@@ -1,60 +1,75 @@
-import type { Session } from 'next-auth';
+import { prisma } from '@/lib/db';
+import { Customer } from './db';
+import { ensureCustomer } from './security/auth-check';
 
-import { getCustomerByEmail, getCustomerEquipment } from './mockData';
+type OwnershipState = { isOwner: true } | { isOwner: false; error: string };
 
 /**
  * Check if the authenticated user owns the specified equipment
  *
- * @param session - NextAuth session (null if not authenticated)
  * @param equipmentId - Equipment ID to check ownership for
  * @returns true if user owns the equipment, false otherwise
- *
- * NOTE: Currently synchronous with mock data. Will become async when using Prisma:
- * const ownership = await prisma.customerEquipment.findFirst({
- *   where: { customerId: session.user.id, equipmentId, ownedUntil: null }
- * });
  */
-export function checkEquipmentOwnership(
-  session: Session | null,
+export async function checkEquipmentOwnershipById(
   equipmentId: string,
-): boolean {
-  if (!session?.user?.email) return false; // TODO: use auth-check.ts here
+): Promise<OwnershipState> {
+  const authCheck = await authCheckHelperForOwnership();
 
-  // Get customer by session email
-  const customer = getCustomerByEmail(session.user.email);
+  if (!authCheck.success) return { isOwner: false, error: authCheck.error };
 
-  if (!customer) return false;
-
-  // Get equipment owned by this customer
-  const ownedEquipment = getCustomerEquipment(customer.id);
+  const ownership = await prisma.customerEquipment.findFirst({
+    where: {
+      customerId: authCheck.customer.id,
+      equipmentId,
+      ownedUntil: null,
+    },
+  });
 
   // Check if this equipment is in their list
-  return ownedEquipment.some((eq) => eq.id === equipmentId);
+  return ownership
+    ? { isOwner: true }
+    : { isOwner: false, error: 'Equipment not owned by customer' };
 }
 
 /**
  * Check if the authenticated user owns equipment by serial number
  *
- * @param session - NextAuth session (null if not authenticated)
  * @param serialNumber - Equipment serial number
  * @returns true if user owns the equipment, false otherwise
- *
- * NOTE: Currently synchronous with mock data. Will become async when using Prisma.
  */
-export function checkEquipmentOwnershipBySerial(
-  session: Session | null,
+export async function checkEquipmentOwnershipBySerial(
   serialNumber: string,
-): boolean {
-  if (!session?.user?.email) return false; // TODO: use auth-check.ts
+): Promise<OwnershipState> {
+  const authCheck = await authCheckHelperForOwnership();
 
-  // Use test email in development, real email in production
-  const lookupEmail = session.user.email;
+  if (!authCheck.success) return { isOwner: false, error: authCheck.error };
 
-  const customer = getCustomerByEmail(lookupEmail);
+  const ownership = await prisma.customerEquipment.findFirst({
+    where: {
+      customerId: authCheck.customer.id,
+      equipment: { serialNumber },
+      ownedUntil: null,
+    },
+  });
 
-  if (!customer) return false;
+  return ownership
+    ? { isOwner: true }
+    : { isOwner: false, error: 'Equipment not owned by customer' };
+}
 
-  const ownedEquipment = getCustomerEquipment(customer.id);
+type AuthCheck =
+  | { success: true; customer: Customer }
+  | { success: false; error: string };
+/**
+ * Helper function checking the auth and making sure the customer exist
+ * @returns OwnershipState | Customer
+ */
+async function authCheckHelperForOwnership(): Promise<AuthCheck> {
+  const authResults = await ensureCustomer();
 
-  return ownedEquipment.some((eq) => eq.serialNumber === serialNumber);
+  if (!authResults.authorized) {
+    return { success: false, error: authResults.error };
+  }
+
+  return { success: true, customer: authResults.customer };
 }
