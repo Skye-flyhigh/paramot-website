@@ -68,7 +68,7 @@ model User {
   sessions Session[]
 
   // Link to business model (one-to-one)
-  customerId String?   @unique
+  customerId String?   @unique @db.Uuid
   customer   Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
 
   createdAt DateTime @default(now())
@@ -121,13 +121,12 @@ model VerificationToken {
 // ============================================
 
 model Customer {
-  id        String @id @default(uuid())
+  id        String @id @default(uuid()) @db.Uuid
   firstName String
   lastName  String
   phone     String?
 
-  // Link back to auth User
-  userId String? @unique
+  // Link back to auth User (reverse relation - no foreign key needed here)
   user   User?
 
   // Legal consent tracking (required for GDPR compliance)
@@ -183,7 +182,7 @@ model Communication {
 // ============================================
 
 model Equipment {
-  id             String          @id @default(uuid())  // Matches generateEquipmentId()
+  id             String          @id @default(cuid())  // Matches generateEquipmentId()
   serialNumber   String          @unique // Manufacturer's serial (public identifier)
   type           EquipmentType
   manufacturer   String
@@ -211,7 +210,7 @@ model CustomerEquipment {
   id String @id @default(cuid())
 
   // Foreign keys with relations
-  customerId String
+  customerId String @db.Uuid
   customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
 
   equipmentId String
@@ -243,7 +242,7 @@ model ServiceRecords {
   bookingReference String @unique              // Customer-facing: "SVC-001-260512-3F5D"
 
   // Foreign keys with relations
-  customerId String
+  customerId String @db.Uuid
   customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
 
   equipmentId String
@@ -262,7 +261,8 @@ model ServiceRecords {
   // Business data
   cost              Float
   actualServiceDate DateTime?
-  completedBy       String? // Technician name/ID
+  assignedTo        String? // User.id of assigned mechanic (for RLS)
+  completedBy       String? // Technician name/ID who completed it
   notes             String? // Internal notes
 
   createdAt DateTime @default(now())
