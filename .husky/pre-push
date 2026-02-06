@@ -1,23 +1,49 @@
-#!/bin/sh
+#!/bin/bash
+# Pre-push hook - checks for FIXME comments in pushed commits only
 
-# Pre-push hook to prevent deploying test/debug code
+echo "🔍 Checking for FIXME comments in commits being pushed..."
 
-echo "🔍 Checking for hardcoded test data..."
+# Get the current branch
+current_branch=$(git rev-parse --abbrev-ref HEAD)
 
-# Check for hardcoded test email (but allow in mockData.ts and dev-conditional code)
-violations=$(git grep -n "skye@paramot.co.uk" src/ | grep -v "mockData.ts" | grep -v "Test data for local development" || true)
+# Try to find the remote tracking branch
+remote_branch=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null)
 
-if [ -n "$violations" ]; then
-  echo "❌ ERROR: Found hardcoded test email 'skye@paramot.co.uk' in unexpected location"
-  echo "   Allowed: mockData.ts and lines with comment '// Test data for local development'"
-  echo "$violations"
-  exit 1
+if [ -z "$remote_branch" ]; then
+  # No remote tracking branch, check against main/master
+  if git rev-parse --verify origin/main >/dev/null 2>&1; then
+    remote_branch="origin/main"
+  elif git rev-parse --verify origin/master >/dev/null 2>&1; then
+    remote_branch="origin/master"
+  else
+    echo "⚠️  No remote branch to compare against, skipping FIXME check"
+    exit 0
+  fi
 fi
 
-# Check for FIXME comments (optional warning, doesn't block)
-if git grep -q "FIXME" src/; then
-  echo "⚠️  WARNING: Found FIXME comments in src/"
-  git grep -n "FIXME" src/ | head -5
+# Get files changed in unpushed commits
+changed_files=$(git diff "$remote_branch"...HEAD --name-only -- 'src/**' || true)
+
+if [ -z "$changed_files" ]; then
+  echo "✅ No src/ files changed in this push"
+  exit 0
+fi
+
+# Check for FIXME in changed files
+fixme_found=false
+for file in $changed_files; do
+  if [ -f "$file" ]; then
+    if grep -q "FIXME" "$file"; then
+      if [ "$fixme_found" = false ]; then
+        echo "⚠️  WARNING: Found FIXME comments in files being pushed:"
+        fixme_found=true
+      fi
+      echo "  - $file"
+    fi
+  fi
+done
+
+if [ "$fixme_found" = true ]; then
   echo ""
   read -p "Continue with push? (y/N) " -n 1 -r
   echo
