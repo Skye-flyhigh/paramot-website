@@ -127,6 +127,7 @@ model Customer {
   phone     String?
 
   // Link back to auth User (reverse relation - no foreign key needed here)
+  userId String @unique @default(cuid())
   user   User?
 
   // Legal consent tracking (required for GDPR compliance)
@@ -135,11 +136,11 @@ model Customer {
 
   // Optional address (one-to-one)
   addressId String?   @unique
-  address   Address?  @relation(fields: [addressId], references: [id])
+  address   Address?  @relation(fields: [addressId], references: [id], onDelete: Cascade)
 
   // Optional communication preferences (one-to-one)
   communicationPreferencesId String?         @unique
-  communicationPreferences   Communication?  @relation(fields: [communicationPreferencesId], references: [id])
+  communicationPreferences   Communication?  @relation(fields: [communicationPreferencesId], references: [id], onDelete: Cascade)
 
   // Reverse relations (what this customer owns/has done)
   serviceRecords    ServiceRecords[]

@@ -291,8 +291,22 @@ ALTER TABLE "ServiceRecords" ADD CONSTRAINT "ServiceRecords_equipmentId_fkey" FO
 -- Customers can only see their own data
 ALTER TABLE "Customer" ENABLE ROW LEVEL SECURITY;
 
+-- Allow customer creation during onboarding (before session exists)
+CREATE POLICY customer_insert_onboarding ON "Customer"
+  FOR INSERT
+  WITH CHECK (true);
+
+-- Customers can only view/update/delete their own data
 CREATE POLICY customer_own_data ON "Customer"
-  FOR ALL
+  FOR SELECT
+  USING ("id" = current_setting('app.customer_id', true)::uuid);
+
+CREATE POLICY customer_update_own ON "Customer"
+  FOR UPDATE
+  USING ("id" = current_setting('app.customer_id', true)::uuid);
+
+CREATE POLICY customer_delete_own ON "Customer"
+  FOR DELETE
   USING ("id" = current_setting('app.customer_id', true)::uuid);
 
 -- Enable RLS on ServiceRecords
