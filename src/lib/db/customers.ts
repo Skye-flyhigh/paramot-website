@@ -1,3 +1,4 @@
+import { OnboardingValues } from '../validation/onboardingForm';
 import { prisma } from './client';
 
 // ============================================
@@ -90,19 +91,38 @@ export async function findCustomerById(id: string) {
  */
 export async function createCustomerFromOnboarding(
   userId: string,
-  data: {
-    firstName: string;
-    lastName: string;
-    phone?: string;
-    termsAcceptedAt: Date;
-    privacyPolicyAcceptedAt: Date;
-  },
+  data: OnboardingValues,
 ) {
-  return await prisma.customer.create({
-    data: {
-      ...data,
-      userId, // Link to existing User
-    },
+  // Use transaction with session variable to bypass RLS during onboarding
+  // Set app.onboarding_mode = true so INSERT policy allows creation
+  return await prisma.$transaction(async (tx) => {
+    // Set session variable to signal onboarding mode
+    await tx.$executeRaw`SELECT set_config('app.onboarding_mode', 'true', TRUE)`;
+
+    // Create customer with bypassed RLS
+    const result = await tx.$queryRaw<{ id: string }[]>`
+      WITH new_customer AS (
+        INSERT INTO "Customer" ("id", "userId", "firstName", "lastName", "phone", "termsAcceptedAt", "privacyPolicyAcceptedAt", "createdAt", "updatedAt")
+        VALUES (
+          gen_random_uuid(),
+          ${userId},
+          ${data.firstName},
+          ${data.lastName},
+          ${data.phone || null},
+          ${data.termsAcceptedAt},
+          ${data.privacyPolicyAcceptedAt},
+          NOW(),
+          NOW()
+        )
+        RETURNING id
+      )
+      UPDATE "User"
+      SET "customerId" = (SELECT id FROM new_customer)
+      WHERE "id" = ${userId}
+      RETURNING "customerId" as id
+    `;
+
+    return { id: result[0].id };
   });
 }
 

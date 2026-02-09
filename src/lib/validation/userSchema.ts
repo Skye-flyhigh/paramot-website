@@ -2,9 +2,7 @@ import z from 'zod';
 import { escapeHTML } from '../security/escapeHTML';
 
 export interface User {
-  firstName: string;
-  lastName: string;
-  phone?: string;
+  name: string;
   userId?: string;
   email: string;
 }
@@ -21,14 +19,12 @@ export const UserDataSchema = z
       .max(100, 'Last name must be less than 100 characters'),
     email: z.email('Invalid email address'),
     userId: z.uuid().optional(),
-    phone: z.string().optional(),
   })
   .transform((data) => ({
     ...data,
     firstName: escapeHTML(data.firstName),
     lastName: escapeHTML(data.lastName),
     email: escapeHTML(data.email),
-    phone: data.phone ? escapeHTML(data.phone) : undefined,
   }));
 
 export type ValidatedUserData = z.infer<typeof UserDataSchema>;
