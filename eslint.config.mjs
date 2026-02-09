@@ -5,13 +5,13 @@
 // Working around circular ref bug in eslint-plugin-react with FlatCompat
 // See: https://github.com/jsx-eslint/eslint-plugin-react/issues/3699
 
-import tseslint from 'typescript-eslint';
+import nextPlugin from '@next/eslint-plugin-next';
+import stylistic from '@stylistic/eslint-plugin';
 import prettierConfig from 'eslint-config-prettier';
+import perfectionist from 'eslint-plugin-perfectionist';
 import react from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
-import nextPlugin from '@next/eslint-plugin-next'
-import stylistic from '@stylistic/eslint-plugin'
-import perfectionist from 'eslint-plugin-perfectionist'
+import tseslint from 'typescript-eslint';
 
 export default [
   // ============================================
@@ -29,6 +29,8 @@ export default [
       '**/public/**',
       '**/.vscode/**',
       '**/tsconfig*.json',
+      'src/generated/**',
+      'react-email-starter/**',
     ],
   },
 
