@@ -2,12 +2,13 @@ import z from 'zod';
 import { escapeHTML } from '../security/escapeHTML';
 
 export interface OnboardingValues {
-  firstName?: string;
-  lastName?: string;
-  userEmail: string;
+  firstName: string;
+  lastName: string;
   phone?: string;
-  terms: boolean;
-  privacy: boolean;
+  terms?: boolean;
+  termsAcceptedAt: Date;
+  privacy?: boolean;
+  privacyPolicyAcceptedAt: Date;
 }
 
 export interface OnboardingFormState {
@@ -20,16 +21,14 @@ export const onboardingDataScheme = z
   .object({
     firstName: z.string(),
     lastName: z.string(),
-    userEmail: z.email().nonempty(),
     phone: z.string().optional(),
-    terms: z.boolean(),
-    privacy: z.boolean(),
-    userId: z.cuid2().nonempty().startsWith('c').min(25).max(31),
+    termsAccepted: z.literal(true, 'You need to accept paraMOT Terms of Service'),
+    privacyAccepted: z.literal(true, 'You need to accept paraMOT Privacy Policy'),
+    userId: z.string().nonempty().min(25).max(40),
   })
   .transform((v) => ({
     ...v,
     firstName: escapeHTML(v.firstName),
     lastName: escapeHTML(v.lastName),
-    userEmail: escapeHTML(v.userEmail),
     phone: v.phone ? escapeHTML(v.phone) : '',
   }));

@@ -1,27 +1,24 @@
-import { redirect } from 'next/navigation';
-
-import { auth } from '@/auth';
-import { findUserByEmail } from '@/lib/db';
+import { notFound, redirect } from 'next/navigation';
 
 import OnboardingDetailsSection from '@/components/onboarding/OnboardingDetailsSection';
 import OnboardingHeader from '@/components/onboarding/OnboardingHeader';
+import { ensureCustomer } from '@/lib/security/auth-check';
 import OnboardingForm from '../../../components/onboarding/OnboardingForm';
 
 export default async function OnboardingPage() {
-  const session = await auth();
+  const authResult = await ensureCustomer();
 
-  // Must be authenticated to see onboarding
-  if (!session?.user?.email) {
-    redirect('/login');
-  }
-
-  // Check if they already completed onboarding
-  const user = await findUserByEmail(session.user.email);
-
-  if (user?.customer) {
+  if (authResult.authorized) {
     // Already completed onboarding → dashboard
     redirect('/dashboard');
   }
+
+  // If not authorized, we should have a session from the auth check
+  if (!authResult.session) {
+    redirect('/dashboard/login');
+  }
+
+  const session = authResult.session;
 
   return (
     <main className="min-h-screen bg-gradient-to-br from-sky-50 to-blue-100 flex items-center justify-center p-4">
@@ -33,7 +30,7 @@ export default async function OnboardingPage() {
 
           <OnboardingForm
             userName={session.user.name || ''}
-            userEmail={session.user.email}
+            userEmail={session.user.email || ''}
           />
         </section>
       </div>

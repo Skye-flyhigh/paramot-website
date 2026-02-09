@@ -3,11 +3,10 @@
 import { getServiceByCode, getServicePrice } from '../schema';
 import sendEmail, { Email } from '../services/user-mailing';
 import { BookingFormState, bookingFormSchema } from '../validation/bookingForm';
-import type { Equipment } from '../validation/equipmentSchema';
 
 import z from 'zod';
+import { createServiceRecord, findEquipmentById } from '../db';
 import { generateBookingReference } from '../helper/id-generator';
-import { createServiceRecord, getEquipmentById } from '../mockData';
 import { ensureCustomer } from '../security/auth-check';
 
 export default async function submitBookingForm(
@@ -38,7 +37,7 @@ export default async function submitBookingForm(
   }
 
   // Retrieve Equipment data & compare with the database
-  const equipment: Equipment = getEquipmentById(data.equipmentId);
+  const equipment = await findEquipmentById(data.equipmentId);
 
   if (!equipment)
     return { ...prevState, errors: { general: 'Equipment not found' }, success: false };
@@ -59,15 +58,14 @@ export default async function submitBookingForm(
     const serviceDescription = service.description;
     const price = getServicePrice(data.serviceType);
 
-    // Create service record in database
-    const newServiceRecord = createServiceRecord({
+    // Create service record in database (auto-generates booking reference)
+    const newServiceRecord = await createServiceRecord({
       customerId: customer.id,
       equipmentId: equipment.id,
-      serviceCode: data.serviceType,
-      status: 'PENDING',
+      serviceCode,
       preferredDate: data.preferredDate,
-      deliveryMethod: data.deliveryMethod,
-      contactMethod: data.contactMethod,
+      deliveryMethod: data.deliveryMethod.toUpperCase() as 'DROP_OFF' | 'POST',
+      contactMethod: data.contactMethod.toUpperCase() as 'EMAIL' | 'PHONE' | 'TEXT',
       specialInstructions: data.specialInstructions,
       cost: typeof price === 'number' ? price : 0,
     });
@@ -79,14 +77,14 @@ export default async function submitBookingForm(
 
     const email: Email = {
       to: {
-        name: customer.name,
+        name: `${customer.firstName} ${customer.lastName}`,
         email: customer.email,
       },
-      subject: `paraMOT - Booking confirmation ${serviceCode} - ${equipmentName}`,
+      subject: `paraMOT - Booking confirmation ${newServiceRecord.bookingReference} - ${equipmentName}`,
       template: 'booking-confirmation',
       templateVariables: {
-        recipientName: customer.name,
-        serviceCode,
+        recipientName: `${customer.firstName} ${customer.lastName}`,
+        serviceCode: newServiceRecord.bookingReference, // Use auto-generated booking reference
         serviceTitle,
         serviceDescription,
         equipmentName,

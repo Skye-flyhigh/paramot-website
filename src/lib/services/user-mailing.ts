@@ -1,6 +1,5 @@
 import { Resend } from 'resend';
-
-import type { ServiceCode } from '../schema';
+import { ServiceCode } from '../validation/serviceSchema';
 
 interface Recipient {
   name: string;
@@ -20,8 +19,11 @@ interface BookingConfirmationVariables {
 
 interface ContactFormVariables {
   recipientName: string;
-  senderEmail: string;
   message: string;
+}
+
+interface NoMessageVariables {
+  recipientName: string;
 }
 
 // Base email fields (common to all emails)
@@ -50,6 +52,11 @@ type TemplatedEmail =
   | (BaseEmail & {
       template: 'contact-form';
       templateVariables: ContactFormVariables;
+      message?: never;
+    })
+  | (BaseEmail & {
+      template: 'welcome-email';
+      templateVariables: NoMessageVariables;
       message?: never;
     });
 

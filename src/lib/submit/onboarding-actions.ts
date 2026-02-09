@@ -2,10 +2,15 @@
 
 import { redirect } from 'next/navigation';
 
-import { auth, signOut } from '@/auth';
 import { createCustomerFromOnboarding, deleteUserAccount } from '@/lib/db';
 import z from 'zod';
-import { onboardingDataScheme, OnboardingFormState } from '../validation/onboardingForm';
+import { ensureAuthenticated } from '../security/auth-check';
+import sendEmail, { Email } from '../services/user-mailing';
+import {
+  onboardingDataScheme,
+  OnboardingFormState,
+  OnboardingValues,
+} from '../validation/onboardingForm';
 
 /**
  * Complete onboarding - creates Customer record with legal consent
@@ -14,15 +19,17 @@ export async function completeOnboarding(
   prevState: OnboardingFormState,
   formData: FormData,
 ): Promise<OnboardingFormState> {
-  const session = await auth();
+  const authResults = await ensureAuthenticated();
 
-  if (!session?.user?.email || !session?.user?.id) {
+  if (!authResults.authenticated) {
     return {
       ...prevState,
-      errors: { general: 'Unauthorized - please sign in again' },
+      errors: { general: authResults.error },
       success: false,
     };
   }
+
+  const session = authResults.session;
 
   try {
     // Extract form data
@@ -33,35 +40,80 @@ export async function completeOnboarding(
       privacyAccepted: formData.get('privacy') === 'on',
       userId: session.user.id,
     };
-
     // Validate required fields
     const { data, error, success } = onboardingDataScheme.safeParse(rawFormData);
 
     if (!success) {
       const formattedError = z.prettifyError(error) || 'Error in validating data';
 
-      return { ...prevState, errors: { general: formattedError }, success: false };
+      return {
+        ...prevState,
+        errors: { general: formattedError },
+        success: false,
+      };
     }
 
     // Create Customer with legal consent timestamps
     const now = new Date();
 
-    await createCustomerFromOnboarding(session.user.id, {
+    const onboardingData: OnboardingValues = {
       firstName: data.firstName.trim(),
       lastName: data.lastName.trim(),
       phone: data.phone?.trim(),
       termsAcceptedAt: now,
       privacyPolicyAcceptedAt: now,
-    });
+    };
 
-    console.log('[Onboarding] Customer created for user:', session.user.email);
+    await createCustomerFromOnboarding(session.user.id, onboardingData);
 
-    // TODO: Send welcome email here
-    // await sendWelcomeEmail(session.user.email);
+    async function sendWelcomeEmail() {
+      const recipient = {
+        name: onboardingData.firstName || session.user.name || '',
+        email: session.user.email,
+      };
+
+      const templateVariables = {
+        recipientName: onboardingData.firstName,
+      };
+
+      const content: Email = {
+        to: recipient,
+        subject: 'Welcome to paraMOT',
+        template: 'welcome-email',
+        templateVariables,
+      };
+
+      const result = await sendEmail(content);
+
+      return result;
+    }
+
+    const welcomeEmail = await sendWelcomeEmail();
+
+    if (!welcomeEmail.success)
+      return {
+        state: onboardingData,
+        success: false,
+        errors: { general: welcomeEmail.error || 'Error in sending confirmation email' },
+      };
 
     // Redirect to dashboard (onboarding complete!)
     redirect('/dashboard');
   } catch (error) {
+    // Re-throw Next.js redirect errors (they're not actual errors)
+    // Check both message and digest for redirect errors
+    if (error instanceof Error) {
+      const isRedirect =
+        error.message === 'NEXT_REDIRECT' ||
+        ('digest' in error &&
+          typeof error.digest === 'string' &&
+          error.digest.startsWith('NEXT_REDIRECT'));
+
+      if (isRedirect) {
+        throw error;
+      }
+    }
+
     console.error('[Onboarding] Error:', error);
 
     return {
@@ -72,27 +124,53 @@ export async function completeOnboarding(
   }
 }
 
+interface DeleteSuccess {
+  success: boolean;
+}
+
+interface DeleteError {
+  success: boolean;
+  error: string;
+}
+
 /**
  * Cancel onboarding - deletes User account and signs out
  */
-export async function cancelOnboarding() {
-  const session = await auth();
+export async function cancelOnboarding(): Promise<DeleteSuccess | DeleteError> {
+  const authResults = await ensureAuthenticated();
 
-  if (!session?.user?.id) {
-    return { error: 'Unauthorized' };
+  if (!authResults.authenticated) {
+    return {
+      error: authResults.error,
+      success: false,
+    };
   }
 
-  try {
-    console.log('[Onboarding] Cancelling for user:', session.user.email);
+  const session = authResults.session;
 
-    // Delete User (cascades to Account and Session)
+  try {
     await deleteUserAccount(session.user.id);
 
-    // Sign out
-    await signOut({ redirectTo: '/' });
+    // Don't call signOut() - session is already cascade-deleted
+    // User will be auto-logged out on next request when cookie validation fails
+    redirect('/');
   } catch (error) {
+    // Re-throw Next.js redirect errors (they're not actual errors)
+    // Check both message and digest for redirect errors
+    if (error instanceof Error) {
+      const isRedirect =
+        error.message === 'NEXT_REDIRECT' ||
+        ('digest' in error &&
+          typeof error.digest === 'string' &&
+          error.digest.startsWith('NEXT_REDIRECT'));
+
+      if (isRedirect) {
+        throw error;
+      }
+    }
+
     console.error('[Onboarding] Cancel error:', error);
 
-    return { error: 'Failed to cancel onboarding' };
+    return { success: false, error: 'Failed to cancel onboarding' };
   }
 }

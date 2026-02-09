@@ -1,12 +1,13 @@
 import { auth } from '@/auth';
-import { findCustomerByEmail, type Customer } from '@/lib/db';
+import type { Customer } from '@/lib/db';
+import { Session } from 'next-auth';
 
 /**
  * Authentication result with session email
  */
 interface AuthResult {
   authenticated: true;
-  email: string;
+  session: Session;
 }
 
 interface AuthError {
@@ -30,7 +31,7 @@ export async function ensureAuthenticated(): Promise<AuthResult | AuthError> {
 
   return {
     authenticated: true,
-    email: session.user.email,
+    session: session,
   };
 }
 
@@ -44,6 +45,7 @@ interface AuthzResult {
 
 interface AuthzError {
   authorized: false;
+  session?: Session;
   error: string;
 }
 
@@ -61,12 +63,50 @@ export async function ensureCustomer(): Promise<AuthzResult | AuthzError> {
     };
   }
 
-  const customer = await findCustomerByEmail(authResult.email);
+  const session = authResult.session;
+
+  // Check if user has completed onboarding (User table has no RLS)
+  if (!session.user.customerId || !session.user.onboardingComplete) {
+    return {
+      authorized: false,
+      session,
+      error: '❌ Customer not found - onboarding incomplete',
+    };
+  }
+
+  // Get full customer data using RLS client
+  const { createCustomerClient } = await import('../db/rls');
+  const customerDb = createCustomerClient(session.user.customerId);
+
+  const customer = await customerDb.customer.findUnique({
+    where: { id: session.user.customerId },
+    include: {
+      serviceRecords: {
+        include: {
+          equipment: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      },
+      customerEquipment: {
+        where: {
+          ownedUntil: null, // Currently owned
+        },
+        include: {
+          equipment: true,
+        },
+      },
+      address: true,
+      communicationPreferences: true,
+    },
+  });
 
   if (!customer) {
     return {
       authorized: false,
-      error: '❌ Customer not found',
+      session,
+      error: '❌ Customer record not found',
     };
   }
 

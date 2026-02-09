@@ -2,6 +2,7 @@
 
 import { cancelOnboarding, completeOnboarding } from '@/lib/submit/onboarding-actions';
 import { OnboardingFormState, OnboardingValues } from '@/lib/validation/onboardingForm';
+import Link from 'next/link';
 import { useActionState, useTransition } from 'react';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -20,10 +21,11 @@ export default function OnboardingForm({ userName, userEmail }: OnboardingFormPr
   const initialValues: OnboardingValues = {
     firstName: firstName || '',
     lastName: lastName || '',
-    userEmail: userEmail || '',
     phone: '',
     terms: false,
+    termsAcceptedAt: new Date(),
     privacy: false,
+    privacyPolicyAcceptedAt: new Date(),
   };
   const initialState: OnboardingFormState = {
     state: initialValues,
@@ -108,7 +110,6 @@ export default function OnboardingForm({ userName, userEmail }: OnboardingFormPr
           type="email"
           value={userEmail}
           readOnly
-          disabled
           className="w-full px-4 py-2 border border-sky-300 rounded-lg bg-gray-50 text-gray-600"
         />
       </div>
@@ -127,39 +128,39 @@ export default function OnboardingForm({ userName, userEmail }: OnboardingFormPr
             defaultChecked={initialState.state.terms}
             className="mt-1 h-4 w-4 text-sky-600 border-gray-300 rounded focus:ring-sky-500"
           />
-          <Label htmlFor="terms" className="text-sm text-gray-700">
+          <Label htmlFor="terms" className="text-sm text-gray-700 block">
             I accept the{' '}
-            <a
+            <Link
               href="/terms"
               target="_blank"
               className="text-sky-600 hover:underline font-medium"
             >
               Terms of Service
-            </a>
+            </Link>
             . I understand that paraMOT will service my equipment according to
             manufacturer guidelines and industry standards.
           </Label>
         </div>
 
-        <div className="flex items-start space-x-3">
+        <div className="flex items-start space-x-3 align-middle">
           <Input
             type="checkbox"
             id="privacy"
             name="privacy"
             required
             disabled={isPending || isCancelling}
-            defaultChecked={initialState.state.privacy}
+            defaultChecked={initialState.state.terms}
             className="mt-1 h-4 w-4 text-sky-600 border-gray-300 rounded focus:ring-sky-500"
           />
-          <Label htmlFor="privacy" className="text-sm text-gray-700">
+          <Label htmlFor="privacy" className="text-sm text-gray-700 block">
             I accept the{' '}
-            <a
+            <Link
               href="/privacy"
               target="_blank"
               className="text-sky-600 hover:underline font-medium"
             >
               Privacy Policy
-            </a>
+            </Link>
             . I consent to paraMOT storing my personal data to provide services.
           </Label>
         </div>
@@ -173,7 +174,7 @@ export default function OnboardingForm({ userName, userEmail }: OnboardingFormPr
       )}
 
       {/* Action Buttons */}
-      <div className="flex gap-4">
+      <div className="flex gap-4 w-full justify-center">
         <Button type="submit" disabled={isPending || isCancelling}>
           {isPending ? 'Setting up your account...' : 'Continue to Dashboard'}
         </Button>
@@ -184,7 +185,7 @@ export default function OnboardingForm({ userName, userEmail }: OnboardingFormPr
           onClick={handleCancel}
           disabled={isPending || isCancelling}
         >
-          {isCancelling ? 'Processing Cancellation...' : 'Cancel'}
+          {isCancelling ? 'Processing Cancellation...' : 'Cancel and delete data'}
         </Button>
       </div>
 

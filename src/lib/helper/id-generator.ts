@@ -28,12 +28,4 @@ function generateUserId(): string {
   return crypto.randomUUID();
 }
 
-/**
- * Generates a UUID for equipment IDs
- * Globally unique, cryptographically secure
- */
-function generateEquipmentId(): string {
-  return crypto.randomUUID();
-}
-
-export { generateBookingReference, generateUserId, generateEquipmentId };
+export { generateBookingReference, generateUserId };
