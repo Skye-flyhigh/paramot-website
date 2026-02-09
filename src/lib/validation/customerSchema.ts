@@ -1,20 +1,19 @@
 import { z } from 'zod';
 
 import { escapeHTML } from '../security/escapeHTML';
-import { ServiceRecords } from './serviceSchema';
 
 export interface Customer {
   id: string; // OAuth email or generated ID
   firstName: string;
   lastName: string;
-  phone?: string; // optional contact info
+  phone: string | null; // optional contact info
   userId: string;
-  address?: string; // for service collection/delivery
+  addressId: string | null; // for service collection/delivery
   createdAt: Date;
   updatedAt: Date;
-  lastConnection: Date;
-  serviceHistory: ServiceRecords[];
-  communicationPreferences: Record<string, string>;
+  communicationPreferencesId?: string | null;
+  termsAcceptedAt: Date;
+  privacyPolicyAcceptedAt: Date;
 }
 
 export interface CustomerFormState {
