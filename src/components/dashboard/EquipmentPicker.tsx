@@ -171,6 +171,7 @@ export function EquipmentPicker({
                   <Select
                     name="type"
                     value={equipmentType}
+                    disabled={isPending}
                     onValueChange={(value) => setEquipmentType(value as EquipmentType)}
                   >
                     <SelectTrigger id="type">
@@ -192,6 +193,7 @@ export function EquipmentPicker({
                     name="manufacturer"
                     type="text"
                     required
+                    disabled={isPending}
                     className={state.errors.manufacturer ? 'border-red-500' : ''}
                     defaultValue={state.formData.manufacturer}
                   />
@@ -207,6 +209,7 @@ export function EquipmentPicker({
                     name="model"
                     type="text"
                     required
+                    disabled={isPending}
                     className={state.errors.model ? 'border-red-500' : ''}
                     defaultValue={state.formData.model}
                   />
@@ -222,6 +225,7 @@ export function EquipmentPicker({
                     name="size"
                     type="text"
                     required
+                    disabled={isPending}
                     className={state.errors.size ? 'border-red-500' : ''}
                     defaultValue={state.formData.size}
                   />
@@ -236,6 +240,7 @@ export function EquipmentPicker({
                     id="serialNumber"
                     name="serialNumber"
                     type="text"
+                    disabled={isPending}
                     className={state.errors.serialNumber ? 'border-red-500' : ''}
                     defaultValue={state.formData.serialNumber}
                   />
