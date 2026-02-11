@@ -23,14 +23,14 @@ export default async function Nav() {
               <form
                 action={async () => {
                   'use server';
-                  await signOut();
+                  await signOut({ redirectTo: '/' });
                 }}
               >
                 <Button type="submit">Sign Out</Button>
               </form>
             </>
           ) : (
-            <Link href="/login">
+            <Link href="/dashboard/login">
               <Button>Sign In</Button>
             </Link>
           )}

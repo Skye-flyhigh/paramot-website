@@ -10,9 +10,9 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Card,
   CardContent,
+  CardDescription,
   CardHeader,
   CardTitle,
-  CardDescription,
 } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -147,7 +147,7 @@ export default function ContactForm({ equipment, onClose }: ContactFormProps) {
               )}
             </div>
             <div className="flex w-full justify-end">
-              <SubmitButton isPending={isPending}>
+              <SubmitButton isPending={isPending} loadingText="Sending...">
                 <Send />
                 Send Message
               </SubmitButton>
