@@ -2,6 +2,7 @@
 
 import { cancelOnboarding, completeOnboarding } from '@/lib/submit/onboarding-actions';
 import { OnboardingFormState, OnboardingValues } from '@/lib/validation/onboardingForm';
+import { LoaderCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useActionState, useTransition } from 'react';
 import { Button } from '../ui/button';
@@ -176,7 +177,14 @@ export default function OnboardingForm({ userName, userEmail }: OnboardingFormPr
       {/* Action Buttons */}
       <div className="flex gap-4 w-full justify-center">
         <Button type="submit" disabled={isPending || isCancelling}>
-          {isPending ? 'Setting up your account...' : 'Continue to Dashboard'}
+          {isPending ? (
+            <>
+              <LoaderCircle className="w-5 h-5 animate-spin" />
+              Setting up your account...
+            </>
+          ) : (
+            'Continue to Dashboard'
+          )}
         </Button>
 
         <Button
@@ -185,7 +193,14 @@ export default function OnboardingForm({ userName, userEmail }: OnboardingFormPr
           onClick={handleCancel}
           disabled={isPending || isCancelling}
         >
-          {isCancelling ? 'Processing Cancellation...' : 'Cancel and delete data'}
+          {isCancelling ? (
+            <>
+              <LoaderCircle className="w-5 h-5 animate-spin" />
+              Processing Cancellation...
+            </>
+          ) : (
+            'Cancel and delete data'
+          )}
         </Button>
       </div>
 
