@@ -11,6 +11,7 @@ import submitBookingForm from '@/lib/submit/submitBookingForm';
 import { isTandemGlider } from '@/lib/utils';
 
 import { ServiceCode, ServiceRecords } from '@/lib/validation/serviceSchema';
+import { LoaderCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Label } from '../ui/label';
 import { RadioGroup, RadioGroupItem } from '../ui/radio-group';
@@ -335,11 +336,16 @@ export default function BookingModal({
               Cancel
             </Button>
             <Button type="submit" variant="default" disabled={hasNoService || isPending}>
-              {isPending
-                ? 'Submitting...'
-                : existingBooking
-                  ? 'Update Booking'
-                  : 'Submit Booking'}
+              {isPending ? (
+                <>
+                  <LoaderCircle className="w-5 h-5 animate-spin" />
+                  Submitting...
+                </>
+              ) : existingBooking ? (
+                'Update Booking'
+              ) : (
+                'Submit Booking'
+              )}
             </Button>
           </div>
         </form>

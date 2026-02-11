@@ -3,11 +3,8 @@ import { prisma } from './client';
 /**
  * Find equipment by serial number (public lookup for equipment pages)
  * Includes full service history (regardless of current owner)
-<<<<<<< Updated upstream
  *
  * Note: Cost is included but should only be shown to equipment owner in UI
-=======
->>>>>>> Stashed changes
  */
 export async function findEquipmentBySerialNumber(serialNumber: string) {
   return await prisma.equipment.findUnique({
@@ -17,9 +14,6 @@ export async function findEquipmentBySerialNumber(serialNumber: string) {
         orderBy: {
           createdAt: 'desc',
         },
-<<<<<<< Updated upstream
-        // Include all fields - UI will conditionally render sensitive data based on ownership
-=======
         select: {
           id: true,
           bookingReference: true,
@@ -31,7 +25,6 @@ export async function findEquipmentBySerialNumber(serialNumber: string) {
           // DO NOT include customer info (PII protection)
           // DO NOT include cost (commercially sensitive)
         },
->>>>>>> Stashed changes
       },
     },
   });

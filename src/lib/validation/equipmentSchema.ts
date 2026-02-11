@@ -9,7 +9,7 @@ export interface Equipment {
   manufacturer: string;
   model: string;
   size: string;
-  manufactureDate?: Date;
+  manufactureDate?: Date | null;
   status: 'active' | 'retired' | 'damaged' | 'decommissioned';
   createdAt: Date;
   updatedAt: Date;

@@ -5,7 +5,7 @@ import { auth } from '@/auth';
 import ServiceHistoryTable from '@/components/dashboard/ServiceHistoryTable';
 import ServiceActionButtons from '@/components/equipment/ServiceActionButtons';
 import { checkEquipmentOwnershipBySerial } from '@/lib/authorization';
-import { getEquipmentBySerialNumber, getEquipmentServiceHistory } from '@/lib/mockData';
+import { findEquipmentBySerialNumber } from '@/lib/db';
 import { getServiceDescription, getStatusColor } from '@/lib/styling/services';
 
 export default async function ServiceDetailPage({
@@ -15,9 +15,9 @@ export default async function ServiceDetailPage({
 }) {
   const session = await auth();
 
-  // Find equipment by serial number
+  // Find equipment by serial number (includes service records via join)
   const { slug } = await params;
-  const equipment = getEquipmentBySerialNumber(slug);
+  const equipment = await findEquipmentBySerialNumber(slug);
 
   if (!equipment) {
     notFound();
@@ -26,8 +26,8 @@ export default async function ServiceDetailPage({
   // Check if authenticated user owns this equipment
   const isOwner = checkEquipmentOwnershipBySerial(session, equipment.serialNumber);
 
-  // Get complete service history for this equipment
-  const serviceHistory = getEquipmentServiceHistory(equipment.serialNumber);
+  // Service history is already loaded via relation
+  const serviceHistory = equipment.serviceRecords;
   const lastService = serviceHistory.length > 0 ? serviceHistory[0] : null;
 
   if (!lastService) {
@@ -59,7 +59,7 @@ export default async function ServiceDetailPage({
                   {equipment.manufacturer} {equipment.model} ({equipment.size})
                 </span>
               </h1>
-              <p>Last service: {lastService.id}</p>
+              <p>Last service: {lastService.bookingReference}</p>
             </div>
             <div className="text-right">
               <span
@@ -104,8 +104,12 @@ export default async function ServiceDetailPage({
                       <p className="text-sky-900">{lastService.serviceCode}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-sky-600 font-medium">Service ID</p>
-                      <p className="text-sky-900 font-mono text-sm">{lastService.id}</p>
+                      <p className="text-sm text-sky-600 font-medium">
+                        Booking Reference
+                      </p>
+                      <p className="text-sky-900 font-mono text-sm">
+                        {lastService.bookingReference}
+                      </p>
                     </div>
                   </div>
                 </div>

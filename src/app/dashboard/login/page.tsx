@@ -1,14 +1,21 @@
-import { auth } from '@/auth';
 import Login from '@/components/Login';
+import { ensureCustomer } from '@/lib/security/auth-check';
+import { redirect } from 'next/navigation';
 
 export default async function LoginPage() {
-  const session = await auth();
+  const authResult = await ensureCustomer();
 
-  if (!session) return <Login />;
+  if (authResult.authorized) {
+    // Already completed onboarding → dashboard
+    redirect('/dashboard');
+  }
 
-  return (
-    <div>
-      <h1>Welcome back!</h1>
-    </div>
-  );
+  // Not authorized - either no session or no customer record
+  // If they have a session but no customer, send to onboarding
+  if (authResult.session) {
+    redirect('/dashboard/onboarding');
+  }
+
+  // No session at all - show login form
+  return <Login />;
 }

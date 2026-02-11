@@ -1,4 +1,4 @@
-import { notFound, redirect } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 import OnboardingDetailsSection from '@/components/onboarding/OnboardingDetailsSection';
 import OnboardingHeader from '@/components/onboarding/OnboardingHeader';

@@ -2,12 +2,10 @@
 
 import { useState } from 'react';
 
-import type { Customer } from '@/lib/schema';
-import type { Equipment } from '@/lib/validation/equipmentSchema';
+import type { Equipment, EquipmentType } from '@/lib/validation/equipmentSchema';
 
 import { useCustomer } from '@/contexts/CustomerContext';
 import { useBookingModal } from '@/hooks/useBookingModal';
-import { getCustomerEquipment } from '@/lib/mockData';
 
 import CustomerDetails from '../customer/CustomerDetails';
 import { Button } from '../ui/button';
@@ -18,9 +16,18 @@ export function DashboardCTA() {
   const { modalState, openModal, closeModal } = useBookingModal();
   const [newEquipment, setNewEquipment] = useState<Equipment | null>(null);
   const [openContact, setOpenContact] = useState<boolean>(false);
-  const customer: Customer = useCustomer();
+  const customer = useCustomer();
 
-  const equipmentList = getCustomerEquipment(customer.id);
+  // Equipment list from customer context (already loaded with relations)
+  const equipmentList: Equipment[] = customer.customerEquipment.map((e) => {
+    const equipment = {
+      ...e.equipment,
+      type: e.equipment.type.toLocaleLowerCase() as EquipmentType,
+      status: e.equipment.status.toLocaleLowerCase() as Equipment['status'],
+    };
+
+    return equipment;
+  });
 
   return (
     <>

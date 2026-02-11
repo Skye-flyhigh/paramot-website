@@ -1,20 +1,22 @@
 'use client';
 
-import { Customer } from '@/lib/validation/customerSchema';
+import { Dashboard } from '@/lib/types/dashboard';
 import { createContext, ReactNode, useContext } from 'react';
 
 // Create the context
-const CustomerContext = createContext<Customer | null>(null);
+const CustomerContext = createContext<Dashboard | null>(null);
 
 // Provider component
 export function CustomerProvider({
-  customer,
+  dashboardData,
   children,
 }: {
-  customer: Customer;
+  dashboardData: Dashboard;
   children: ReactNode;
 }) {
-  return <CustomerContext.Provider value={customer}>{children}</CustomerContext.Provider>;
+  return (
+    <CustomerContext.Provider value={dashboardData}>{children}</CustomerContext.Provider>
+  );
 }
 
 // Custom hook for easy access
