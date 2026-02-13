@@ -1,14 +1,11 @@
 'use client';
 
-import type { Equipment } from '@/lib/validation/equipmentSchema';
-
 import { Button } from '@/components/ui/button';
 import { useBookingModal } from '@/hooks/useBookingModal';
-import { getEquipmentById } from '@/lib/mockData';
 import { getStatusColor } from '@/lib/styling/services';
 
+import type { Equipment, ServiceRecords } from '@/lib/db';
 import { getServicesList } from '@/lib/schema';
-import { ServiceRecords } from '@/lib/validation/serviceSchema';
 import BookingModal from './BookingModal';
 
 export default function ServiceHistoryTable({
@@ -28,8 +25,8 @@ export default function ServiceHistoryTable({
     // If equipment prop provided (single equipment view), use that
     if (equipment && equipment.id === service.equipmentId) return equipment;
 
-    // Otherwise look it up
-    return getEquipmentById(service.equipmentId);
+    // Otherwise use equipment from relation (already loaded via join)
+    return service.equipment;
   };
 
   // Helper to get service title from code
@@ -41,7 +38,7 @@ export default function ServiceHistoryTable({
 
   return (
     <div
-      className="bg-white rounded-lg shadow-sm border border-sky-200 mt-8"
+      className="bg-white rounded-lg shadow-sm border border-sky-200 mt-8 max-w-full"
       id="service-history-table"
     >
       <div className="p-6 border-b border-sky-100">
@@ -69,7 +66,7 @@ export default function ServiceHistoryTable({
                 </th>
               )}
               <th className="px-6 py-3 text-left text-xs font-medium text-sky-500 uppercase tracking-wider">
-                Service ID
+                Booking Ref
               </th>
               {isOwner && (
                 <th className="px-6 py-3 text-left text-xs font-medium text-sky-500 uppercase tracking-wider">
@@ -108,7 +105,7 @@ export default function ServiceHistoryTable({
                     </td>
                   )}
                   <td className="px-6 py-4 whitespace-nowrap text-xs font-mono text-sky-500">
-                    {service.id}
+                    {service.bookingReference}
                   </td>
                   {isOwner && (
                     <td className="px-6 py-4 whitespace-nowrap text-sm">

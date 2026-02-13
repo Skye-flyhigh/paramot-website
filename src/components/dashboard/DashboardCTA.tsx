@@ -7,7 +7,7 @@ import type { Equipment, EquipmentType } from '@/lib/validation/equipmentSchema'
 import { useCustomer } from '@/contexts/CustomerContext';
 import { useBookingModal } from '@/hooks/useBookingModal';
 
-import CustomerDetails from '../customer/CustomerDetails';
+import { redirect } from 'next/navigation';
 import { Button } from '../ui/button';
 import BookingModal from './BookingModal';
 import { EquipmentPicker } from './EquipmentPicker';
@@ -15,7 +15,6 @@ import { EquipmentPicker } from './EquipmentPicker';
 export function DashboardCTA() {
   const { modalState, openModal, closeModal } = useBookingModal();
   const [newEquipment, setNewEquipment] = useState<Equipment | null>(null);
-  const [openContact, setOpenContact] = useState<boolean>(false);
   const customer = useCustomer();
 
   // Equipment list from customer context (already loaded with relations)
@@ -56,15 +55,12 @@ export function DashboardCTA() {
           ))}
         <Button
           type="button"
-          onClick={() => setOpenContact(!openContact)}
-          variant={openContact ? 'default' : 'outline'}
+          onClick={() => redirect('/dashboard/settings')}
+          variant={'outline'}
         >
           Update contact details
         </Button>
       </div>
-      {openContact && (
-        <CustomerDetails customer={customer} onClose={() => setOpenContact(false)} />
-      )}
     </>
   );
 }

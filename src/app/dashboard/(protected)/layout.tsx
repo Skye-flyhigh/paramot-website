@@ -22,7 +22,7 @@ export default async function DashboardLayout({
     <CustomerProvider dashboardData={dashboardData}>
       <div className="flex min-h-screen bg-sky-50">
         {authResult.authorized && <Sidebar />}
-        <main className="flex-1 p-8">{children}</main>
+        <main className="flex-1 min-w-0 max-w-300 mx-auto p-8">{children}</main>
       </div>
     </CustomerProvider>
   );

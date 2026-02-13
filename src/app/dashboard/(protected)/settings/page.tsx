@@ -1,17 +1,28 @@
 'use client';
 
-import { Settings, User, Mail, Phone, MapPin } from 'lucide-react';
+import { Mail, MapPin, Phone, Plus, Settings, User } from 'lucide-react';
 
+import SettingsForm from '@/components/dashboard/SettingsForm';
+import { Button } from '@/components/ui/button';
+import XButton from '@/components/ui/x-button';
 import { useCustomer } from '@/contexts/CustomerContext';
+import { useState } from 'react';
 
 export default function SettingsPage() {
+  const [openSettingsModal, setOpenSettingsModal] = useState<boolean>(false);
   const customer = useCustomer();
 
   return (
     <div>
-      <header className="mb-6">
-        <h1 className="text-3xl font-bold text-sky-900">Settings</h1>
-        <p className="text-sky-600 mt-1">Manage your account and preferences</p>
+      <header className="mb-6 flex items-center justify-between ">
+        <div className="">
+          <h1 className="text-3xl font-bold text-sky-900">Settings</h1>
+          <p className="text-sky-600 mt-1">Manage your account and preferences</p>
+        </div>
+        <Button onClick={() => setOpenSettingsModal(true)}>
+          <Plus className="w-4 h-4 mr-2" />
+          Update Contact details
+        </Button>
       </header>
 
       {/* Profile Section */}
@@ -126,6 +137,21 @@ export default function SettingsPage() {
           <p className="text-sky-500">No preferences set</p>
         )}
       </section>
+
+      {openSettingsModal && (
+        <div className="fixed inset-0 bg-slate-900/70 backdrop-blur-sm flex items-center justify-center p-4">
+          <dialog
+            open={openSettingsModal}
+            className="relative bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto m-0"
+          >
+            <header className="flex items-center justify-between p-6 border-b">
+              <h2 className="text-xl font-semibold">Update Contact Details</h2>
+              <XButton onClose={() => setOpenSettingsModal(false)} />
+            </header>
+            <SettingsForm onClose={() => setOpenSettingsModal(false)} />
+          </dialog>
+        </div>
+      )}
     </div>
   );
 }

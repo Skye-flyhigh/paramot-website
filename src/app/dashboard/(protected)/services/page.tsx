@@ -1,9 +1,9 @@
 'use client';
 
-import { Wrench, Plus } from 'lucide-react';
+import { Plus, Wrench } from 'lucide-react';
 
-import { Button } from '@/components/ui/button';
 import ServiceHistoryTable from '@/components/dashboard/ServiceHistoryTable';
+import { Button } from '@/components/ui/button';
 import { useCustomer } from '@/contexts/CustomerContext';
 
 export default function ServicesPage() {

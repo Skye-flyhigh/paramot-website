@@ -1,8 +1,9 @@
 'use client';
 
 import { DashboardCTA } from '@/components/dashboard/DashboardCTA';
-import ServiceHistoryTable from '@/components/dashboard/ServiceHistoryTable';
+import Notifications from '@/components/dashboard/Notifications';
 import ServiceTable from '@/components/dashboard/ServiceTable';
+import ServicingReminder from '@/components/dashboard/ServicingReminder';
 import { useCustomer } from '@/contexts/CustomerContext';
 
 export default function DashboardHome() {
@@ -12,25 +13,20 @@ export default function DashboardHome() {
     <div id="dashboard-home">
       {/* Header */}
       <header className="bg-white rounded-lg shadow-sm border border-sky-200 p-6 mb-6">
-        <div>
-          <h1 className="text-3xl font-bold text-sky-900">
-            Welcome back, {customer.firstName}
-          </h1>
-          <p className="text-sky-600 mt-1">Customer Portal</p>
-        </div>
-
+        <h1 className="text-3xl font-bold text-sky-900">
+          Welcome back, {customer.firstName}
+        </h1>
+        <p className="text-sky-600 mt-1">Customer Portal</p>
         <DashboardCTA />
       </header>
 
       {/* Service Records */}
       <section className="mt-6">
+        <Notifications />
         {customer.serviceRecords.length > 0 ? (
           <>
             <ServiceTable />
-            <ServiceHistoryTable
-              serviceHistory={customer.serviceRecords}
-              isOwner={true}
-            />
+            <ServicingReminder />
           </>
         ) : (
           <div className="bg-white rounded-lg shadow-sm border border-sky-200 p-12 text-center">
