@@ -105,7 +105,7 @@ export async function findCurrentOwnerBySerialNumber(serialNumber: string) {
  * Create new equipment
  */
 export async function createEquipment(data: {
-  serialNumber: string;
+  serialNumber: string | null;
   type: 'GLIDER' | 'RESERVE' | 'HARNESS';
   manufacturer: string;
   model: string;
@@ -113,6 +113,47 @@ export async function createEquipment(data: {
   manufactureDate?: Date;
 }) {
   return await prisma.equipment.create({
-    data,
+    data: {
+      ...data,
+      serialNumber: data.serialNumber ?? `temp-${Date.now()}`,
+    },
   });
+}
+
+/**
+ * Link equipment to a customer (ownership record)
+ * Creates a CustomerEquipment junction record
+ */
+export async function linkEquipmentToCustomer(
+  equipmentId: string,
+  customerId: string,
+  equipmentSerialNumber: string,
+) {
+  return await prisma.customerEquipment.create({
+    data: {
+      customerId,
+      equipmentId,
+      equipmentSerialNumber,
+      ownedFrom: new Date(),
+      ownedUntil: null, // Currently owns it
+    },
+  });
+}
+
+/**
+ * Check if customer already owns this equipment
+ */
+export async function checkCustomerOwnsEquipment(
+  customerId: string,
+  equipmentId: string,
+): Promise<boolean> {
+  const ownership = await prisma.customerEquipment.findFirst({
+    where: {
+      customerId,
+      equipmentId,
+      ownedUntil: null, // Currently owned
+    },
+  });
+
+  return !!ownership;
 }

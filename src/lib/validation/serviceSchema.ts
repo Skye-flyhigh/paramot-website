@@ -13,6 +13,7 @@ export const SERVICE_CODE = [
   'SVC-002',
   'SVC-011',
   'SVC-012',
+  'SVC-031', // Harness service
   'PACK-001',
   'PACK-002',
   'REP-001',

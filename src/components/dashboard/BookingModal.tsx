@@ -1,5 +1,6 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { useActionState, useEffect, useState } from 'react';
 
 import type { BookingFormData, BookingFormState } from '@/lib/validation/bookingForm';
@@ -10,7 +11,7 @@ import { getServicePrice, getServicesList } from '@/lib/schema';
 import submitBookingForm from '@/lib/submit/submitBookingForm';
 import { isTandemGlider } from '@/lib/utils';
 
-import { ServiceCode, ServiceRecords } from '@/lib/validation/serviceSchema';
+import { ServiceCode } from '@/lib/validation/serviceSchema';
 import { LoaderCircle } from 'lucide-react';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Label } from '../ui/label';
@@ -26,11 +27,20 @@ import { ServiceDatePicker } from '../ui/service-date-picker';
 import { Textarea } from '../ui/textarea';
 import XButton from '../ui/x-button';
 
+// Minimal type for existing booking - works with both Prisma and validation schema types
+interface ExistingBooking {
+  serviceCode: string;
+  preferredDate: string;
+  deliveryMethod: string;
+  contactMethod: string;
+  specialInstructions?: string | null;
+}
+
 export interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
   equipment: Equipment;
-  existingBooking?: ServiceRecords;
+  existingBooking?: ExistingBooking;
 }
 
 const serviceTypeInit = '';
@@ -41,12 +51,16 @@ export default function BookingModal({
   equipment,
   existingBooking,
 }: BookingModalProps) {
+  const router = useRouter();
+
   const initialValue: BookingFormData = {
-    serviceType: existingBooking?.serviceCode || serviceTypeInit,
+    serviceType: (existingBooking?.serviceCode as ServiceCode) || serviceTypeInit,
     preferredDate: existingBooking?.preferredDate || '',
-    deliveryMethod: existingBooking?.deliveryMethod || 'drop-off',
+    deliveryMethod:
+      (existingBooking?.deliveryMethod as 'DROP_OFF' | 'POST') || 'DROP_OFF',
     specialInstructions: existingBooking?.specialInstructions || '',
-    contactMethod: existingBooking?.contactMethod || 'email',
+    contactMethod:
+      (existingBooking?.contactMethod as 'EMAIL' | 'PHONE' | 'TEXT') || 'EMAIL',
     equipmentId: equipment.id,
   };
 
@@ -67,13 +81,15 @@ export default function BookingModal({
     if (state.success && onClose) {
       const timer = setTimeout(() => {
         onClose();
+        // Refresh server components after modal closes to reload customer data
+        router.refresh();
       }, 5000);
 
       return () => {
         clearTimeout(timer);
       };
     }
-  }, [state.success, onClose]);
+  }, [state.success, onClose, router]);
 
   // Event listening for pressing enter to submit the modal
   useEffect(() => {
@@ -97,7 +113,7 @@ export default function BookingModal({
   // Filter services based on equipment type
   const applicableServices = serviceList.filter((service) => {
     switch (equipment.type) {
-      case 'glider':
+      case 'GLIDER':
         // Gliders can have servicing, trimming, and repairs
 
         const isTandem = isTandemGlider(equipment);
@@ -107,10 +123,10 @@ export default function BookingModal({
         } else {
           return ['SVC-001', 'SVC-011', 'REP-001'].includes(service.code);
         }
-      case 'reserve':
+      case 'RESERVE':
         // Reserves need repacking and repairs
         return ['PACK-001', 'PACK-002', 'REP-001'].includes(service.code);
-      case 'harness':
+      case 'HARNESS':
         // Harnesses only need servicing
         return ['SVC-031'].includes(service.code);
       default:
@@ -186,7 +202,7 @@ export default function BookingModal({
             {/* Hidden Equipment data */}
             <input type="hidden" name="equipment-id" value={equipment.id} />
 
-            <Label className="block text-sm font-medium text-gray-700 mb-3">
+            <Label className="block text-sm font-medium text-gray-700 my-3">
               Service Type
             </Label>
             <div className="space-y-3">
@@ -260,15 +276,15 @@ export default function BookingModal({
             <Label>Delivery Method</Label>
             <Select
               value={deliveryMethod}
-              onValueChange={(value) => setDeliveryMethod(value as 'drop-off' | 'post')}
+              onValueChange={(value) => setDeliveryMethod(value as 'DROP_OFF' | 'POST')}
               disabled={hasNoService || isPending}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select a delivery method" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="drop-off">Drop off in person</SelectItem>
-                <SelectItem value="post">Post/Courier</SelectItem>
+                <SelectItem value="DROP_OFF">Drop off in person</SelectItem>
+                <SelectItem value="POST">Post/Courier</SelectItem>
               </SelectContent>
             </Select>
             {/* Hidden input for FormData */}
@@ -302,7 +318,7 @@ export default function BookingModal({
             <Select
               value={contactMethod}
               onValueChange={(value) =>
-                setContactMethod(value as 'email' | 'phone' | 'text')
+                setContactMethod(value as 'EMAIL' | 'PHONE' | 'TEXT')
               }
               disabled={hasNoService || isPending}
             >
@@ -310,9 +326,9 @@ export default function BookingModal({
                 <SelectValue placeholder="Select a contact method" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="email">Email</SelectItem>
-                <SelectItem value="phone">Phone call</SelectItem>
-                <SelectItem value="text">Text message</SelectItem>
+                <SelectItem value="EMAIL">Email</SelectItem>
+                <SelectItem value="PHONE">Phone call</SelectItem>
+                <SelectItem value="TEXT">Text message</SelectItem>
               </SelectContent>
             </Select>
             {/* Hidden input for FormData */}
@@ -326,7 +342,7 @@ export default function BookingModal({
           <input type="hidden" name="equipmentId" value={equipment.id} />
 
           {/* Actions */}
-          <div className="flex justify-end space-x-4 pt-4 border-t">
+          <div className="flex justify-end items-center space-x-4 pt-4 border-t">
             <Button
               type="button"
               variant="ghost"

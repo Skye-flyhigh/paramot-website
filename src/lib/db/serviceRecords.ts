@@ -103,6 +103,37 @@ export async function findBookingsForDate(date: string) {
 }
 
 /**
+ * Get booking counts for a date range (batch query for calendar)
+ * Returns a map of date -> booking count
+ */
+export async function findBookingCountsForRange(
+  startDate: string,
+  endDate: string,
+): Promise<Map<string, number>> {
+  const bookings = await prisma.serviceRecords.groupBy({
+    by: ['preferredDate'],
+    where: {
+      preferredDate: {
+        gte: startDate,
+        lte: endDate,
+      },
+      status: 'PENDING',
+    },
+    _count: {
+      preferredDate: true,
+    },
+  });
+
+  const countMap = new Map<string, number>();
+
+  for (const booking of bookings) {
+    countMap.set(booking.preferredDate, booking._count.preferredDate);
+  }
+
+  return countMap;
+}
+
+/**
  * Create a new service record (booking)
  */
 export async function createServiceRecord(data: {

@@ -18,15 +18,11 @@ export function DashboardCTA() {
   const customer = useCustomer();
 
   // Equipment list from customer context (already loaded with relations)
-  const equipmentList: Equipment[] = customer.customerEquipment.map((e) => {
-    const equipment = {
-      ...e.equipment,
-      type: e.equipment.type.toLocaleLowerCase() as EquipmentType,
-      status: e.equipment.status.toLocaleLowerCase() as Equipment['status'],
-    };
-
-    return equipment;
-  });
+  const equipmentList: Equipment[] = customer.customerEquipment.map((e) => ({
+    ...e.equipment,
+    type: e.equipment.type as EquipmentType,
+    status: e.equipment.status as Equipment['status'],
+  }));
 
   return (
     <>

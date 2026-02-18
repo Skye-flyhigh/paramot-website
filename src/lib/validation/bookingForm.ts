@@ -6,9 +6,9 @@ import { SERVICE_CODE, ServiceCode } from './serviceSchema';
 export interface BookingFormData {
   serviceType: ServiceCode | '';
   preferredDate: string;
-  deliveryMethod: 'drop-off' | 'post';
+  deliveryMethod: 'DROP_OFF' | 'POST';
   specialInstructions: string;
-  contactMethod: 'email' | 'phone' | 'text';
+  contactMethod: 'EMAIL' | 'PHONE' | 'TEXT';
   equipmentId: string;
 }
 
@@ -30,9 +30,9 @@ export const bookingFormSchema = z
         message: `Invalid service type. Must be one of: ${SERVICE_CODE.join(', ')}`,
       }),
     preferredDate: z.string().min(1, 'Preferred date is required'),
-    deliveryMethod: z.enum(['drop-off', 'post']),
+    deliveryMethod: z.enum(['DROP_OFF', 'POST']),
     specialInstructions: z.string().optional(),
-    contactMethod: z.enum(['email', 'phone', 'text']),
+    contactMethod: z.enum(['EMAIL', 'PHONE', 'TEXT']),
     equipmentId: z.string().min(1, 'Equipment ID is required'),
   })
   .transform((v) => ({

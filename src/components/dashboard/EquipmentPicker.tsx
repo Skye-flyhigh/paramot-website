@@ -79,14 +79,14 @@ export function EquipmentPicker({
   };
 
   useEffect(() => {
-    if (state.success) {
+    if (state.success && state.equipmentId) {
       const newEquipment: Equipment = {
-        id: `temp-${Date.now()}`, // Unique temporary ID
+        id: state.equipmentId, // Real DB ID from server action
         manufacturer: state.formData.manufacturer,
         model: state.formData.model,
         size: state.formData.size,
         type: state.formData.type,
-        serialNumber: state.formData.serialNumber || `temp-${Date.now()}`,
+        serialNumber: state.formData.serialNumber || '',
         status: 'ACTIVE',
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -94,7 +94,7 @@ export function EquipmentPicker({
 
       onEquipmentSelected(newEquipment);
     }
-  }, [state.success, state.formData, onEquipmentSelected]);
+  }, [state.success, state.equipmentId, state.formData, onEquipmentSelected]);
 
   // Make sure that the modal is closed
   if (!isOpen) return null;
@@ -178,9 +178,9 @@ export function EquipmentPicker({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="glider">Paraglider</SelectItem>
-                      <SelectItem value="harness">Harness</SelectItem>
-                      <SelectItem value="reserve">Reserve</SelectItem>
+                      <SelectItem value="GLIDER">Paraglider</SelectItem>
+                      <SelectItem value="HARNESS">Harness</SelectItem>
+                      <SelectItem value="RESERVE">Reserve</SelectItem>
                     </SelectContent>
                   </Select>
                   <input type="hidden" name="type" value={equipmentType} />
@@ -242,7 +242,7 @@ export function EquipmentPicker({
                     type="text"
                     disabled={isPending}
                     className={state.errors.serialNumber ? 'border-red-500' : ''}
-                    defaultValue={state.formData.serialNumber}
+                    defaultValue={state.formData.serialNumber ?? ''}
                   />
                   {state.errors.serialNumber && (
                     <p className="text-red-500 text-xs">{state.errors.serialNumber}</p>

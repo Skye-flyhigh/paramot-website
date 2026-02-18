@@ -3,15 +3,21 @@
 import z from 'zod';
 
 import {
+  checkCustomerOwnsEquipment,
+  createEquipment,
+  findEquipmentBySerialNumber,
+  linkEquipmentToCustomer,
+} from '../db';
+import { ensureCustomer } from '../security/auth-check';
+import {
   equipmentFormSchema,
   EquipmentPickerFormState,
   EquipmentType,
 } from '../validation/equipmentSchema';
-import { ensureCustomer } from '../security/auth-check';
 
 export default async function submitEquipmentForm(
   prevState: EquipmentPickerFormState,
-  data: FormData,
+  formData: FormData,
 ): Promise<EquipmentPickerFormState> {
   const authResult = await ensureCustomer();
 
@@ -23,46 +29,71 @@ export default async function submitEquipmentForm(
     };
   }
 
+  const rawData = Object.fromEntries(formData);
+
   try {
     // ✅ STEP 3: Parse and validate the form data with Zod
-    const validatedData = equipmentFormSchema.parse(data);
+    const { data, error, success } = equipmentFormSchema.safeParse(rawData);
 
-    console.warn('✅ Validated equipment data:', validatedData); //TODO: clean the console warn
+    if (!success || error) {
+      const formattedError = z.prettifyError(error) || 'Error in validating data';
 
-    // Simulate processing delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+      return { ...prevState, errors: { general: formattedError }, success: false };
+    }
+    const customer = authResult.customer;
+    let equipment;
 
-    // TODO: Check database first for existence of the equipment
-    // TODO: 💾 Save to database and link to customer
-    // const newEquipment = await prisma.equipment.create({
-    //   data: {
-    //     manufacturer: validatedData.manufacturer,
-    //     model: validatedData.model,
-    //     size: validatedData.size,
-    //     type: validatedData.type as EquipmentType,
-    //     serialNumber: validatedData.serialNumber || `AUTO-${Date.now()}`,
-    //     status: 'active',
-    //   }
-    // });
-    //
-    // // Link equipment to customer
-    // await prisma.customerEquipment.create({
-    //   data: {
-    //     customerId: customer.id, // ← From authenticated session!
-    //     equipmentId: newEquipment.id,
-    //     ownedSince: new Date(),
-    //     ownedUntil: null, // Still owns it
-    //   }
-    // });
+    // Check if equipment already exists (by serial number)
+    if (data.serialNumber) {
+      const existingEquipment = await findEquipmentBySerialNumber(data.serialNumber);
+
+      if (existingEquipment) {
+        // Equipment exists - check if customer already owns it
+        const alreadyOwns = await checkCustomerOwnsEquipment(
+          customer.id,
+          existingEquipment.id,
+        );
+
+        if (alreadyOwns) {
+          return {
+            formData: data,
+            equipmentId: existingEquipment.id, // Already owned - use existing ID
+            errors: {},
+            success: true,
+          };
+        }
+
+        // Link existing equipment to customer
+        equipment = existingEquipment;
+      }
+    }
+
+    // Create new equipment if not found
+    if (!equipment) {
+      equipment = await createEquipment(data);
+    }
+
+    // Link equipment to customer
+    console.log('[Debug] Linking equipment:', {
+      equipmentId: equipment.id,
+      customerId: customer.id,
+      serialNumber: equipment.serialNumber,
+    });
+    await linkEquipmentToCustomer(
+      equipment.id,
+      customer.id,
+      equipment.serialNumber ?? `temp-${equipment.id}`,
+    );
 
     return {
       formData: {
-        manufacturer: validatedData.manufacturer,
-        model: validatedData.model,
-        size: validatedData.size,
-        serialNumber: validatedData.serialNumber || '',
-        type: validatedData.type as EquipmentType,
+        manufacturer: data.manufacturer,
+        model: data.model,
+        size: data.size,
+        serialNumber: equipment.serialNumber || '',
+        type: data.type as EquipmentType,
       },
+      equipmentId: equipment.id, // Real DB ID for booking flow
       errors: {},
       success: true,
     };
@@ -80,13 +111,7 @@ export default async function submitEquipmentForm(
       });
 
       return {
-        formData: {
-          manufacturer: (data.get('manufacturer') as string) || '',
-          model: (data.get('model') as string) || '',
-          size: (data.get('size') as string) || '',
-          serialNumber: (data.get('serialNumber') as string) || '',
-          type: (data.get('type') as EquipmentType) || 'glider',
-        },
+        formData: prevState.formData,
         errors: fieldErrors,
         success: false,
       };

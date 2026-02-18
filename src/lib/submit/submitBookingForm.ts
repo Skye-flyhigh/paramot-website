@@ -6,7 +6,6 @@ import { BookingFormState, bookingFormSchema } from '../validation/bookingForm';
 
 import z from 'zod';
 import { createServiceRecord, findEquipmentById } from '../db';
-import { generateBookingReference } from '../helper/id-generator';
 import { ensureCustomer } from '../security/auth-check';
 
 export default async function submitBookingForm(
@@ -53,7 +52,7 @@ export default async function submitBookingForm(
         success: false,
       };
 
-    const serviceCode = generateBookingReference(data.serviceType);
+    const serviceCode = data.serviceType; // e.g. "SVC-001"
     const serviceTitle = service.title;
     const serviceDescription = service.description;
     const price = getServicePrice(data.serviceType);
@@ -64,8 +63,8 @@ export default async function submitBookingForm(
       equipmentId: equipment.id,
       serviceCode,
       preferredDate: data.preferredDate,
-      deliveryMethod: data.deliveryMethod.toUpperCase() as 'DROP_OFF' | 'POST',
-      contactMethod: data.contactMethod.toUpperCase() as 'EMAIL' | 'PHONE' | 'TEXT',
+      deliveryMethod: data.deliveryMethod,
+      contactMethod: data.contactMethod,
       specialInstructions: data.specialInstructions,
       cost: typeof price === 'number' ? price : 0,
     });
@@ -78,13 +77,13 @@ export default async function submitBookingForm(
     const email: Email = {
       to: {
         name: `${customer.firstName} ${customer.lastName}`,
-        email: customer.email,
+        email: authResult.email,
       },
       subject: `paraMOT - Booking confirmation ${newServiceRecord.bookingReference} - ${equipmentName}`,
       template: 'booking-confirmation',
       templateVariables: {
         recipientName: `${customer.firstName} ${customer.lastName}`,
-        serviceCode: newServiceRecord.bookingReference, // Use auto-generated booking reference
+        bookingReference: newServiceRecord.bookingReference,
         serviceTitle,
         serviceDescription,
         equipmentName,

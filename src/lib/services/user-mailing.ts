@@ -1,5 +1,4 @@
 import { Resend } from 'resend';
-import { ServiceCode } from '../validation/serviceSchema';
 
 interface Recipient {
   name: string;
@@ -9,7 +8,7 @@ interface Recipient {
 // Template-specific variable types
 interface BookingConfirmationVariables {
   recipientName: string;
-  serviceCode: ServiceCode;
+  bookingReference: string;
   serviceTitle: string;
   serviceDescription: string;
   equipmentName: string;

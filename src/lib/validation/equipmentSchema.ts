@@ -26,6 +26,7 @@ export interface EquipmentPickerFormState {
   formData: EquipmentPickerData;
   errors: Record<string, string>;
   success: boolean;
+  equipmentId?: string; // Real DB ID after successful creation
 }
 
 /**
@@ -36,7 +37,7 @@ export interface EquipmentPickerData {
   manufacturer: string;
   model: string;
   size: string;
-  serialNumber?: string;
+  serialNumber?: string | null;
 }
 
 /**
@@ -47,8 +48,8 @@ export const equipmentFormSchema = zfd.formData({
   manufacturer: zfd.text(z.string().min(1, 'Manufacturer is required')),
   model: zfd.text(z.string().min(1, 'Model is required')),
   size: zfd.text(z.string().min(1, 'Size is required').max(3, 'Size too long')),
-  type: zfd.text(z.string().min(1, 'Type is required')),
-  serialNumber: zfd.text(z.string().optional()),
+  type: zfd.text(z.enum(['GLIDER', 'RESERVE', 'HARNESS'])),
+  serialNumber: zfd.text(z.string().optional()).transform((v) => v ?? null),
 
   // Examples of other zfd types you can use:
   // checkbox: zfd.checkbox(), // boolean from checkbox
