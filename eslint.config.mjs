@@ -50,7 +50,7 @@ export default [
       'react-hooks': reactHooks,
       '@next/next': nextPlugin,
       '@stylistic': stylistic,
-      'perfectionist': perfectionist,
+      perfectionist: perfectionist,
     },
 
     settings: {
@@ -124,7 +124,11 @@ export default [
         'error',
         { blankLine: 'always', prev: '*', next: 'return' },
         { blankLine: 'always', prev: ['const', 'let', 'var'], next: '*' },
-        { blankLine: 'any', prev: ['const', 'let', 'var'], next: ['const', 'let', 'var'] },
+        {
+          blankLine: 'any',
+          prev: ['const', 'let', 'var'],
+          next: ['const', 'let', 'var'],
+        },
       ],
       '@stylistic/semi': 'warn',
       // ----------------------------------------
@@ -134,12 +138,12 @@ export default [
       'no-debugger': 'error',
       'prefer-const': 'error',
       'no-var': 'error',
-      'eqeqeq': ['error', 'always', { null: 'ignore' }],
+      eqeqeq: ['error', 'always', { null: 'ignore' }],
       'no-duplicate-imports': 'error',
       'no-template-curly-in-string': 'warn',
       'require-await': 'warn',
-      'curly': ['error', 'multi'],
-      'semi': ['error', 'never'],
+      curly: ['error', 'multi'],
+      semi: ['error', 'never'],
       // ----------------------------------------
       // React Rules
       // ----------------------------------------
