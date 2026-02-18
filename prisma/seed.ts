@@ -1,0 +1,211 @@
+import 'dotenv/config';
+import { PrismaClient } from '../src/generated/prisma';
+
+const prisma = new PrismaClient({
+  accelerateUrl: process.env.DATABASE_URL!,
+});
+
+const SKYE_CUSTOMER_ID = '51a55b8c-ef00-4fe6-9458-dc02606474b6';
+
+async function main() {
+  console.log('🌱 Seeding database...');
+
+  // Create Equipment (no RLS on public registry)
+  const glider = await prisma.equipment.upsert({
+    where: { serialNumber: 'ADV-SIGMA11-2023-4521' },
+    update: {},
+    create: {
+      serialNumber: 'ADV-SIGMA11-2023-4521',
+      type: 'GLIDER',
+      manufacturer: 'Advance',
+      model: 'Sigma 11',
+      size: 'M',
+      manufactureDate: new Date('2023-03-15'),
+      status: 'ACTIVE',
+    },
+  });
+  console.log('✅ Created glider:', glider.serialNumber);
+
+  const reserve = await prisma.equipment.upsert({
+    where: { serialNumber: 'SUP-ACRO-2022-8834' },
+    update: {},
+    create: {
+      serialNumber: 'SUP-ACRO-2022-8834',
+      type: 'RESERVE',
+      manufacturer: 'Supair',
+      model: 'Acro 3',
+      size: '120',
+      manufactureDate: new Date('2022-06-01'),
+      status: 'ACTIVE',
+    },
+  });
+  console.log('✅ Created reserve:', reserve.serialNumber);
+
+  const harness = await prisma.equipment.upsert({
+    where: { serialNumber: 'KOR-KOLIBRI-2023-1199' },
+    update: {},
+    create: {
+      serialNumber: 'KOR-KOLIBRI-2023-1199',
+      type: 'HARNESS',
+      manufacturer: 'Kortel',
+      model: 'Kolibri',
+      size: 'M',
+      manufactureDate: new Date('2023-01-20'),
+      status: 'ACTIVE',
+    },
+  });
+  console.log('✅ Created harness:', harness.serialNumber);
+
+  // For RLS-protected tables, use raw SQL transaction to set context
+  // This bypasses Prisma's query wrapping issues with Accelerate
+
+  // CustomerEquipment records
+  await prisma.$executeRaw`
+    SELECT set_config('app.customer_id', ${SKYE_CUSTOMER_ID}::text, FALSE)
+  `;
+
+  // Check and insert glider ownership
+  const gliderOwnershipCount = await prisma.$queryRaw<[{ count: bigint }]>`
+    SELECT COUNT(*) as count FROM "CustomerEquipment"
+    WHERE "customerId" = ${SKYE_CUSTOMER_ID}::uuid AND "equipmentId" = ${glider.id}
+  `;
+  if (gliderOwnershipCount[0].count === 0n) {
+    await prisma.$executeRaw`
+      INSERT INTO "CustomerEquipment"
+        ("id", "customerId", "equipmentId", "equipmentSerialNumber", "ownedFrom", "purchaseDate", "notes", "createdAt", "updatedAt")
+      VALUES
+        (gen_random_uuid(), ${SKYE_CUSTOMER_ID}::uuid, ${glider.id}, ${glider.serialNumber}, '2023-04-01', '2023-04-01', 'Purchased new from dealer', NOW(), NOW())
+    `;
+  }
+  console.log('✅ Linked glider to customer');
+
+  // Reserve ownership
+  const reserveOwnershipCount = await prisma.$queryRaw<[{ count: bigint }]>`
+    SELECT COUNT(*) as count FROM "CustomerEquipment"
+    WHERE "customerId" = ${SKYE_CUSTOMER_ID}::uuid AND "equipmentId" = ${reserve.id}
+  `;
+  if (reserveOwnershipCount[0].count === 0n) {
+    await prisma.$executeRaw`
+      INSERT INTO "CustomerEquipment"
+        ("id", "customerId", "equipmentId", "equipmentSerialNumber", "ownedFrom", "purchaseDate", "notes", "createdAt", "updatedAt")
+      VALUES
+        (gen_random_uuid(), ${SKYE_CUSTOMER_ID}::uuid, ${reserve.id}, ${reserve.serialNumber}, '2022-07-15', '2022-07-15', 'Purchased second-hand', NOW(), NOW())
+    `;
+  }
+  console.log('✅ Linked reserve to customer');
+
+  // Harness ownership
+  const harnessOwnershipCount = await prisma.$queryRaw<[{ count: bigint }]>`
+    SELECT COUNT(*) as count FROM "CustomerEquipment"
+    WHERE "customerId" = ${SKYE_CUSTOMER_ID}::uuid AND "equipmentId" = ${harness.id}
+  `;
+  if (harnessOwnershipCount[0].count === 0n) {
+    await prisma.$executeRaw`
+      INSERT INTO "CustomerEquipment"
+        ("id", "customerId", "equipmentId", "equipmentSerialNumber", "ownedFrom", "purchaseDate", "createdAt", "updatedAt")
+      VALUES
+        (gen_random_uuid(), ${SKYE_CUSTOMER_ID}::uuid, ${harness.id}, ${harness.serialNumber}, '2023-02-01', '2023-02-01', NOW(), NOW())
+    `;
+  }
+  console.log('✅ Linked harness to customer');
+
+  // Service Records
+  const serviceData = [
+    {
+      ref: 'SVC-001-150124-A1B2',
+      equipmentId: glider.id,
+      code: 'SVC-001',
+      status: 'COMPLETED',
+      prefDate: '2024-01-20',
+      delivery: 'DROP_OFF',
+      contact: 'EMAIL',
+      instructions: 'Annual check before season',
+      cost: 120.0,
+      actualDate: '2024-01-22',
+      completedBy: 'paraMOT',
+      notes: 'All lines checked, no issues found',
+    },
+    {
+      ref: 'PACK-001-100623-C3D4',
+      equipmentId: reserve.id,
+      code: 'PACK-001',
+      status: 'COMPLETED',
+      prefDate: '2023-06-15',
+      delivery: 'DROP_OFF',
+      contact: 'TEXT',
+      instructions: null,
+      cost: 45.0,
+      actualDate: '2023-06-16',
+      completedBy: 'paraMOT',
+      notes: 'Reserve repacked, deployment system inspected',
+    },
+    {
+      ref: 'SVC-002-050225-E5F6',
+      equipmentId: glider.id,
+      code: 'SVC-002',
+      status: 'IN_PROGRESS',
+      prefDate: '2025-02-10',
+      delivery: 'POST',
+      contact: 'EMAIL',
+      instructions: 'Full porosity test requested',
+      cost: 180.0,
+      actualDate: null,
+      completedBy: null,
+      notes: null,
+    },
+    {
+      ref: 'PACK-001-200225-G7H8',
+      equipmentId: reserve.id,
+      code: 'PACK-001',
+      status: 'PENDING',
+      prefDate: '2025-02-20',
+      delivery: 'DROP_OFF',
+      contact: 'PHONE',
+      instructions: null,
+      cost: 45.0,
+      actualDate: null,
+      completedBy: null,
+      notes: 'Annual repack due',
+    },
+  ];
+
+  // Use mechanic context for service records (technicians create all service states)
+  // Use CTE to set context within same statement (works with Accelerate pooling)
+  for (const s of serviceData) {
+    const existingCount = await prisma.$queryRaw<[{ count: bigint }]>`
+      SELECT COUNT(*) as count FROM "ServiceRecords" WHERE "bookingReference" = ${s.ref}
+    `;
+    if (existingCount[0].count === 0n) {
+      // CTE sets mechanic context, then INSERT runs with that context active
+      await prisma.$executeRaw`
+        WITH set_context AS (
+          SELECT set_config('app.mechanic_id', 'seed-script', TRUE)
+        )
+        INSERT INTO "ServiceRecords"
+          ("id", "bookingReference", "customerId", "equipmentId", "serviceCode", "status",
+           "preferredDate", "deliveryMethod", "contactMethod", "specialInstructions",
+           "cost", "actualServiceDate", "completedBy", "notes", "createdAt", "updatedAt")
+        SELECT
+          gen_random_uuid(), ${s.ref}, ${SKYE_CUSTOMER_ID}::uuid, ${s.equipmentId}, ${s.code},
+          ${s.status}::"ServiceStatus", ${s.prefDate}, ${s.delivery}::"DeliveryMethod", ${s.contact}::"ContactMethod",
+          ${s.instructions}, ${s.cost}, ${s.actualDate}::timestamp, ${s.completedBy}, ${s.notes}, NOW(), NOW()
+        FROM set_context
+      `;
+    }
+    console.log(`✅ Created service: ${s.ref}`);
+  }
+
+  console.log('\n🎉 Seed completed!');
+  console.log(`   Equipment: 3 items`);
+  console.log(`   Ownership links: 3 records`);
+  console.log(`   Service records: 4 bookings (2 completed, 1 in progress, 1 pending)`);
+}
+
+main()
+  .catch((e) => {
+    console.error('❌ Seed failed:', e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

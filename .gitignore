@@ -31,7 +31,8 @@ yarn-error.log*
 .pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
-.env*
+.env.local
+.env
 
 # vercel
 .vercel
@@ -44,3 +45,11 @@ next-env.d.ts
 /.claude/
 CLAUDE.md
 CLAUDE-*.md
+
+# Docs
+/docs
+PRD.md
+
+# React Email (ignore entire starter template directory)
+/react-email-starter/
+/src/generated/prisma

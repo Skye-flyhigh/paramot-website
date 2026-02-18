@@ -1,0 +1,56 @@
+#!/bin/bash
+# Pre-push hook - checks for FIXME comments in pushed commits only
+
+echo "🔍 Checking for FIXME comments in commits being pushed..."
+
+# Get the current branch
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+# Try to find the remote tracking branch
+remote_branch=$(git rev-parse --abbrev-ref --symbolic-full-name @{u} 2>/dev/null)
+
+if [ -z "$remote_branch" ]; then
+  # No remote tracking branch, check against main/master
+  if git rev-parse --verify origin/main >/dev/null 2>&1; then
+    remote_branch="origin/main"
+  elif git rev-parse --verify origin/master >/dev/null 2>&1; then
+    remote_branch="origin/master"
+  else
+    echo "⚠️  No remote branch to compare against, skipping FIXME check"
+    exit 0
+  fi
+fi
+
+# Get files changed in unpushed commits
+changed_files=$(git diff "$remote_branch"...HEAD --name-only -- 'src/**' || true)
+
+if [ -z "$changed_files" ]; then
+  echo "✅ No src/ files changed in this push"
+  exit 0
+fi
+
+# Check for FIXME in changed files
+fixme_found=false
+for file in $changed_files; do
+  if [ -f "$file" ]; then
+    if grep -q "FIXME" "$file"; then
+      if [ "$fixme_found" = false ]; then
+        echo "⚠️  WARNING: Found FIXME comments in files being pushed:"
+        fixme_found=true
+      fi
+      echo "  - $file"
+    fi
+  fi
+done
+
+if [ "$fixme_found" = true ]; then
+  echo ""
+  read -p "Continue with push? (y/N) " -n 1 -r
+  echo
+  if [[ ! $REPLY =~ ^[Yy]$ ]]; then
+    echo "Push cancelled"
+    exit 1
+  fi
+fi
+
+echo "✅ Pre-push checks passed"

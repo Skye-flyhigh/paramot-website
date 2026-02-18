@@ -1,8 +1,8 @@
-import Hero from "@/components/Hero";
-import Motto from "@/components/Motto";
-import Services from "@/components/Services";
-import ContactForm from "@/components/ContactForm";
-import Location from "@/components/Location";
+import Hero from '@/components/Hero';
+import Contact from '@/components/home/Contact';
+import Location from '@/components/home/Location';
+import Motto from '@/components/home/Motto';
+import Services from '@/components/home/Services';
 
 export default function Home() {
   return (
@@ -10,7 +10,7 @@ export default function Home() {
       <Hero />
       <Motto />
       <Services />
-      <ContactForm />
+      <Contact />
       <Location />
     </main>
   );

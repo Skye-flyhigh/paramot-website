@@ -1,0 +1,300 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ============================================
+// ENUMS - Define fixed value sets
+// ============================================
+
+enum ServiceStatus {
+  PENDING
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum DeliveryMethod {
+  DROP_OFF
+  POST
+}
+
+enum ContactMethod {
+  EMAIL
+  PHONE
+  TEXT
+}
+
+enum EquipmentStatus {
+  ACTIVE
+  RETIRED
+  SOLD
+  LOST
+}
+
+enum EquipmentType {
+  GLIDER
+  RESERVE
+  HARNESS
+}
+
+enum BlockType {
+  HOLIDAY
+  MAINTENANCE
+  TRAINING
+  EMERGENCY
+  OTHER
+}
+
+// ============================================
+// NEXTAUTH ADAPTER SCHEMA (Authentication)
+// ============================================
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  image         String?
+
+  accounts Account[]
+  sessions Session[]
+
+  // Link to business model (one-to-one)
+  customerId String?   @unique @db.Uuid
+  customer   Customer? @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([email])
+}
+
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// ============================================
+// CUSTOMER & PROFILE DATA (Business Model)
+// ============================================
+
+model Customer {
+  id        String @id @default(uuid()) @db.Uuid
+  firstName String
+  lastName  String
+  phone     String?
+
+  // Link back to auth User (reverse relation - no foreign key needed here)
+  userId String @unique @default(cuid())
+  user   User?
+
+  // Legal consent tracking (required for GDPR compliance)
+  termsAcceptedAt         DateTime
+  privacyPolicyAcceptedAt DateTime
+
+  // Optional address (one-to-one)
+  addressId String?   @unique
+  address   Address?  @relation(fields: [addressId], references: [id], onDelete: Cascade)
+
+  // Optional communication preferences (one-to-one)
+  communicationPreferencesId String?         @unique
+  communicationPreferences   Communication?  @relation(fields: [communicationPreferencesId], references: [id], onDelete: Cascade)
+
+  // Reverse relations (what this customer owns/has done)
+  serviceRecords    ServiceRecords[]
+  customerEquipment CustomerEquipment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Address {
+  id       String    @id @default(cuid())
+  street   String
+  city     String
+  county   String?   // UK has counties, not states
+  postcode String    // UK postcodes are alphanumeric (SW1A 1AA)
+  country  String    @default("United Kingdom")
+
+  customer Customer? // One-to-one reverse relation
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Communication {
+  id        String  @id @default(cuid())
+  marketing Boolean @default(false)
+  email     Boolean @default(true)
+  phone     Boolean @default(false)
+  post      Boolean @default(false)
+  text      Boolean @default(false)
+
+  customer Customer? // One-to-one reverse relation
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// ============================================
+// EQUIPMENT REGISTRY (Public data like VIN)
+// ============================================
+
+model Equipment {
+  id             String          @id @default(cuid())  // Matches generateEquipmentId()
+  serialNumber   String          @unique // Manufacturer's serial (public identifier)
+  type           EquipmentType
+  manufacturer   String
+  model          String
+  size           String
+  manufactureDate DateTime?
+  status         EquipmentStatus @default(ACTIVE)
+
+  // Reverse relations
+  serviceRecords    ServiceRecords[]
+  customerEquipment CustomerEquipment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([serialNumber])
+  @@index([type])
+}
+
+// ============================================
+// OWNERSHIP REGISTRY (Many-to-Many with history)
+// ============================================
+
+model CustomerEquipment {
+  id String @id @default(cuid())
+
+  // Foreign keys with relations
+  customerId String @db.Uuid
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  equipmentId String
+  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+
+  // Ownership metadata
+  equipmentSerialNumber String    // Denormalized for convenience
+  ownedFrom             DateTime
+  ownedUntil            DateTime? // null = currently owned
+  purchaseDate          DateTime?
+  purchasePrice         Float?
+  notes                 String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([customerId, equipmentId, ownedFrom]) // Prevent duplicate ownership records
+  @@index([customerId])
+  @@index([equipmentId])
+  @@index([equipmentSerialNumber])
+}
+
+// ============================================
+// SERVICE RECORDS (Bookings & History)
+// ============================================
+
+model ServiceRecords {
+  id               String @id @default(cuid()) // Internal database ID
+  bookingReference String @unique              // Customer-facing: "SVC-001-260512-3F5D"
+
+  // Foreign keys with relations
+  customerId String @db.Uuid
+  customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
+
+  equipmentId String
+  equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
+
+  // Service details
+  serviceCode String        // SVC-001, SVC-002, etc. (validated in app code)
+  status      ServiceStatus @default(PENDING)
+
+  // Booking form data
+  preferredDate       String // YYYY-MM-DD format (matches validation schema)
+  deliveryMethod      DeliveryMethod
+  contactMethod       ContactMethod
+  specialInstructions String?
+
+  // Business data
+  cost              Float
+  actualServiceDate DateTime?
+  assignedTo        String? // User.id of assigned mechanic (for RLS)
+  completedBy       String? // Technician name/ID who completed it
+  notes             String? // Internal notes
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([customerId])
+  @@index([equipmentId])
+  @@index([status])
+  @@index([preferredDate])
+}
+
+// ============================================
+// WORKSHOP AVAILABILITY
+// ============================================
+
+model DateBlock {
+  id        String    @id @default(cuid())
+  startDate String    // YYYY-MM-DD format
+  endDate   String    // YYYY-MM-DD format
+  reason    String
+  type      BlockType
+
+  createdAt DateTime @default(now())
+
+  @@index([startDate, endDate])
+}
+
+// ============================================
+// TYPE DEFINITIONS (for reference)
+// ============================================
+
+// ServiceCode is defined in your TypeScript code (lib/validation/serviceSchema.ts)
+// Values: SVC-001, SVC-002, SVC-011, PACK-001, REP-001, etc.
+// Stored as String in DB, validated in application code
