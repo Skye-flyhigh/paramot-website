@@ -40,7 +40,7 @@ export function EquipmentPicker({
 }: EquipmentPickerProps) {
   const [isNew, setIsNew] = useState<boolean>(false);
   const [selectedEquipmentId, setSelectedEquipmentId] = useState<string>('');
-  const [equipmentType, setEquipmentType] = useState<EquipmentType>('glider');
+  const [equipmentType, setEquipmentType] = useState<EquipmentType>('GLIDER');
 
   // Initialize with first equipment when modal opens
   useEffect(() => {
@@ -51,7 +51,7 @@ export function EquipmentPicker({
 
   // Form logic
   const initialFormData: EquipmentPickerData = {
-    type: 'glider',
+    type: 'GLIDER',
     manufacturer: '',
     model: '',
     size: '',
@@ -87,7 +87,7 @@ export function EquipmentPicker({
         size: state.formData.size,
         type: state.formData.type,
         serialNumber: state.formData.serialNumber || `temp-${Date.now()}`,
-        status: 'active',
+        status: 'ACTIVE',
         createdAt: new Date(),
         updatedAt: new Date(),
       };

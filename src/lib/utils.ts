@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
-import type { Equipment } from './schema';
+import type { Equipment } from './validation/equipmentSchema';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -17,7 +17,7 @@ export function cn(...inputs: ClassValue[]) {
  * - Gin Osprey (34)
  */
 export function isTandemGlider(equipment: Equipment): boolean {
-  if (equipment.type !== 'glider') return false;
+  if (equipment.type !== 'GLIDER') return false;
 
   const size = parseInt(equipment.size, 10);
 

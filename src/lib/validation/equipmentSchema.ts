@@ -10,13 +10,13 @@ export interface Equipment {
   model: string;
   size: string;
   manufactureDate?: Date | null;
-  status: 'active' | 'retired' | 'damaged' | 'decommissioned';
+  status: 'ACTIVE' | 'RETIRED' | 'SOLD' | 'LOST';
   createdAt: Date;
   updatedAt: Date;
   // NO customerId - ownership is tracked separately!
 }
 
-export const EQUIPMENT_TYPES = ['glider', 'reserve', 'harness'] as const;
+export const EQUIPMENT_TYPES = ['GLIDER', 'RESERVE', 'HARNESS'] as const;
 export type EquipmentType = (typeof EQUIPMENT_TYPES)[number];
 
 /**

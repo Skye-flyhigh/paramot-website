@@ -6,14 +6,6 @@ export interface ServicesType {
   available: boolean;
 }
 
-export interface ServicesType {
-  icon: string; // Icon name as string (mapped to component in ServiceCard)
-  title: string;
-  description: string;
-  code: ServiceCode;
-  available: boolean;
-}
-
 export type Prices = Record<string, number | string>;
 
 export const SERVICE_CODE = [

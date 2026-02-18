@@ -22,6 +22,6 @@ export type {
   CustomerEquipment,
   DateBlock,
   Equipment,
-  ServiceRecords
+  ServiceRecords,
+  ServiceStatus,
 } from '@/generated/prisma';
-

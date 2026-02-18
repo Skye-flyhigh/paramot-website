@@ -22,6 +22,7 @@ export async function findEquipmentBySerialNumber(serialNumber: string) {
           preferredDate: true,
           actualServiceDate: true,
           createdAt: true,
+          updatedAt: true,
           // DO NOT include customer info (PII protection)
           // DO NOT include cost (commercially sensitive)
         },
