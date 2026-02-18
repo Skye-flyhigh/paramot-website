@@ -138,7 +138,7 @@ export default function ServiceTable() {
                     </span>
                   </div>
                   <Link
-                    href={`/equipment/${equipment.serialNumber}`}
+                    href={`/dashboard/equipment`}
                     className="text-sky-600 hover:text-sky-800 font-medium text-sm"
                   >
                     View Details →
