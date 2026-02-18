@@ -8,7 +8,7 @@ export default async function Nav() {
 
   return (
     <nav className="bg-white shadow-sm border-b border-sky-200">
-      <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div className="mx-auto px-20 py-4 flex justify-between items-center">
         <div className="">
           <Link href="/" className="text-xl font-bold text-sky-900">
             para<span className="text-sky-400">MOT</span>

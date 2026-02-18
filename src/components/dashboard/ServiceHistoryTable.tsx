@@ -4,16 +4,31 @@ import { Button } from '@/components/ui/button';
 import { useBookingModal } from '@/hooks/useBookingModal';
 import { getStatusColor } from '@/lib/styling/services';
 
-import type { Equipment, ServiceRecords } from '@/lib/db';
+import type { Equipment, ServiceRecords, ServiceStatus } from '@/lib/db';
 import { getServicesList } from '@/lib/schema';
 import BookingModal from './BookingModal';
+
+// Minimal fields needed for public equipment pages (no sensitive data)
+type PublicServiceRecord = {
+  id: string;
+  bookingReference: string;
+  serviceCode: string;
+  status: ServiceStatus;
+  createdAt: Date;
+  updatedAt: Date;
+  preferredDate: string;
+  actualServiceDate: Date | null;
+};
+
+// Full records include cost and relations (for dashboard)
+type ServiceHistoryItem = PublicServiceRecord | ServiceRecords;
 
 export default function ServiceHistoryTable({
   serviceHistory,
   equipment,
-  isOwner = false, // ← Add ownership flag
+  isOwner = false,
 }: {
-  serviceHistory: ServiceRecords[];
+  serviceHistory: ServiceHistoryItem[];
   equipment?: Equipment;
   isOwner?: boolean;
 }) {
@@ -21,12 +36,10 @@ export default function ServiceHistoryTable({
   const servicesList = getServicesList();
 
   // Helper to get equipment for a service record
-  const getEquipmentForService = (service: ServiceRecords): Equipment | undefined => {
-    // If equipment prop provided (single equipment view), use that
-    if (equipment && equipment.id === service.equipmentId) return equipment;
-
-    // Otherwise use equipment from relation (already loaded via join)
-    return service.equipment;
+  // Note: On equipment pages, equipment is passed as prop
+  // On dashboard, equipment should also be passed or services should include it
+  const getEquipmentForService = (): Equipment | undefined => {
+    return equipment;
   };
 
   // Helper to get service title from code
@@ -77,7 +90,7 @@ export default function ServiceHistoryTable({
           </thead>
           <tbody className="divide-y divide-sky-100">
             {serviceHistory.map((service) => {
-              const serviceEquipment = getEquipmentForService(service);
+              const serviceEquipment = getEquipmentForService();
 
               return (
                 <tr key={service.id} className="hover:bg-sky-50">
@@ -99,7 +112,7 @@ export default function ServiceHistoryTable({
                       {service.status}
                     </span>
                   </td>
-                  {isOwner && (
+                  {isOwner && 'cost' in service && (
                     <td className="px-6 py-4 whitespace-nowrap font-medium text-sky-900 before:content-['£']">
                       {service.cost}
                     </td>
@@ -111,7 +124,7 @@ export default function ServiceHistoryTable({
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
                       {service.status === 'PENDING' ? (
                         <Button
-                          onClick={() => openModal('booking', service)}
+                          onClick={() => openModal('booking', service as ServiceRecords)}
                           variant="link"
                           size="sm"
                           className="text-sky-600 hover:text-sky-800 font-medium transition-colors cursor-pointer"

@@ -10,7 +10,15 @@
 // - ServiceRecord connects Customer + Glider + Service + booking details
 import prices from '@/data/prices.json';
 import rawServicesData from '@/data/services.json';
-import { ServiceCode, ServiceRecords, ServicesType } from './validation/serviceSchema';
+import {
+  Prices,
+  ServiceCode,
+  ServiceRecords,
+  ServicesType,
+} from './validation/serviceSchema';
+
+// Re-export types for convenience
+export type { Prices, ServiceCode, ServicesType };
 
 // Service data (line trim, parachute repack, etc.) would come from the workbench side of the business.
 // export interface GliderService {

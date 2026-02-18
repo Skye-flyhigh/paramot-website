@@ -1,7 +1,7 @@
 'use client';
 import { useState } from 'react';
 
-import type { ServiceStatus } from '@/lib/schema';
+import type { ServiceStatus } from '@/lib/db';
 import type { Equipment } from '@/lib/validation/equipmentSchema';
 
 import { useBookingModal } from '@/hooks/useBookingModal';
@@ -79,7 +79,11 @@ export default function ServiceActionButtons({
               <h2 className="text-xl font-semibold">Contact support</h2>
               <XButton onClose={() => setOpenSupport(false)} />
             </header>
-            <ContactForm equipment={equipment} onClose={() => setOpenSupport(false)} />
+            <ContactForm
+              variant="equipment"
+              equipment={equipment}
+              onClose={() => setOpenSupport(false)}
+            />
           </dialog>
         </div>
       )}

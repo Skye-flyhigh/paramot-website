@@ -6,7 +6,7 @@ import { Calendar } from '@/components/ui/calendar';
 import { Label } from '@/components/ui/label';
 import {
   getAvailability,
-  isDateSelectable,
+  getBasicAvailability,
   type DateAvailability,
 } from '@/lib/workshop/availability';
 
@@ -30,7 +30,7 @@ export function ServiceDatePicker({
   );
   const [availability, setAvailability] = useState<DateAvailability | null>(null);
 
-  const handleSelect = (date: Date | undefined) => {
+  const handleSelect = async (date: Date | undefined) => {
     if (!date) {
       setSelectedDate(undefined);
       setAvailability(null);
@@ -44,7 +44,7 @@ export function ServiceDatePicker({
     const day = String(date.getDate()).padStart(2, '0');
     const dateStr = `${year}-${month}-${day}`;
 
-    const avail = getAvailability(dateStr);
+    const avail = await getAvailability(dateStr);
 
     setSelectedDate(date);
     setAvailability(avail);
@@ -71,7 +71,10 @@ export function ServiceDatePicker({
             const day = String(date.getDate()).padStart(2, '0');
             const dateStr = `${year}-${month}-${day}`;
 
-            return !isDateSelectable(dateStr);
+            // Use sync check for basic rules (weekend, past dates)
+            const avail = getBasicAvailability(dateStr);
+
+            return !avail.available;
           }}
           modifiers={{
             available: (date) => {
@@ -80,7 +83,7 @@ export function ServiceDatePicker({
               const day = String(date.getDate()).padStart(2, '0');
               const dateStr = `${year}-${month}-${day}`;
 
-              const avail = getAvailability(dateStr);
+              const avail = getBasicAvailability(dateStr);
 
               return avail.status === 'available' && avail.available;
             },
@@ -90,7 +93,7 @@ export function ServiceDatePicker({
               const day = String(date.getDate()).padStart(2, '0');
               const dateStr = `${year}-${month}-${day}`;
 
-              const avail = getAvailability(dateStr);
+              const avail = getBasicAvailability(dateStr);
 
               return avail.status === 'limited';
             },
@@ -100,7 +103,7 @@ export function ServiceDatePicker({
               const day = String(date.getDate()).padStart(2, '0');
               const dateStr = `${year}-${month}-${day}`;
 
-              const avail = getAvailability(dateStr);
+              const avail = getBasicAvailability(dateStr);
 
               return avail.status === 'full';
             },
@@ -110,7 +113,7 @@ export function ServiceDatePicker({
               const day = String(date.getDate()).padStart(2, '0');
               const dateStr = `${year}-${month}-${day}`;
 
-              const avail = getAvailability(dateStr);
+              const avail = getBasicAvailability(dateStr);
 
               return avail.status === 'blocked';
             },
@@ -120,7 +123,7 @@ export function ServiceDatePicker({
               const day = String(date.getDate()).padStart(2, '0');
               const dateStr = `${year}-${month}-${day}`;
 
-              const avail = getAvailability(dateStr);
+              const avail = getBasicAvailability(dateStr);
 
               return avail.status === 'closed';
             },

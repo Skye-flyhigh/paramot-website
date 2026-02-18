@@ -13,7 +13,7 @@ export default function ContactF() {
             soon.
           </p>
         </div>
-        <ContactForm />
+        <ContactForm variant="contact" />
       </div>
     </section>
   );

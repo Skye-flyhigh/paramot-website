@@ -78,10 +78,10 @@ export default function SettingsPage() {
 
         {customer.address ? (
           <div className="text-sky-900">
-            <p>{customer.address.line1}</p>
-            {customer.address.line2 && <p>{customer.address.line2}</p>}
+            <p>{customer.address.street}</p>
             <p>
-              {customer.address.city}, {customer.address.county}{' '}
+              {customer.address.city}
+              {customer.address.county && `, ${customer.address.county}`}{' '}
               {customer.address.postcode}
             </p>
             <p>{customer.address.country}</p>
@@ -103,33 +103,35 @@ export default function SettingsPage() {
         {customer.communicationPreferences ? (
           <div className="grid gap-3">
             <div className="flex items-center justify-between py-2 border-b border-sky-100">
-              <span className="text-sky-700">Email notifications</span>
+              <span className="text-sky-700">Email</span>
               <span
-                className={`text-sm ${customer.communicationPreferences.emailNotifications ? 'text-green-600' : 'text-sky-400'}`}
+                className={`text-sm ${customer.communicationPreferences.email ? 'text-green-600' : 'text-sky-400'}`}
               >
-                {customer.communicationPreferences.emailNotifications
-                  ? 'Enabled'
-                  : 'Disabled'}
+                {customer.communicationPreferences.email ? 'Enabled' : 'Disabled'}
               </span>
             </div>
             <div className="flex items-center justify-between py-2 border-b border-sky-100">
-              <span className="text-sky-700">SMS notifications</span>
+              <span className="text-sky-700">Phone</span>
               <span
-                className={`text-sm ${customer.communicationPreferences.smsNotifications ? 'text-green-600' : 'text-sky-400'}`}
+                className={`text-sm ${customer.communicationPreferences.phone ? 'text-green-600' : 'text-sky-400'}`}
               >
-                {customer.communicationPreferences.smsNotifications
-                  ? 'Enabled'
-                  : 'Disabled'}
+                {customer.communicationPreferences.phone ? 'Enabled' : 'Disabled'}
+              </span>
+            </div>
+            <div className="flex items-center justify-between py-2 border-b border-sky-100">
+              <span className="text-sky-700">Text/SMS</span>
+              <span
+                className={`text-sm ${customer.communicationPreferences.text ? 'text-green-600' : 'text-sky-400'}`}
+              >
+                {customer.communicationPreferences.text ? 'Enabled' : 'Disabled'}
               </span>
             </div>
             <div className="flex items-center justify-between py-2">
-              <span className="text-sky-700">Marketing emails</span>
+              <span className="text-sky-700">Marketing</span>
               <span
-                className={`text-sm ${customer.communicationPreferences.marketingEmails ? 'text-green-600' : 'text-sky-400'}`}
+                className={`text-sm ${customer.communicationPreferences.marketing ? 'text-green-600' : 'text-sky-400'}`}
               >
-                {customer.communicationPreferences.marketingEmails
-                  ? 'Enabled'
-                  : 'Disabled'}
+                {customer.communicationPreferences.marketing ? 'Enabled' : 'Disabled'}
               </span>
             </div>
           </div>
@@ -148,7 +150,9 @@ export default function SettingsPage() {
               <h2 className="text-xl font-semibold">Update Contact Details</h2>
               <XButton onClose={() => setOpenSettingsModal(false)} />
             </header>
-            <SettingsForm onClose={() => setOpenSettingsModal(false)} />
+            <div className="p-6">
+              <SettingsForm onClose={() => setOpenSettingsModal(false)} />
+            </div>
           </dialog>
         </div>
       )}

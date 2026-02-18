@@ -3,23 +3,23 @@
 import type { Session } from 'next-auth';
 
 import {
-  Wrench,
-  Shield,
-  Zap,
-  PackageCheck,
-  Cog,
-  type LucideIcon,
   AlertCircle,
+  Cog,
+  PackageCheck,
+  Shield,
+  Wrench,
+  Zap,
+  type LucideIcon,
 } from 'lucide-react';
 
 import type { ServicesType } from '@/lib/schema';
 
 import {
   Card,
-  CardHeader,
   CardContent,
-  CardTitle,
   CardDescription,
+  CardHeader,
+  CardTitle,
 } from '@/components/ui/card';
 
 interface ServiceCardProps {
