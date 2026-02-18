@@ -114,12 +114,17 @@ if (process.env.NODE_ENV === 'development') {
           console.log('[Dev Auth] Customer created:', customer.id);
 
           // Re-fetch user to get updated customerId
-          user = await prisma.user.findUnique({
+          const refreshedUser = await prisma.user.findUnique({
             where: { id: user.id },
             select: { id: true, email: true, name: true, customerId: true },
           });
 
-          console.log('[Dev Auth] User after customer creation:', user);
+          console.log('[Dev Auth] User after customer creation:', refreshedUser);
+
+          if (!refreshedUser) {
+            throw new Error('User disappeared after creation');
+          }
+          user = refreshedUser;
         } else {
           console.log('[Dev Auth] Existing user found, customerId:', user.customerId);
         }

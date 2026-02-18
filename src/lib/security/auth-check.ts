@@ -1,5 +1,5 @@
 import { auth } from '@/auth';
-import type { Customer } from '@/lib/db';
+import type { Dashboard } from '@/lib/types/dashboard';
 import { Session } from 'next-auth';
 
 /**
@@ -37,10 +37,12 @@ export async function ensureAuthenticated(): Promise<AuthResult | AuthError> {
 
 /**
  * Authorization result with customer data
+ * Note: customer here is CustomerWithRelations (before email is added)
  */
 interface AuthzResult {
   authorized: true;
-  customer: Customer;
+  customer: Omit<Dashboard, 'email'>;
+  email: string;
 }
 
 interface AuthzError {
@@ -113,5 +115,6 @@ export async function ensureCustomer(): Promise<AuthzResult | AuthzError> {
   return {
     authorized: true,
     customer,
+    email: session.user.email,
   };
 }
