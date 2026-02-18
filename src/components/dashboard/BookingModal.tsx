@@ -7,7 +7,7 @@ import type { BookingFormData, BookingFormState } from '@/lib/validation/booking
 import type { Equipment } from '@/lib/validation/equipmentSchema';
 
 import { Button } from '@/components/ui/button';
-import { getServicePrice, getServicesList } from '@/lib/schema';
+import { getServicesList } from '@/lib/schema';
 import submitBookingForm from '@/lib/submit/submitBookingForm';
 import { isTandemGlider } from '@/lib/utils';
 
@@ -215,8 +215,6 @@ export default function BookingModal({
                     onValueChange={(value) => setServiceType(value as ServiceCode | '')}
                   >
                     {applicableServices.map((service) => {
-                      const price = getServicePrice(service.code);
-
                       return (
                         <div className="grid grid-cols-[30px_1fr]" key={service.code}>
                           <RadioGroupItem
@@ -238,7 +236,9 @@ export default function BookingModal({
                               <span
                                 className={`text-sm font-semibold ${service.available ? 'text-sky-700' : 'text-sky-200 cursor-not-allowed'}`}
                               >
-                                {typeof price === 'number' ? `£${price}` : price}
+                                {typeof service.cost === 'number'
+                                  ? `£${service.cost}`
+                                  : service.cost}
                               </span>
                             </div>
                           </Label>

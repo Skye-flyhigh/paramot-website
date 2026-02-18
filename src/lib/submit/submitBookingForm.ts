@@ -1,6 +1,6 @@
 'use server';
 
-import { getServiceByCode, getServicePrice } from '../schema';
+import { getServiceByCode } from '../schema';
 import sendEmail, { Email } from '../services/user-mailing';
 import { BookingFormState, bookingFormSchema } from '../validation/bookingForm';
 
@@ -55,7 +55,6 @@ export default async function submitBookingForm(
     const serviceCode = data.serviceType; // e.g. "SVC-001"
     const serviceTitle = service.title;
     const serviceDescription = service.description;
-    const price = getServicePrice(data.serviceType);
 
     // Create service record in database (auto-generates booking reference)
     const newServiceRecord = await createServiceRecord({
@@ -66,7 +65,7 @@ export default async function submitBookingForm(
       deliveryMethod: data.deliveryMethod,
       contactMethod: data.contactMethod,
       specialInstructions: data.specialInstructions,
-      cost: typeof price === 'number' ? price : 0,
+      cost: typeof service.cost === 'number' ? service.cost : 0,
     });
 
     // Email confirmation to the customer
@@ -88,7 +87,7 @@ export default async function submitBookingForm(
         serviceDescription,
         equipmentName,
         bookingDate,
-        price,
+        price: service.cost,
       },
     };
     const results = await sendEmail(email);

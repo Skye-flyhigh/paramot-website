@@ -1,13 +1,11 @@
-import { Prices, getServicesList } from '@/lib/schema';
+import { getServicesList } from '@/lib/schema';
 
 import { auth } from '@/auth';
-import prices from '@/data/prices.json';
 
 import { ServiceCard } from './ServiceCard';
 
 export default async function Services() {
   const session = await auth();
-  const pricing = prices as Prices;
 
   const services = getServicesList();
   const filteredServices = services.filter((service) => {
@@ -32,7 +30,7 @@ export default async function Services() {
             <ServiceCard
               key={service.code}
               service={service}
-              pricing={pricing[service.code]}
+              pricing={service.cost}
               session={session}
             />
           ))}

@@ -4,6 +4,7 @@
     "title": "Paraglider Trimming",
     "description": "Precision trimming services to optimize your wing's performance using professional tension meters and line geometry analysis.",
     "code": "SVC-001",
+    "cost": 100,
     "available": true
   },
   "trim-tandem": {
@@ -11,6 +12,7 @@
     "title": "Tandem Paraglider Trimming",
     "description": "Precision trimming services to optimize your tandem wing's performance using professional tension meters and line geometry analysis.",
     "code": "SVC-002",
+    "cost": 120,
     "available": true
   },
   "service-solo": {
@@ -18,6 +20,7 @@
     "title": "Paraglider Full Service",
     "description": "Complete servicing including canopy fabric inspection and strength testing, line strength analysis, riser state evaluation, and paraglider trimming.",
     "code": "SVC-011",
+    "cost": 180,
     "available": true
   },
   "service-tandem": {
@@ -25,6 +28,7 @@
     "title": "Tandem Paraglider Full Service",
     "description": "Complete servicing including canopy fabric inspection and strength testing, line strength analysis, riser state evaluation, and paraglider trimming.",
     "code": "SVC-012",
+    "cost": 210,
     "available": true
   },
   "service-harness": {
@@ -32,6 +36,7 @@
     "title": "Harness Service & Inspection",
     "description": "Complete inspection and service of the harness to ensure airworthiness.",
     "code": "SVC-031",
+    "cost": 90,
     "available": true
   },
   "repack-solo": {
@@ -39,6 +44,7 @@
     "title": "Parachute Repacking",
     "description": "Professional emergency parachute repacking following manufacturer specifications and safety protocols.",
     "code": "PACK-001",
+    "cost": 50,
     "available": false
   },
   "repack-steerable": {
@@ -46,6 +52,7 @@
     "title": "Steerable Parachute Repacking",
     "description": "Professional steerable parachute repacking following manufacturer specifications and safety protocols.",
     "code": "PACK-002",
+    "cost": 70,
     "available": false
   },
   "repair": {
@@ -53,6 +60,7 @@
     "title": "Glider Repair",
     "description": "Comprehensive repair services for paraglider canopies and components. Currently developing advanced sewing capabilities.",
     "code": "REP-001",
+    "cost": "Contact us",
     "available": false
   }
 }

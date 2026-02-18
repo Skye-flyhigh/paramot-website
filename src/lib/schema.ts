@@ -1,35 +1,11 @@
 // Database Schema Design for paraMOT Customer & Service Management
 // This schema supports the business model: customers own gliders, book services, track history
 
-// TODO(human): Design the complete database schema structure here
-// Consider these relationships:
-// - Customer (from OAuth) has many Gliders
-// - Customer has many ServiceRecords
-// - Glider has many ServiceRecords
-// - Service defines types (SVC-001, SVC-002, SVC-011, etc.) with pricing/details
-// - ServiceRecord connects Customer + Glider + Service + booking details
-import prices from '@/data/prices.json';
 import rawServicesData from '@/data/services.json';
-import {
-  Prices,
-  ServiceCode,
-  ServiceRecords,
-  ServicesType,
-} from './validation/serviceSchema';
+import { ServiceCode, ServiceRecords, ServicesType } from './validation/serviceSchema';
 
 // Re-export types for convenience
-export type { Prices, ServiceCode, ServicesType };
-
-// Service data (line trim, parachute repack, etc.) would come from the workbench side of the business.
-// export interface GliderService {
-//     serviceId: string   // That unique identifier that is generated at the creation of a new order
-//     serialNb: string
-//     createdAt: Date
-//     updatedAt: Date
-//     trimService: TrimService
-//     canopyService?: CanopyService
-//     lineInspection?: LineInspection
-// }
+export type { ServiceCode, ServicesType };
 
 // Workbench integration interfaces - these connect to your Electron app's Prisma data
 export interface WorkbenchInspectionSession {
@@ -80,11 +56,6 @@ export interface DateBlock {
   reason: string;
   type: BlockType;
   createdAt: Date;
-}
-
-// Pricing lookup helper
-export function getServicePrice(serviceCode: ServiceCode): string | number {
-  return prices[serviceCode] || 'Contact us';
 }
 
 // Service list function helper

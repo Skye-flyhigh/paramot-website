@@ -3,10 +3,9 @@ export interface ServicesType {
   title: string;
   description: string;
   code: ServiceCode;
+  cost: number | string;
   available: boolean;
 }
-
-export type Prices = Record<string, number | string>;
 
 export const SERVICE_CODE = [
   'SVC-001',
