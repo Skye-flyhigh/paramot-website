@@ -35,7 +35,7 @@ export default function ServiceActionButtons({
               Download Service Report
             </Button>
           )}
-          {isOwner && ( // FIXME: check if the user own this kit for these actions
+          {isOwner && (
             <>
               {(status === 'PENDING' ||
                 status === 'CANCELLED' ||
