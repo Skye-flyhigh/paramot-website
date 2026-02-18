@@ -24,7 +24,8 @@ export default async function ServiceDetailPage({
   }
 
   // Check if authenticated user owns this equipment
-  const isOwner = checkEquipmentOwnershipBySerial(session, equipment.serialNumber);
+  const ownershipCheck = await checkEquipmentOwnershipBySerial(equipment.serialNumber);
+  const isOwner = ownershipCheck.isOwner;
 
   // Service history is already loaded via relation
   const serviceHistory = equipment.serviceRecords;
@@ -67,11 +68,6 @@ export default async function ServiceDetailPage({
               >
                 {lastService.status}
               </span>
-              {isOwner && (
-                <p className="text-2xl font-bold text-sky-900 mt-2">
-                  £{lastService.cost}
-                </p>
-              )}
             </div>
           </div>
         </header>
