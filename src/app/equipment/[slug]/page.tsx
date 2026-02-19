@@ -24,7 +24,9 @@ export default async function ServiceDetailPage({
   }
 
   // Check if authenticated user owns this equipment
-  const ownershipCheck = await checkEquipmentOwnershipBySerial(equipment.serialNumber);
+  const ownershipCheck = await checkEquipmentOwnershipBySerial(
+    equipment.serialNumber ?? '',
+  );
   const isOwner = ownershipCheck.isOwner;
 
   // Service history is already loaded via relation
