@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { ensureTechnician } from '../security/workshop-auth';
 import { findSessionById } from '../db/sessions';
 import { prisma } from '../db/client';
+import { autoClothResult } from '../workshop/cloth-calculations';
 
 const clothTestSchema = z.object({
   sessionId: z.string().min(1),
@@ -38,6 +39,15 @@ export async function addClothTest(formData: FormData) {
     return { error: 'Session not found' };
   }
 
+  // Auto-compute result from measurements if not explicitly provided
+  const computedResult =
+    data.result ??
+    autoClothResult(
+      data.porosityValue ?? null,
+      data.porosityMethod ?? null,
+      data.tearResistance ?? null,
+    );
+
   const test = await prisma.clothTest.create({
     data: {
       sessionId: data.sessionId,
@@ -48,7 +58,7 @@ export async function addClothTest(formData: FormData) {
       porosityMethod: data.porosityMethod,
       tearResistance: data.tearResistance,
       tearResult: data.tearResult,
-      result: data.result,
+      result: computedResult,
       notes: data.notes,
     },
   });
