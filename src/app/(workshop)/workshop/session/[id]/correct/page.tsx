@@ -4,6 +4,7 @@ import { ensureTechnician } from '@/lib/security/workshop-auth';
 import { findSessionWithFullData } from '@/lib/db/sessions';
 import { findSizeById } from '@/lib/db/reference';
 import CorrectionForm from '@/components/workshop/CorrectionForm';
+import TrimComparison from '@/components/workshop/TrimComparison';
 
 interface CorrectPageProps {
   params: Promise<{ id: string }>;
@@ -28,25 +29,43 @@ export default async function CorrectPage({ params }: CorrectPageProps) {
     );
   }
 
+  // Load reference data
+  const gliderSize = session.gliderSizeId
+    ? await findSizeById(session.gliderSizeId)
+    : null;
+
   // Get available line rows from reference data
   let lineRows = ['A', 'B', 'C', 'D', 'K'];
 
-  if (session.gliderSizeId) {
-    const size = await findSizeById(session.gliderSizeId);
+  if (gliderSize) {
+    const lineLengths = gliderSize.lineLengths as Array<{ row: string }> | null;
 
-    if (size) {
-      const lineLengths = size.lineLengths as Array<{ row: string }> | null;
+    if (Array.isArray(lineLengths)) {
+      const rows = new Set(lineLengths.map((l) => l.row));
+      const rowOrder = ['A', 'B', 'C', 'D', 'E', 'K'];
 
-      if (Array.isArray(lineLengths)) {
-        const rows = new Set(lineLengths.map((l) => l.row));
-        const rowOrder = ['A', 'B', 'C', 'D', 'E', 'K'];
-
-        lineRows = Array.from(rows).sort(
-          (a, b) => rowOrder.indexOf(a) - rowOrder.indexOf(b),
-        );
-      }
+      lineRows = Array.from(rows).sort(
+        (a, b) => rowOrder.indexOf(a) - rowOrder.indexOf(b),
+      );
     }
   }
+
+  // Split measurements by phase for comparison
+  const initialMeasurements = session.trimMeasurements
+    .filter((m) => m.phase === 'initial' && m.measuredLength != null)
+    .map((m) => ({
+      lineRow: m.lineRow,
+      position: m.position,
+      measuredLength: m.measuredLength!,
+    }));
+
+  const correctedMeasurements = session.trimMeasurements
+    .filter((m) => m.phase === 'corrected' && m.measuredLength != null)
+    .map((m) => ({
+      lineRow: m.lineRow,
+      position: m.position,
+      measuredLength: m.measuredLength!,
+    }));
 
   return (
     <div className="space-y-6">
@@ -69,8 +88,24 @@ export default async function CorrectPage({ params }: CorrectPageProps) {
         lineRows={lineRows}
       />
 
+      {/* Before/After comparison */}
+      {gliderSize && correctedMeasurements.length > 0 && (
+        <div>
+          <h4 className="mb-3 text-sm font-medium uppercase tracking-wide text-zinc-500">
+            Before / After Comparison
+          </h4>
+          <TrimComparison
+            lineLengths={gliderSize.lineLengths}
+            groupMappings={gliderSize.groupMappings}
+            aspectRatio={gliderSize.aspectRatio}
+            initialMeasurements={initialMeasurements}
+            correctedMeasurements={correctedMeasurements}
+          />
+        </div>
+      )}
+
       {/* Link back to trim for corrected measurements */}
-      {session.corrections.length > 0 && (
+      {session.corrections.length > 0 && correctedMeasurements.length === 0 && (
         <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-4 text-sm text-zinc-600">
           After making corrections, go back to{' '}
           <a
@@ -79,7 +114,8 @@ export default async function CorrectPage({ params }: CorrectPageProps) {
           >
             Trim Analysis
           </a>{' '}
-          and enter corrected measurements to verify the corrections worked.
+          and enter corrected measurements (switch to &quot;Corrected&quot; phase) to
+          verify the corrections worked.
         </div>
       )}
     </div>
@@ -97,7 +133,6 @@ function TrimDeviationSummary({
     deviation: number | null;
   }>;
 }) {
-  // Show only initial phase deviations that are significant
   const initialDeviations = measurements
     .filter((m) => m.phase === 'initial' && m.deviation !== null)
     .sort((a, b) => Math.abs(b.deviation!) - Math.abs(a.deviation!));
