@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import { PrismaClient } from '../src/generated/prisma';
+import { seedReferenceData } from './seed-reference';
 
 const prisma = new PrismaClient({
   accelerateUrl: process.env.DATABASE_URL!,
@@ -195,10 +196,16 @@ async function main() {
     console.log(`✅ Created service: ${s.ref}`);
   }
 
+  // =========================================
+  // Workshop Reference Data (from ACT parser)
+  // =========================================
+  await seedReferenceData(prisma);
+
   console.log('\n🎉 Seed completed!');
   console.log(`   Equipment: 3 items`);
   console.log(`   Ownership links: 3 records`);
   console.log(`   Service records: 4 bookings (2 completed, 1 in progress, 1 pending)`);
+  console.log(`   Reference data: see above for ACT-derived models`);
 }
 
 main()
