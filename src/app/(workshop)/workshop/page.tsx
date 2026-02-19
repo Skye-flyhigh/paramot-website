@@ -88,7 +88,10 @@ export default async function WorkshopDashboard() {
                       {booking.equipment.size}
                     </p>
                     <p className="text-xs text-zinc-500">
-                      {booking.customer.firstName} {booking.customer.lastName} &middot;{' '}
+                      {booking.customer
+                        ? `${booking.customer.firstName} ${booking.customer.lastName}`
+                        : 'Customer'}{' '}
+                      &middot;{' '}
                       <span className="font-mono">{booking.bookingReference}</span>{' '}
                       &middot; {booking.serviceCode} &middot; Preferred:{' '}
                       {booking.preferredDate}
