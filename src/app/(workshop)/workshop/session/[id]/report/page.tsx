@@ -1,4 +1,6 @@
 import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { FileText } from 'lucide-react';
 
 import { ensureTechnician } from '@/lib/security/workshop-auth';
 import { findSessionWithFullData } from '@/lib/db/sessions';
@@ -28,7 +30,16 @@ export default async function ReportPage({ params }: ReportPageProps) {
       <h3 className="text-lg font-semibold text-zinc-900">Report & Sign-off</h3>
 
       {isCompleted && report ? (
-        <CompletedReport report={report} isGlider={isGlider} />
+        <>
+          <Link
+            href={`/workshop/session/${session.id}/report/view`}
+            className="inline-flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-medium text-zinc-700 hover:bg-zinc-50"
+          >
+            <FileText className="h-4 w-4" />
+            View Full Report
+          </Link>
+          <CompletedReport report={report} isGlider={isGlider} />
+        </>
       ) : (
         <ReportForm
           sessionId={session.id}
