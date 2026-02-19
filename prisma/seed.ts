@@ -6,7 +6,7 @@ const prisma = new PrismaClient({
   accelerateUrl: process.env.DATABASE_URL!,
 });
 
-const SKYE_CUSTOMER_ID = '51a55b8c-ef00-4fe6-9458-dc02606474b6';
+const SKYE_CUSTOMER_ID = 'a18ee823-d4cc-44dc-b554-6f6c7a36427b';
 
 async function main() {
   console.log('🌱 Seeding database...');
@@ -58,7 +58,10 @@ async function main() {
   console.log('✅ Created harness:', harness.serialNumber);
 
   // Customer-dependent seeding (ownership + service records)
-  // Skips gracefully if customer doesn't exist (e.g. after migrate reset)
+  // Set customer context so RLS allows the SELECT on Customer table
+  await prisma.$executeRaw`
+    SELECT set_config('app.customer_id', ${SKYE_CUSTOMER_ID}::text, FALSE)
+  `;
   const customerExists = await prisma.$queryRaw<[{ count: bigint }]>`
     SELECT COUNT(*) as count FROM "Customer" WHERE "id" = ${SKYE_CUSTOMER_ID}::uuid
   `;
