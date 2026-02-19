@@ -31,13 +31,17 @@ const GLIDER_STEPS: Step[] = [
 
 const RESERVE_STEPS: Step[] = [
   { label: 'Intake', path: 'intake', icon: <Eye className="h-4 w-4" /> },
-  { label: 'Checklist', path: 'intake', icon: <ClipboardCheck className="h-4 w-4" /> },
+  { label: 'Repack', path: 'checklist', icon: <ClipboardCheck className="h-4 w-4" /> },
   { label: 'Report', path: 'report', icon: <FileText className="h-4 w-4" /> },
 ];
 
 const HARNESS_STEPS: Step[] = [
   { label: 'Intake', path: 'intake', icon: <Eye className="h-4 w-4" /> },
-  { label: 'Checklist', path: 'intake', icon: <ClipboardCheck className="h-4 w-4" /> },
+  {
+    label: 'Inspection',
+    path: 'checklist',
+    icon: <ClipboardCheck className="h-4 w-4" />,
+  },
   { label: 'Report', path: 'report', icon: <FileText className="h-4 w-4" /> },
 ];
 

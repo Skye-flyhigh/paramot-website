@@ -150,9 +150,13 @@ export default async function SessionHub({ params }: SessionHubProps) {
                 done={hasDiagnosis}
               />
               <StepLink
-                href={`${basePath}/intake`}
+                href={`${basePath}/checklist`}
                 icon={<ClipboardCheck className="h-4 w-4" />}
-                label="Checklist"
+                label={
+                  session.equipmentType === 'RESERVE'
+                    ? 'Repack Procedure'
+                    : 'Inspection Checklist'
+                }
                 count={checklistDone}
               />
               <StepLink
