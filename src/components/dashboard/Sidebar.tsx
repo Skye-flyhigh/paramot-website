@@ -9,6 +9,7 @@ import {
   Package,
   Settings,
   Wrench,
+  Hammer,
 } from 'lucide-react';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
@@ -69,6 +70,13 @@ export default function Sidebar() {
 
       {/* Footer actions */}
       <div className="p-4 border-t border-sky-100 space-y-2">
+        <Link
+          href="/workshop"
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-zinc-500 hover:bg-zinc-50 hover:text-zinc-700 transition-colors"
+        >
+          <Hammer className="w-5 h-5" />
+          <span>Workshop</span>
+        </Link>
         <button
           onClick={() => setOpenSupport(true)}
           className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-sky-600 hover:bg-sky-50 hover:text-sky-900 transition-colors"
