@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import { auth } from '@/auth';
 import ServiceHistoryTable from '@/components/dashboard/ServiceHistoryTable';
 import ServiceActionButtons from '@/components/equipment/ServiceActionButtons';
+import WorkshopResultCard from '@/components/equipment/WorkshopResultCard';
 import { checkEquipmentOwnershipBySerial } from '@/lib/authorization';
 import { findEquipmentBySerialNumber } from '@/lib/db';
 import { getServiceDescription, getStatusColor } from '@/lib/styling/services';
@@ -210,6 +211,9 @@ export default async function ServiceDetailPage({
                 </div>
               </div>
             </div>
+
+            {/* Workshop Inspection Results */}
+            <WorkshopResultCard sessions={equipment.serviceSessions} />
 
             {/* Actions */}
             <ServiceActionButtons
