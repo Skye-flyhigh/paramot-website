@@ -5,7 +5,7 @@ import { redirect } from 'next/navigation';
 import { ensureTechnician } from '../security/workshop-auth';
 import { createServiceSession } from '../db/sessions';
 import { findGliderSizeBySpec } from '../db/reference';
-import { findEquipmentById } from '../db/equipment';
+import { findEquipmentById, createEquipment } from '../db/equipment';
 import {
   sessionCreateSchema,
   type SessionCreateFormState,
@@ -45,22 +45,44 @@ export async function submitSessionCreate(
 
   const data = parsed.data;
 
-  // Verify equipment exists
-  const equipment = await findEquipmentById(data.equipmentId);
+  let equipmentId: string;
+  let manufacturer: string;
+  let model: string;
+  let size: string;
 
-  if (!equipment) {
-    return { errors: { equipmentId: 'Equipment not found' }, success: false };
+  if (data.equipmentId) {
+    // Existing equipment — verify it exists
+    const equipment = await findEquipmentById(data.equipmentId);
+
+    if (!equipment) {
+      return { errors: { equipmentId: 'Equipment not found' }, success: false };
+    }
+
+    equipmentId = equipment.id;
+    manufacturer = equipment.manufacturer;
+    model = equipment.model;
+    size = equipment.size;
+  } else {
+    // Manual entry — create equipment record
+    const equipment = await createEquipment({
+      serialNumber: data.serialNumber || null,
+      type: data.equipmentType,
+      manufacturer: data.manualManufacturer!,
+      model: data.manualModel!,
+      size: data.manualSize!,
+    });
+
+    equipmentId = equipment.id;
+    manufacturer = equipment.manufacturer;
+    model = equipment.model;
+    size = equipment.size;
   }
 
   // Try to auto-link glider reference data
   let gliderSizeId: string | undefined;
 
   if (data.equipmentType === 'GLIDER') {
-    const gliderSize = await findGliderSizeBySpec(
-      equipment.manufacturer,
-      equipment.model,
-      equipment.size,
-    );
+    const gliderSize = await findGliderSizeBySpec(manufacturer, model, size);
 
     if (gliderSize) {
       gliderSizeId = gliderSize.id;
@@ -71,11 +93,11 @@ export async function submitSessionCreate(
   const serviceRecordId = data.serviceRecordId || undefined;
 
   const session = await createServiceSession({
-    equipmentId: data.equipmentId,
+    equipmentId,
     serviceRecordId,
     gliderSizeId,
     equipmentType: data.equipmentType,
-    serialNumber: data.serialNumber || equipment.serialNumber || undefined,
+    serialNumber: data.serialNumber || undefined,
     productionDate: data.productionDate || undefined,
     serviceTypes: data.serviceTypes,
     measureMethod: data.measureMethod,
