@@ -151,8 +151,8 @@ export default async function ReportViewPage({ params }: ReportViewProps) {
                 value={session.diagnosis.linesetCondition}
               />
             )}
-            {session.diagnosis.riserCondition && (
-              <ConditionField label="Risers" value={session.diagnosis.riserCondition} />
+            {session.diagnosis.risersCondition && (
+              <ConditionField label="Risers" value={session.diagnosis.risersCondition} />
             )}
             {session.diagnosis.canopyCondition && (
               <ConditionField label="Canopy" value={session.diagnosis.canopyCondition} />
