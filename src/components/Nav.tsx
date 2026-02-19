@@ -15,6 +15,9 @@ export default async function Nav() {
           </Link>
         </div>
         <div className="flex items-center space-x-4">
+          <Link href="/equipment">
+            <Button variant="link">Equipment Registry</Button>
+          </Link>
           {session?.user ? (
             <>
               <Link href="/dashboard">
