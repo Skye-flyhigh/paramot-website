@@ -1,0 +1,260 @@
+{
+  "manufacturer": "SKYMAN",
+  "model": "ROCK2",
+  "certificationClass": "EN-A",
+  "numLineRows": 3,
+  "measurementMethod": "canopy_inner",
+  "size": {
+    "label": "XS",
+    "minWeight": 60,
+    "maxWeight": 85,
+    "wingArea": 23.5,
+    "aspectRatio": null,
+    "numLinesPerSide": 15
+  },
+  "lineLengths": {
+    "A": [
+      6425, 6395, 6385, 6400, 6380, 6360, 6355, 6370, 6360, 6310, 6275, 6210, 6230, 5910,
+      5775
+    ],
+    "B": [
+      6345, 6315, 6305, 6325, 6310, 6295, 6295, 6315, 6310, 6270, 6235, 6180, 6205, 5870,
+      5770
+    ],
+    "C": [
+      6470, 6435, 6425, 6445, 6420, 6400, 6395, 6415, 6385, 6335, 6295, 6235, 6245, 5920,
+      5800
+    ],
+    "D": [
+      6590,
+      6555,
+      6540,
+      6555,
+      6530,
+      6505,
+      6495,
+      6500,
+      6470,
+      6405,
+      6365,
+      6290,
+      6285,
+      null,
+      5880
+    ],
+    "K": [
+      6895,
+      6650,
+      6495,
+      null,
+      6420,
+      6285,
+      6290,
+      null,
+      6220,
+      6110,
+      6145,
+      null,
+      6045,
+      6045,
+      6100
+    ]
+  },
+  "groupMappings": {
+    "A": [
+      "G1A",
+      "G1A",
+      "G1A",
+      "G1A",
+      "G2A",
+      "G2A",
+      "G2A",
+      "G2A",
+      "G3A",
+      "G3A",
+      "G3A",
+      "G3A",
+      "G3A",
+      "STA",
+      "STA"
+    ],
+    "B": [
+      "G1B",
+      "G1B",
+      "G1B",
+      "G1B",
+      "G2B",
+      "G2B",
+      "G2B",
+      "G2B",
+      "G3B",
+      "G3B",
+      "G3B",
+      "G3B",
+      "G3B",
+      "STB",
+      "STB"
+    ],
+    "C": [
+      "G1C",
+      "G1C",
+      "G1C",
+      "G1C",
+      "G2C",
+      "G2C",
+      "G2C",
+      "G2C",
+      "G3C",
+      "G3C",
+      "G3C",
+      "G3C",
+      "G3C",
+      "STC",
+      "STC"
+    ],
+    "D": [
+      "G1C",
+      "G1C",
+      "G1C",
+      "G1C",
+      "G2C",
+      "G2C",
+      "G2C",
+      "G2C",
+      "G3C",
+      "G3C",
+      "G3C",
+      "G3C",
+      "G3C",
+      null,
+      "STC"
+    ],
+    "K": [
+      "G1K",
+      "G1K",
+      "G1K",
+      null,
+      "G2K",
+      "G2K",
+      "G2K",
+      null,
+      "G3K",
+      "G3K",
+      "G3K",
+      null,
+      "G4K",
+      "G4K",
+      "G4K"
+    ]
+  },
+  "lineMaterials": [
+    {
+      "lineId": "L1A1",
+      "cascadeLevel": 1,
+      "lineRow": "A",
+      "cascadeIndex": 1,
+      "brand": "Elderid",
+      "materialRef": "8000 190 222 0 \u2013 Red",
+      "strengthNew": 190.0
+    },
+    {
+      "lineId": "L1A2",
+      "cascadeLevel": 1,
+      "lineRow": "A",
+      "cascadeIndex": 2,
+      "brand": "Elderid",
+      "materialRef": "8001 190 222 0 \u2013 Red",
+      "strengthNew": 190.0
+    },
+    {
+      "lineId": "L1B1",
+      "cascadeLevel": 1,
+      "lineRow": "B",
+      "cascadeIndex": 1,
+      "brand": "Elderid",
+      "materialRef": "8000 190 222 0",
+      "strengthNew": 190.0
+    },
+    {
+      "lineId": "L1B2",
+      "cascadeLevel": 1,
+      "lineRow": "B",
+      "cascadeIndex": 2,
+      "brand": "Elderid",
+      "materialRef": "8000 190 222 0",
+      "strengthNew": 190.0
+    },
+    {
+      "lineId": "L2A1",
+      "cascadeLevel": 2,
+      "lineRow": "A",
+      "cascadeIndex": 1,
+      "brand": "Elderid",
+      "materialRef": "8000 135 22 0 \u2013 Red",
+      "strengthNew": 135.0
+    },
+    {
+      "lineId": "L2A2",
+      "cascadeLevel": 2,
+      "lineRow": "A",
+      "cascadeIndex": 2,
+      "brand": "Elderid",
+      "materialRef": "8000 135 22 0 \u2013 Red",
+      "strengthNew": 135.0
+    },
+    {
+      "lineId": "L2B1",
+      "cascadeLevel": 2,
+      "lineRow": "B",
+      "cascadeIndex": 1,
+      "brand": "Elderid",
+      "materialRef": "8000 135 22 0 \u2013 Red",
+      "strengthNew": 135.0
+    },
+    {
+      "lineId": "L2B2",
+      "cascadeLevel": 2,
+      "lineRow": "B",
+      "cascadeIndex": 2,
+      "brand": "Elderid",
+      "materialRef": "8000 135 22 0 \u2013 Red",
+      "strengthNew": 135.0
+    },
+    {
+      "lineId": "L3A1",
+      "cascadeLevel": 3,
+      "lineRow": "A",
+      "cascadeIndex": 1,
+      "brand": "Elderid",
+      "materialRef": "8000 135 22 0 \u2013 Red",
+      "strengthNew": 135.0
+    },
+    {
+      "lineId": "L3A2",
+      "cascadeLevel": 3,
+      "lineRow": "A",
+      "cascadeIndex": 2,
+      "brand": "Elderid",
+      "materialRef": "8000 135 22 0 \u2013 Red",
+      "strengthNew": 135.0
+    },
+    {
+      "lineId": "L3B1",
+      "cascadeLevel": 3,
+      "lineRow": "B",
+      "cascadeIndex": 1,
+      "brand": "Elderid",
+      "materialRef": "8000 135 22 0 \u2013 Red",
+      "strengthNew": 135.0
+    },
+    {
+      "lineId": "L3B2",
+      "cascadeLevel": 3,
+      "lineRow": "B",
+      "cascadeIndex": 2,
+      "brand": "Elderid",
+      "materialRef": "8000 135 22 0 \u2013 Red",
+      "strengthNew": 135.0
+    }
+  ]
+}
