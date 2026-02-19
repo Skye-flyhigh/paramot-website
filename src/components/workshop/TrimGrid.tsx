@@ -3,6 +3,8 @@
 import { useState, useMemo } from 'react';
 import { Save, Loader2, Check } from 'lucide-react';
 import { saveTrimMeasurements } from '@/lib/submit/submitMeasurements';
+import TrimAnalysis from './TrimAnalysis';
+import type { MeasuredLine } from '@/lib/workshop/trim-calculations';
 
 interface LineLengthEntry {
   lineId: string;
@@ -171,6 +173,23 @@ export default function TrimGrid({
 
     return 'text-red-600 font-bold';
   }
+
+  // Derive current measurements for analysis
+  const currentMeasurements: MeasuredLine[] = useMemo(() => {
+    return rows.flatMap((row) =>
+      positions
+        .filter((pos) => {
+          const val = values[`${row}-${pos}`];
+
+          return val && !isNaN(parseFloat(val));
+        })
+        .map((pos) => ({
+          lineRow: row,
+          position: pos,
+          measuredLength: parseFloat(values[`${row}-${pos}`]),
+        })),
+    );
+  }, [values, rows, positions]);
 
   async function handleSave() {
     setSaving(true);
@@ -372,6 +391,16 @@ export default function TrimGrid({
           </span>
         )}
       </div>
+
+      {/* Group Differential Analysis */}
+      {gliderSize.groupMappings != null && (
+        <TrimAnalysis
+          lineLengths={gliderSize.lineLengths}
+          groupMappings={gliderSize.groupMappings}
+          aspectRatio={gliderSize.aspectRatio}
+          measurements={currentMeasurements}
+        />
+      )}
     </div>
   );
 }
