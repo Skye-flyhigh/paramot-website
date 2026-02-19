@@ -17,7 +17,7 @@ export default async function ReportPage({ params }: ReportPageProps) {
 
   if (!auth.authorized) return null;
 
-  const session = await findSessionWithFullData(id);
+  const session = await findSessionWithFullData(id, auth.email);
 
   if (!session || session.technician !== auth.email) notFound();
 

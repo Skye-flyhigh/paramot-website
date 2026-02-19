@@ -22,7 +22,7 @@ export default async function StrengthPage({ params }: StrengthPageProps) {
 
   if (!auth.authorized) return null;
 
-  const session = await findSessionWithFullData(id);
+  const session = await findSessionWithFullData(id, auth.email);
 
   if (!session || session.technician !== auth.email) notFound();
 

@@ -4,6 +4,7 @@ import { z } from 'zod';
 import { ensureTechnician } from '../security/workshop-auth';
 import { findSessionById, updateSessionStatus } from '../db/sessions';
 import { prisma } from '../db/client';
+import { createMechanicClient } from '../db/rls';
 
 const reportSchema = z.object({
   sessionId: z.string().min(1),
@@ -75,9 +76,10 @@ export async function submitReport(formData: FormData) {
   });
 
   // Transition session to COMPLETED
-  await updateSessionStatus(data.sessionId, 'COMPLETED');
+  await updateSessionStatus(data.sessionId, 'COMPLETED', auth.email);
 
   // If linked to a ServiceRecord, mark it as completed
+  // ServiceRecords has RLS — need mechanic context for the update
   if (session.equipmentType) {
     const fullSession = await prisma.serviceSession.findUnique({
       where: { id: data.sessionId },
@@ -85,7 +87,9 @@ export async function submitReport(formData: FormData) {
     });
 
     if (fullSession?.serviceRecordId) {
-      await prisma.serviceRecords.update({
+      const db = createMechanicClient(auth.email);
+
+      await db.serviceRecords.update({
         where: { id: fullSession.serviceRecordId },
         data: { status: 'COMPLETED' },
       });

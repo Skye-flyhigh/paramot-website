@@ -1,9 +1,11 @@
 /**
  * Workshop session database queries.
- * Follows existing pattern from customers.ts, equipment.ts
+ * All queries use mechanic RLS context to ensure proper access to
+ * Customer and ServiceRecords tables through PostgreSQL RLS policies.
  */
 
 import { prisma } from './client';
+import { createMechanicClient } from './rls';
 import type { SessionStatus } from '@/generated/prisma';
 import { getChecklistSteps } from '@/lib/workshop/checklist-templates';
 
@@ -16,7 +18,9 @@ import { getChecklistSteps } from '@/lib/workshop/checklist-templates';
  * Includes equipment details and customer name via ownership join.
  */
 export async function findActiveSessionsByTechnician(technician: string) {
-  return prisma.serviceSession.findMany({
+  const db = createMechanicClient(technician);
+
+  return db.serviceSession.findMany({
     where: {
       technician,
       status: { in: ['CREATED', 'IN_PROGRESS'] },
@@ -58,7 +62,9 @@ export async function findActiveSessionsByTechnician(technician: string) {
  * All sessions for the dashboard (includes completed/archived).
  */
 export async function findAllSessionsByTechnician(technician: string) {
-  return prisma.serviceSession.findMany({
+  const db = createMechanicClient(technician);
+
+  return db.serviceSession.findMany({
     where: { technician },
     include: {
       equipment: {
@@ -84,9 +90,16 @@ export async function findAllSessionsByTechnician(technician: string) {
 
 /**
  * Session with all child data (session hub / report).
+ * Requires technician email to set mechanic RLS context for
+ * ServiceRecords and Customer table access.
  */
-export async function findSessionWithFullData(sessionId: string) {
-  return prisma.serviceSession.findUnique({
+export async function findSessionWithFullData(
+  sessionId: string,
+  technicianEmail: string,
+) {
+  const db = createMechanicClient(technicianEmail);
+
+  return db.serviceSession.findUnique({
     where: { id: sessionId },
     include: {
       equipment: true,
@@ -113,6 +126,8 @@ export async function findSessionWithFullData(sessionId: string) {
 
 /**
  * Lightweight session lookup (for auth checks — verify technician owns session).
+ * Does NOT need mechanic context — only reads from ServiceSession and Equipment
+ * (no RLS on those tables).
  */
 export async function findSessionById(sessionId: string) {
   return prisma.serviceSession.findUnique({
@@ -151,7 +166,9 @@ interface CreateSessionInput {
 }
 
 export async function createServiceSession(data: CreateSessionInput) {
-  const session = await prisma.serviceSession.create({
+  const db = createMechanicClient(data.technician);
+
+  const session = await db.serviceSession.create({
     data: {
       equipmentId: data.equipmentId,
       serviceRecordId: data.serviceRecordId,
@@ -171,7 +188,7 @@ export async function createServiceSession(data: CreateSessionInput) {
   });
 
   // Create initial version snapshot
-  await prisma.sessionVersion.create({
+  await db.sessionVersion.create({
     data: {
       sessionId: session.id,
       versionNumber: 1,
@@ -184,7 +201,7 @@ export async function createServiceSession(data: CreateSessionInput) {
   const checklistSteps = getChecklistSteps(data.equipmentType, data.serviceTypes ?? []);
 
   if (checklistSteps.length > 0) {
-    await prisma.serviceChecklist.createMany({
+    await db.serviceChecklist.createMany({
       data: checklistSteps.map((step) => ({
         sessionId: session.id,
         serviceType: step.serviceType,
@@ -205,9 +222,15 @@ export async function createServiceSession(data: CreateSessionInput) {
 /**
  * Update session status with version snapshot.
  */
-export async function updateSessionStatus(sessionId: string, newStatus: SessionStatus) {
+export async function updateSessionStatus(
+  sessionId: string,
+  newStatus: SessionStatus,
+  technicianEmail: string,
+) {
+  const db = createMechanicClient(technicianEmail);
+
   // Get current version count
-  const latestVersion = await prisma.sessionVersion.findFirst({
+  const latestVersion = await db.sessionVersion.findFirst({
     where: { sessionId },
     orderBy: { versionNumber: 'desc' },
   });
@@ -243,9 +266,12 @@ export async function updateSessionStatus(sessionId: string, newStatus: SessionS
 
 /**
  * Pending bookings that don't have a session yet (for "Start session" quick action).
+ * Needs mechanic context to access Customer table through RLS.
  */
-export async function findPendingBookingsWithoutSession() {
-  return prisma.serviceRecords.findMany({
+export async function findPendingBookingsWithoutSession(technicianEmail: string) {
+  const db = createMechanicClient(technicianEmail);
+
+  return db.serviceRecords.findMany({
     where: {
       status: 'PENDING',
       serviceSession: null,

@@ -15,7 +15,7 @@ export default async function WorkshopDashboard() {
 
   const [sessions, pendingBookings] = await Promise.all([
     findActiveSessionsByTechnician(auth.email),
-    findPendingBookingsWithoutSession(),
+    findPendingBookingsWithoutSession(auth.email),
   ]);
 
   return (

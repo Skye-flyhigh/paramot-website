@@ -15,7 +15,7 @@ export default async function ChecklistPage({ params }: ChecklistPageProps) {
 
   if (!auth.authorized) return null;
 
-  const session = await findSessionWithFullData(id);
+  const session = await findSessionWithFullData(id, auth.email);
 
   if (!session || session.technician !== auth.email) notFound();
 
