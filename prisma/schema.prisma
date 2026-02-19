@@ -1,5 +1,19 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// =============================================================================
+// paraMOT — Unified Prisma Schema v3.0
+// Date: 2026-02-19
+// Authors: Nyx & Skye
+//
+// This schema covers:
+// 1. NextAuth authentication
+// 2. Customer & profile data (website)
+// 3. Equipment registry (public, DVLA-style)
+// 4. Service records / bookings (customer-facing)
+// 5. Workshop reference data (from ACT parser)
+// 6. Workshop service sessions (technician workbench)
+//
+// Architecture: Single PostgreSQL database. Website and workshop share one schema.
+// The workshop section extends the existing website models — no sync needed.
+// =============================================================================
 
 generator client {
   provider = "prisma-client-js"
@@ -11,7 +25,7 @@ datasource db {
 }
 
 // ============================================
-// ENUMS - Define fixed value sets
+// ENUMS
 // ============================================
 
 enum ServiceStatus {
@@ -51,6 +65,13 @@ enum BlockType {
   TRAINING
   EMERGENCY
   OTHER
+}
+
+enum SessionStatus {
+  CREATED       // Session opened, intake not started
+  IN_PROGRESS   // Technician actively working
+  COMPLETED     // All steps done, report signed
+  ARCHIVED      // Historical record
 }
 
 // ============================================
@@ -117,7 +138,7 @@ model VerificationToken {
 }
 
 // ============================================
-// CUSTOMER & PROFILE DATA (Business Model)
+// CUSTOMER & PROFILE DATA
 // ============================================
 
 model Customer {
@@ -126,11 +147,10 @@ model Customer {
   lastName  String
   phone     String?
 
-  // Link back to auth User (reverse relation - no foreign key needed here)
   userId String @unique @default(cuid())
   user   User?
 
-  // Legal consent tracking (required for GDPR compliance)
+  // GDPR consent tracking
   termsAcceptedAt         DateTime
   privacyPolicyAcceptedAt DateTime
 
@@ -142,7 +162,7 @@ model Customer {
   communicationPreferencesId String?         @unique
   communicationPreferences   Communication?  @relation(fields: [communicationPreferencesId], references: [id], onDelete: Cascade)
 
-  // Reverse relations (what this customer owns/has done)
+  // Reverse relations
   serviceRecords    ServiceRecords[]
   customerEquipment CustomerEquipment[]
 
@@ -154,11 +174,11 @@ model Address {
   id       String    @id @default(cuid())
   street   String
   city     String
-  county   String?   // UK has counties, not states
-  postcode String    // UK postcodes are alphanumeric (SW1A 1AA)
+  county   String?
+  postcode String
   country  String    @default("United Kingdom")
 
-  customer Customer? // One-to-one reverse relation
+  customer Customer?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -172,29 +192,40 @@ model Communication {
   post      Boolean @default(false)
   text      Boolean @default(false)
 
-  customer Customer? // One-to-one reverse relation
+  customer Customer?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 // ============================================
-// EQUIPMENT REGISTRY (Public data like VIN)
+// EQUIPMENT REGISTRY
 // ============================================
 
 model Equipment {
-  id             String          @id @default(cuid())  // Matches generateEquipmentId()
-  serialNumber   String          @unique // Manufacturer's serial (public identifier)
-  type           EquipmentType
-  manufacturer   String
-  model          String
-  size           String
+  id              String          @id @default(cuid())
+  serialNumber    String?         @unique
+  type            EquipmentType
+  manufacturer    String                    // Free text (existing data)
+  model           String                    // Free text (existing data)
+  size            String                    // Free text (existing data)
   manufactureDate DateTime?
-  status         EquipmentStatus @default(ACTIVE)
+  status          EquipmentStatus @default(ACTIVE)
+
+  // Optional links to structured reference data
+  // These get populated when a technician links equipment to ACT data during a session.
+  // Existing equipment records keep working with just the string fields above.
+  manufacturerRefId String?
+  manufacturerRef   Manufacturer? @relation(fields: [manufacturerRefId], references: [id])
+  gliderModelRefId  String?
+  gliderModelRef    GliderModel?  @relation(fields: [gliderModelRefId], references: [id])
+  gliderSizeRefId   String?
+  gliderSizeRef     GliderSize?   @relation(fields: [gliderSizeRefId], references: [id])
 
   // Reverse relations
   serviceRecords    ServiceRecords[]
   customerEquipment CustomerEquipment[]
+  serviceSessions   ServiceSession[]       // Workshop sessions on this equipment
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -210,17 +241,15 @@ model Equipment {
 model CustomerEquipment {
   id String @id @default(cuid())
 
-  // Foreign keys with relations
-  customerId String @db.Uuid
+  customerId String   @db.Uuid
   customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
 
   equipmentId String
   equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
 
-  // Ownership metadata
-  equipmentSerialNumber String    // Denormalized for convenience
+  equipmentSerialNumber String
   ownedFrom             DateTime
-  ownedUntil            DateTime? // null = currently owned
+  ownedUntil            DateTime?
   purchaseDate          DateTime?
   purchasePrice         Float?
   notes                 String?
@@ -228,43 +257,43 @@ model CustomerEquipment {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@unique([customerId, equipmentId, ownedFrom]) // Prevent duplicate ownership records
+  @@unique([customerId, equipmentId, ownedFrom])
   @@index([customerId])
   @@index([equipmentId])
   @@index([equipmentSerialNumber])
 }
 
 // ============================================
-// SERVICE RECORDS (Bookings & History)
+// SERVICE RECORDS (Customer bookings)
 // ============================================
 
 model ServiceRecords {
-  id               String @id @default(cuid()) // Internal database ID
+  id               String @id @default(cuid())
   bookingReference String @unique              // Customer-facing: "SVC-001-260512-3F5D"
 
-  // Foreign keys with relations
-  customerId String @db.Uuid
+  customerId String   @db.Uuid
   customer   Customer @relation(fields: [customerId], references: [id], onDelete: Cascade)
 
   equipmentId String
   equipment   Equipment @relation(fields: [equipmentId], references: [id], onDelete: Cascade)
 
-  // Service details
-  serviceCode String        // SVC-001, SVC-002, etc. (validated in app code)
+  serviceCode String
   status      ServiceStatus @default(PENDING)
 
-  // Booking form data
-  preferredDate       String // YYYY-MM-DD format (matches validation schema)
+  preferredDate       String
   deliveryMethod      DeliveryMethod
   contactMethod       ContactMethod
   specialInstructions String?
 
-  // Business data
   cost              Float
   actualServiceDate DateTime?
-  assignedTo        String? // User.id of assigned mechanic (for RLS)
-  completedBy       String? // Technician name/ID who completed it
-  notes             String? // Internal notes
+  assignedTo        String?
+  completedBy       String?
+  notes             String?
+
+  // Reverse relation: the workshop session that fulfils this booking
+  // One booking = one session (when work begins)
+  serviceSession ServiceSession?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -281,8 +310,8 @@ model ServiceRecords {
 
 model DateBlock {
   id        String    @id @default(cuid())
-  startDate String    // YYYY-MM-DD format
-  endDate   String    // YYYY-MM-DD format
+  startDate String
+  endDate   String
   reason    String
   type      BlockType
 
@@ -291,10 +320,394 @@ model DateBlock {
   @@index([startDate, endDate])
 }
 
-// ============================================
-// TYPE DEFINITIONS (for reference)
-// ============================================
+// =============================================================================
+// REFERENCE DATA — Manufacturer specs (populated from ACT parser)
+// =============================================================================
 
-// ServiceCode is defined in your TypeScript code (lib/validation/serviceSchema.ts)
-// Values: SVC-001, SVC-002, SVC-011, PACK-001, REP-001, etc.
-// Stored as String in DB, validated in application code
+model Manufacturer {
+  id           String        @id @default(cuid())
+  name         String        @unique           // "SKYMAN", "Ozone", "Advance"
+  website      String?                         // manufacturer main website
+  contactEmail String?                         // service department contact
+  contactPhone String?
+  country      String?                         // headquarters country
+
+  models    GliderModel[]
+  equipment Equipment[]                        // Equipment linked to this manufacturer
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model GliderModel {
+  id                String       @id @default(cuid())
+  manufacturerId    String                     // <-- String, matches Manufacturer.id
+  manufacturer      Manufacturer @relation(fields: [manufacturerId], references: [id])
+
+  name              String                     // "ROCK2", "Zeno", "Passenger 2"
+  certificationClass String?                   // "EN-A", "EN-B", "EN-C", "EN-D", "CCC"
+  numLineRows       Int          @default(3)   // 3 = A,B,C; 4 = A,B,C,D
+  measurementMethod String       @default("canopy_inner") // "canopy_inner" | "line_end"
+  lineMapUrl  String?  // URL to line map diagram image
+  productPageUrl    String?                    // manufacturer's product page for this model
+  techDocUrl        String?                    // link to technical documents / manual
+  notes             String?
+
+  sizes         GliderSize[]
+  lineMaterials LineMaterial[]
+  equipment     Equipment[]                    // Equipment linked to this model
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([manufacturerId, name])
+}
+
+model GliderSize {
+  id             String      @id @default(cuid())
+  gliderModelId  String                       // <-- String, matches GliderModel.id
+  gliderModel    GliderModel @relation(fields: [gliderModelId], references: [id])
+
+  sizeLabel      String                       // "XS", "S", "M", "ML", "L" or "22", "24"
+  minWeight      Float                        // kg, all-up weight
+  maxWeight      Float                        // kg, all-up weight
+  wingArea       Float?                       // m², flat area
+  aspectRatio    Float?                       // flat aspect ratio
+  numLinesPerSide Int        @default(15)     // max line positions per side
+
+  // Manufacturer reference line lengths as JSON matrix
+  // Format: { "A": [6425, 6395, ...], "B": [6345, 6315, ...], "K": [6895, 6650, ...] }
+  // These ARE the designed lengths. Cut length = designed + sewing allowance (calculated, not stored).
+  lineLengths    Json
+
+  // Group mapping as JSON matrix
+  // Format: { "A": ["G1A", "G1A", "G1A", "G1A", "G2A", ...], "B": ["G1B", ...] }
+  groupMappings  Json
+
+  serviceSessions ServiceSession[]            // Sessions that used this reference data
+  equipment       Equipment[]                 // Equipment linked to this size
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([gliderModelId, sizeLabel])
+}
+
+model LineMaterial {
+  id             String      @id @default(cuid())
+  gliderModelId  String                       // <-- String, matches GliderModel.id
+  gliderModel    GliderModel @relation(fields: [gliderModelId], references: [id])
+
+  lineId         String                       // "L1A1", "L2B2", "L3A1" — cascade level ID
+  cascadeLevel   Int                          // 1, 2, 3 (1 = closest to canopy)
+  lineRow        String                       // "A", "B"
+  cascadeIndex   Int                          // 1, 2 (which branch in the cascade)
+  brand          String                       // "Edelrid", "Liros"
+  materialRef    String                       // "8000 190 222 0 – Red"
+  strengthNew    Float                        // daN (= kg force) when new
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([gliderModelId, lineId])
+}
+
+// =============================================================================
+// STATIC REFERENCE — Loop correction lookup
+// =============================================================================
+
+model LoopCorrectionTable {
+  id              String  @id @default(cuid())
+  materialType    String                      // "Magix-90", "Carvex 230", "PPSL120"
+  loopCount       Int                         // 1, 2, 3, 4, 5
+  shorteningMm    Float                       // mm shortened per loop count
+  connectionType  String                      // "maillon" | "soft_link"
+  maillonDiameter Float?                      // mm, if maillon
+  isApproximate   Boolean @default(false)     // true for soft link (warn technician)
+
+  @@unique([materialType, loopCount, connectionType])
+}
+
+// =============================================================================
+// WORKSHOP SERVICE SESSIONS
+//
+// A ServiceSession is work being done on a piece of equipment.
+// One session model handles ALL equipment types (glider, reserve, harness).
+//
+// What differs between types is which CHILD RECORDS get created:
+//   - Glider:  ClothTest + TrimMeasurement + CorrectionLog + checklist
+//   - Reserve: ServiceChecklist (22-step repack) — no trim, no cloth matrix
+//   - Harness: ServiceChecklist (20-step check) — no trim, no cloth matrix
+//
+// The equipmentType field tells the UI which workflow steps to show.
+// The dashboard queries ONE table to show all active sessions.
+// =============================================================================
+
+model ServiceSession {
+  id               String        @id @default(cuid())
+
+  // === LINKS TO EXISTING WEBSITE MODELS ===
+
+  // What equipment is being worked on (required)
+  equipmentId      String
+  equipment        Equipment     @relation(fields: [equipmentId], references: [id])
+
+  // Which booking is this fulfilling (optional — walk-ins have no booking)
+  serviceRecordId  String?       @unique       // one session per booking, one booking per session
+  serviceRecord    ServiceRecords? @relation(fields: [serviceRecordId], references: [id])
+
+  // === LINK TO REFERENCE DATA (optional) ===
+
+  // Only populated for gliders that have ACT data in the system.
+  // Reserves and harnesses won't have this. Gliders not yet in the reference DB won't either.
+  gliderSizeId     String?
+  gliderSize       GliderSize?   @relation(fields: [gliderSizeId], references: [id])
+
+  // === SESSION IDENTITY ===
+
+  // Equipment type drives which checklist template loads and which UI steps appear.
+  // Denormalized from Equipment.type so the dashboard doesn't need a join for every card.
+  equipmentType    EquipmentType
+
+  // Confirmed during intake (technician verifies these against the physical equipment)
+  serialNumber     String?                     // Confirmed serial number
+  productionDate   String?                     // Formats vary by manufacturer
+
+  // === SERVICE CONFIGURATION ===
+
+  // ACT sub-service types selected for this session (glider-specific).
+  // JSON array: ["strength_check", "trim_control", "canopy_repair", "lineset_replacement",
+  //              "partial_replacement", "flight_test"]
+  // For reserves/harnesses, defaults to ["full_check"] or is empty — the checklist IS the workflow.
+  serviceTypes     Json          @default("[]")
+
+  // Measurement method (glider trim sessions only)
+  measureMethod    String        @default("differential") // "laser" | "differential"
+
+  // === TECHNICIAN & HISTORY ===
+
+  technician       String                      // Technician name (single-operator for now)
+  statedHours      Float?                      // Pilot-reported flight hours
+  lastInspection   DateTime?                   // Date of previous inspection
+  hoursSinceLast   Float?                      // Hours since last check
+  clientObservations String?                   // What the customer reported
+
+  // === SESSION STATE ===
+
+  status           SessionStatus @default(CREATED)
+  startedAt        DateTime      @default(now())
+  completedAt      DateTime?
+
+  // === CHILD RELATIONS ===
+  // Which of these get populated depends on equipmentType.
+  // Glider: all of them. Reserve/Harness: checklist + diagnosis + report.
+
+  checklist        ServiceChecklist[]
+  diagnosis        VisualDiagnosis?
+  clothTests       ClothTest[]                 // Glider only
+  trimMeasurements TrimMeasurement[]           // Glider only
+  corrections      CorrectionLog[]             // Glider only
+  report           SessionReport?
+  versions         SessionVersion[]
+
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  @@index([equipmentId])
+  @@index([status])
+  @@index([serialNumber])
+  @@index([technician, status])                // Dashboard query: my active sessions
+}
+
+// =============================================================================
+// SESSION VERSIONING — Snapshots on status transitions
+// =============================================================================
+
+model SessionVersion {
+  id            String         @id @default(cuid())
+  sessionId     String                         // <-- String, matches ServiceSession.id
+  session       ServiceSession @relation(fields: [sessionId], references: [id])
+
+  versionNumber Int
+  status        String                         // Status at time of snapshot
+  snapshot      Json                           // Full session state as JSON
+
+  createdAt     DateTime       @default(now())
+
+  @@index([sessionId])
+  @@unique([sessionId, versionNumber])
+}
+
+// =============================================================================
+// SERVICE CHECKLIST — Per-service-type task tracking
+//
+// For gliders: steps per ACT sub-service (strength_check has N steps, trim_control has M steps).
+// For reserves: the 22-step repack checklist IS the primary workflow.
+// For harnesses: the 20-step inspection checklist IS the primary workflow.
+// =============================================================================
+
+model ServiceChecklist {
+  id          String         @id @default(cuid())
+  sessionId   String                           // <-- String, matches ServiceSession.id
+  session     ServiceSession @relation(fields: [sessionId], references: [id])
+
+  serviceType String                           // Which service type this step belongs to
+  stepNumber  Int                              // Order within the service type
+  description String                           // Step description from ACT template
+  completed   Boolean        @default(false)
+  completedAt DateTime?
+  notes       String?
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([sessionId])
+  @@unique([sessionId, serviceType, stepNumber])
+}
+
+// =============================================================================
+// INSPECTION DATA — Visual diagnosis (all equipment types)
+// =============================================================================
+
+model VisualDiagnosis {
+  id          String         @id @default(cuid())
+  sessionId   String         @unique           // <-- String, one-to-one with ServiceSession
+  session     ServiceSession @relation(fields: [sessionId], references: [id])
+
+  // Condition ratings: "excellent" | "good" | "average" | "used" | "worn_out" | "not_checked"
+  linesetCondition    String?
+  risersCondition     String?
+  canopyCondition     String?
+  clothCondition      String?
+
+  // Observation notes per area
+  linesetNotes        String?
+  risersNotes         String?
+  canopyNotes         String?
+  clothNotes          String?
+  generalNotes        String?
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+// =============================================================================
+// CLOTH TESTING — Porosity & tear resistance (glider only)
+// =============================================================================
+
+model ClothTest {
+  id          String         @id @default(cuid())
+  sessionId   String                           // <-- String
+  session     ServiceSession @relation(fields: [sessionId], references: [id])
+
+  // Location on canopy
+  surface     String                           // "top" | "bottom" | "internal"
+  panelZone   String?                          // Panel identifier
+  cellId      String?                          // Cell number from ACT
+
+  // Porosity measurement
+  porosityValue  Float?                        // L/m²/min (bettsometer) or seconds (JDC)
+  porosityMethod String?                       // "bettsometer" | "jdc" | "porotest"
+
+  // Tear resistance
+  tearResistance Float?                        // daN
+  tearResult     String?                       // "excellent" | "good" | "average" | "used" | "worn_out"
+
+  // Overall assessment
+  result      String?                          // "pass" | "warning" | "fail"
+  notes       String?
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([sessionId])
+}
+
+// =============================================================================
+// TRIM MEASUREMENTS — Line lengths (glider only)
+// =============================================================================
+
+model TrimMeasurement {
+  id          String         @id @default(cuid())
+  sessionId   String                           // <-- String
+  session     ServiceSession @relation(fields: [sessionId], references: [id])
+
+  lineRow     String                           // "A", "B", "C", "D", "K"
+  position    Int                              // 1-30 (wing center to tip)
+  side        String         @default("right") // "left" | "right"
+  phase       String         @default("initial") // "initial" | "corrected"
+
+  measuredLength     Float                     // mm
+  manufacturerLength Float?                    // mm (from reference, for display convenience)
+  deviation          Float?                    // measured - manufacturer (auto-calculated)
+
+  notes       String?
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([sessionId])
+  @@index([sessionId, phase, side])
+}
+
+// =============================================================================
+// CORRECTION LOG — What was changed during service (glider only)
+// =============================================================================
+
+model CorrectionLog {
+  id          String         @id @default(cuid())
+  sessionId   String                           // <-- String
+  session     ServiceSession @relation(fields: [sessionId], references: [id])
+
+  lineRow     String                           // "A", "B", "C", "D", "K"
+  position    Int                              // 1-30
+  side        String         @default("both")  // "left" | "right" | "both"
+  groupLabel  String?                          // "G1A", "G2B", etc.
+
+  correctionType String                        // "loop_add" | "loop_remove" | "line_replace" | "other"
+  loopsBefore    Int?
+  loopsAfter     Int?
+  loopType       Int?                          // 1-5 complexity scale
+  shorteningMm   Float?                        // estimated mm change
+
+  notes       String?
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([sessionId])
+}
+
+// =============================================================================
+// REPORT & SIGN-OFF (all equipment types)
+// =============================================================================
+
+model SessionReport {
+  id          String         @id @default(cuid())
+  sessionId   String         @unique           // <-- String, one-to-one with ServiceSession
+  session     ServiceSession @relation(fields: [sessionId], references: [id])
+
+  // Final determination
+  airworthy            Boolean                 // The big question
+  nextControlHours     Float?                  // Recommended hours until next check
+  nextControlMonths    Int?                    // Recommended months until next check
+
+  // Technician sign-off
+  technicianOpinion    String?                 // "The glider is in excellent condition."
+  technicianSignature  String?                 // Name/initials
+  signedAt             DateTime?
+
+  // Canopy repair summary (glider only, from ACT "Canopy repaired" section)
+  canopyRepaired       Boolean  @default(false)
+  canopyRepairNotes    String?                 // "2 Patches for abrasion and pinholes..."
+
+  // Additional jobs performed
+  additionalJobs       String?                 // Free text for now
+
+  // Report file
+  reportVersion        Int      @default(1)
+  pdfUrl               String?                 // URL to stored PDF (cloud storage)
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
