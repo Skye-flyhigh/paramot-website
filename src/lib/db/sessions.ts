@@ -5,6 +5,7 @@
 
 import { prisma } from './client';
 import type { SessionStatus } from '@/generated/prisma';
+import { getChecklistSteps } from '@/lib/workshop/checklist-templates';
 
 // =============================================================================
 // READ
@@ -178,6 +179,21 @@ export async function createServiceSession(data: CreateSessionInput) {
       snapshot: { event: 'session_created', timestamp: new Date().toISOString() },
     },
   });
+
+  // Load checklist template based on equipment type and service types
+  const checklistSteps = getChecklistSteps(data.equipmentType, data.serviceTypes ?? []);
+
+  if (checklistSteps.length > 0) {
+    await prisma.serviceChecklist.createMany({
+      data: checklistSteps.map((step) => ({
+        sessionId: session.id,
+        serviceType: step.serviceType,
+        stepNumber: step.stepNumber,
+        description: step.description,
+        completed: false,
+      })),
+    });
+  }
 
   return session;
 }
