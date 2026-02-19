@@ -5,7 +5,14 @@
     "description": "Precision trimming services to optimize your wing's performance using professional tension meters and line geometry analysis.",
     "code": "SVC-001",
     "cost": 100,
-    "available": true
+    "available": true,
+    "checks": {
+      "trim": true,
+      "porosity": false,
+      "betsometer": false,
+      "cloth": false,
+      "line": false
+    }
   },
   "trim-tandem": {
     "icon": "Zap",
@@ -13,7 +20,14 @@
     "description": "Precision trimming services to optimize your tandem wing's performance using professional tension meters and line geometry analysis.",
     "code": "SVC-002",
     "cost": 120,
-    "available": true
+    "available": true,
+    "checks": {
+      "trim": true,
+      "porosity": false,
+      "betsometer": false,
+      "cloth": false,
+      "line": false
+    }
   },
   "service-solo": {
     "icon": "Shield",
@@ -21,7 +35,14 @@
     "description": "Complete servicing including canopy fabric inspection and strength testing, line strength analysis, riser state evaluation, and paraglider trimming.",
     "code": "SVC-011",
     "cost": 180,
-    "available": true
+    "available": true,
+    "checks": {
+      "trim": true,
+      "porosity": true,
+      "betsometer": true,
+      "cloth": true,
+      "line": true
+    }
   },
   "service-tandem": {
     "icon": "Shield",
@@ -29,7 +50,14 @@
     "description": "Complete servicing including canopy fabric inspection and strength testing, line strength analysis, riser state evaluation, and paraglider trimming.",
     "code": "SVC-012",
     "cost": 210,
-    "available": true
+    "available": true,
+    "checks": {
+      "trim": true,
+      "porosity": true,
+      "betsometer": true,
+      "cloth": true,
+      "line": true
+    }
   },
   "service-harness": {
     "icon": "Shield",
@@ -37,7 +65,8 @@
     "description": "Complete inspection and service of the harness to ensure airworthiness.",
     "code": "SVC-031",
     "cost": 90,
-    "available": true
+    "available": true,
+    "checks": {}
   },
   "repack-solo": {
     "icon": "PackageCheck",
