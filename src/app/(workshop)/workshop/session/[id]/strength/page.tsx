@@ -8,8 +8,11 @@ import {
   calculateStrengthThresholds,
   classifyLineMaterial,
   getTestGuidance,
+  getNonDestructiveBreakdown,
 } from '@/lib/workshop/strength-calculations';
+import { findPreviousStrengthTests } from '@/lib/submit/submitStrengthTest';
 import ChecklistPanel from '@/components/workshop/ChecklistPanel';
+import StrengthTestForm from '@/components/workshop/StrengthTestForm';
 
 interface StrengthPageProps {
   params: Promise<{ id: string }>;
@@ -41,10 +44,28 @@ export default async function StrengthPage({ params }: StrengthPageProps) {
 
   const numRows = gliderSize?.gliderModel?.numLineRows ?? 3;
   const maxWeight = gliderSize?.maxWeight ?? 100;
+  const numLinesPerSide = gliderSize?.numLinesPerSide ?? 15;
 
   const loadDistribution = calculateLoadDistribution(numRows, maxWeight);
   const lineMaterials = gliderSize?.gliderModel?.lineMaterials ?? [];
   const thresholds = calculateStrengthThresholds(lineMaterials);
+
+  // Build per-line load breakdowns for the form
+  const loadBreakdowns = lineMaterials.map((mat) => {
+    const bd = getNonDestructiveBreakdown(
+      maxWeight,
+      numRows,
+      mat.strengthNew ?? 0,
+      numLinesPerSide,
+      mat.lineRow,
+      'left',
+    );
+
+    return { lineId: mat.lineId, lineRow: mat.lineRow, ...bd };
+  });
+
+  // Previous strength tests on this equipment
+  const previousTests = await findPreviousStrengthTests(session.equipmentId, session.id);
 
   // Get unique material types for guidance
   const materialTypes = new Map<
@@ -92,18 +113,35 @@ export default async function StrengthPage({ params }: StrengthPageProps) {
         </div>
       </div>
 
+      {/* Interactive strength test form */}
+      {lineMaterials.length > 0 && (
+        <StrengthTestForm
+          sessionId={session.id}
+          lineMaterials={lineMaterials.map((m) => ({
+            lineId: m.lineId,
+            lineRow: m.lineRow,
+            cascadeLevel: m.cascadeLevel,
+            cascadeIndex: m.cascadeIndex,
+            brand: m.brand,
+            materialRef: m.materialRef ?? '',
+            strengthNew: m.strengthNew ?? 0,
+          }))}
+          existingTests={session.strengthTests}
+          previousTests={previousTests}
+          loadBreakdowns={loadBreakdowns}
+        />
+      )}
+
       {/* Material reference + thresholds */}
       {thresholds.length > 0 && (
-        <div className="rounded-lg border border-zinc-200 bg-white">
-          <div className="p-4 pb-2">
-            <h4 className="text-sm font-medium uppercase tracking-wide text-zinc-500">
-              Destructive Test Thresholds
-            </h4>
-          </div>
-          <div className="overflow-x-auto">
+        <details>
+          <summary className="cursor-pointer text-sm font-medium uppercase tracking-wide text-zinc-500 hover:text-zinc-700">
+            Destructive Test Thresholds
+          </summary>
+          <div className="mt-2 rounded-lg border border-zinc-200 bg-white overflow-x-auto">
             <table className="w-full text-sm">
               <thead>
-                <tr className="border-t bg-zinc-50">
+                <tr className="bg-zinc-50">
                   <th className="px-3 py-2 text-left text-xs font-medium text-zinc-500">
                     Row
                   </th>
@@ -142,31 +180,33 @@ export default async function StrengthPage({ params }: StrengthPageProps) {
               </tbody>
             </table>
           </div>
-        </div>
+        </details>
       )}
 
       {/* Material type guidance */}
       {materialTypes.size > 0 && (
-        <div className="space-y-2">
-          <h4 className="text-sm font-medium uppercase tracking-wide text-zinc-500">
+        <details>
+          <summary className="cursor-pointer text-sm font-medium uppercase tracking-wide text-zinc-500 hover:text-zinc-700">
             Line Material Guidance
-          </h4>
-          {Array.from(materialTypes.values()).map((mat) => (
-            <div
-              key={`${mat.brand}-${mat.ref}`}
-              className="rounded-lg border border-zinc-200 bg-white p-3"
-            >
-              <div className="flex items-center gap-2">
-                <span className="font-medium text-zinc-700 text-sm">{mat.brand}</span>
-                <span className="font-mono text-xs text-zinc-400">{mat.ref}</span>
-                <span className="rounded bg-zinc-100 px-2 py-0.5 text-xs text-zinc-500">
-                  {mat.type}
-                </span>
+          </summary>
+          <div className="mt-2 space-y-2">
+            {Array.from(materialTypes.values()).map((mat) => (
+              <div
+                key={`${mat.brand}-${mat.ref}`}
+                className="rounded-lg border border-zinc-200 bg-white p-3"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="font-medium text-zinc-700 text-sm">{mat.brand}</span>
+                  <span className="font-mono text-xs text-zinc-400">{mat.ref}</span>
+                  <span className="rounded bg-zinc-100 px-2 py-0.5 text-xs text-zinc-500">
+                    {mat.type}
+                  </span>
+                </div>
+                <p className="mt-1 text-xs text-zinc-500">{mat.guidance}</p>
               </div>
-              <p className="mt-1 text-xs text-zinc-500">{mat.guidance}</p>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </details>
       )}
 
       {/* Strength checklist */}
@@ -182,7 +222,7 @@ export default async function StrengthPage({ params }: StrengthPageProps) {
       {!gliderSize && (
         <div className="rounded-md bg-amber-50 border border-amber-200 p-4 text-sm text-amber-700">
           No reference data linked to this session. Link a glider model + size to see load
-          distribution and strength thresholds.
+          distribution, strength thresholds, and line materials for testing.
         </div>
       )}
     </div>

@@ -138,29 +138,58 @@ export function evaluateDestructiveTest(
 // =============================================================================
 
 /**
- * Calculate non-destructive load test value.
+ * Calculate non-destructive load test value for a specific row.
  * Load test = 8G × (max weight × row load percentage / number of lines in row)
- *             + 20% of line strength range
+ *             + 20% of line usable strength range
  *
- * Simplified: per-line load = 8G × (max weight contribution per line) + 20% of strengthNew
+ * Returns the load and a human-readable breakdown.
  */
 export function calculateNonDestructiveLoad(
   maxWeightKg: number,
   numRows: number,
   strengthNew: number,
   linesInRow: number,
+  lineRow?: string,
 ): number {
   const table = LOAD_TABLES[numRows];
 
   if (!table) return 0;
 
-  // This is a simplified calculation — actual implementation would need
-  // row-specific load percentage
-  const totalLoad8G = maxWeightKg * 8; // 8G total
-  const perLineLoad = totalLoad8G / linesInRow;
+  const rowEntry = lineRow ? table.find((r) => r.row === lineRow) : table[0];
+  const rowPct = rowEntry ? rowEntry.pct / 100 : 1 / numRows;
+
+  const perLineLoad8G = (maxWeightKg * 8 * rowPct) / linesInRow;
   const strengthMargin = strengthNew * 0.2;
 
-  return perLineLoad + strengthMargin;
+  return perLineLoad8G + strengthMargin;
+}
+
+/**
+ * Build a breakdown string for non-destructive load calculation.
+ */
+export function getNonDestructiveBreakdown(
+  maxWeightKg: number,
+  numRows: number,
+  strengthNew: number,
+  linesInRow: number,
+  lineRow: string,
+  side: string,
+): { loadDaN: number; breakdown: string } {
+  const table = LOAD_TABLES[numRows];
+
+  if (!table) return { loadDaN: 0, breakdown: 'No load table' };
+
+  const rowEntry = table.find((r) => r.row === lineRow);
+  const rowPct = rowEntry ? rowEntry.pct / 100 : 1 / numRows;
+
+  const perLineLoad8G = (maxWeightKg * 8 * rowPct) / linesInRow;
+  const strengthMargin = strengthNew * 0.2;
+  const total = perLineLoad8G + strengthMargin;
+
+  return {
+    loadDaN: Math.round(total * 10) / 10,
+    breakdown: `${lineRow} ${side}: test at ${total.toFixed(0)} daN (8G × ${perLineLoad8G.toFixed(1)} daN per-line + 20% of ${strengthNew} daN)`,
+  };
 }
 
 // =============================================================================
