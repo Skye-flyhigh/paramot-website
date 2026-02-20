@@ -12,32 +12,36 @@ Website has a static public facing interface built with Next.js, showcasing the 
 
 ### 🫀 Core Platform
 
-- Built with Next.js for a modern web experience.
-- Static site generation for fast loading times.
-- Responsive design for accessibility on all devices.
-- Integration with a backend API for dynamic content.
+- Built with Next.js 15 and React 19
+- Service comparison grid with transparent pricing
+- Equipment Registry — public service history lookup by serial number
+- Contact form with server-side validation
+- SEO metadata and JSON-LD structured data
 
-### 🛒 E-Commerce Booking System
+### 🔧 Workshop Tool (in development)
 
-- Seamless booking process for customers.
-- Integration with payment gateways for secure transactions.
-- User accounts for managing bookings and viewing service history.
+- Technician workbench for paraglider inspections
+- Trim measurement, cloth testing, strength assessment
+- APPI-certified workflow with digital reports
+- Full audit trail per inspection session
 
-### 🧑 Customer Portal
+### 🧑 Customer Portal (coming soon)
 
-- Secure login for customers to access their accounts.
-- Dashboard for managing bookings and viewing service history.
-- Integration with support channels for customer inquiries.
+- Secure login for customers to access their accounts
+- Dashboard for managing bookings and viewing service reports
+- Equipment ownership management
 
 ## 🧑‍💻 Dev Stack
 
-- [Next.js 15](https://nextjs.org/) backbones of the app
-- [Node.js](https://nodejs.org/) for server-side logic
-- [Tailwind CSS](https://tailwindcss.com/) for quick styling
+- [Next.js 15](https://nextjs.org/) with React 19 and Turbopack
+- [TypeScript](https://www.typescriptlang.org/) for type safety
+- [Tailwind CSS v4](https://tailwindcss.com/) for styling
+- [Prisma](https://www.prisma.io/) ORM with PostgreSQL
 - [Lucide React](https://lucide.dev/) for clean, consistent icons
-- [Zod](https://zod.dev/?id=objects) data validation
-- [Shadcn](https://ui.shadcn.com/) for accessible and customizable UI components
+- [Zod](https://zod.dev/) for data validation
+- [Shadcn/ui](https://ui.shadcn.com/) for accessible UI components
 - [NextAuth.js](https://next-auth.js.org/) for authentication
+- [Vitest](https://vitest.dev/) for unit testing
 
 ## Setup
 
@@ -53,16 +57,32 @@ To get started with the paraMOT website, follow these steps:
 2. Install dependencies:
 
    ```bash
-   npm install
+   pnpm install
    ```
 
-3. Start the development server:
+3. Set up environment variables:
 
    ```bash
-   npm run dev
+   cp .env.example .env.local
+   # Fill in the required values
    ```
 
-4. Open your browser and navigate to `http://localhost:3000` to see the website in action.
+4. Start the development server:
+
+   ```bash
+   pnpm dev
+   ```
+
+5. Open your browser and navigate to `http://localhost:3000` to see the website in action.
+
+### Other commands
+
+```bash
+pnpm build          # Production build
+pnpm test           # Run tests
+pnpm lint           # Lint check
+pnpm format:write   # Auto-format code
+```
 
 ## Developer Lore
 

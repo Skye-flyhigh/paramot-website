@@ -190,21 +190,17 @@ export default function PrivacyPolicy() {
               </p>
               <ul className="list-disc pl-6 mb-4 text-gray-700">
                 <li>
-                  <strong>Customer Account Data:</strong> Until account deletion + [X
-                  years] for legal compliance
+                  <strong>Customer Account Data:</strong> Until account deletion + 2 years
+                  for legal compliance
                 </li>
                 <li>
                   <strong>Service Records:</strong> Indefinitely for safety and equipment
                   history tracking
                 </li>
                 <li>
-                  <strong>Payment Records:</strong> [X years] as required by UK tax law
+                  <strong>Payment Records:</strong> 7 years as required by UK tax law
                 </li>
               </ul>
-              <p className="text-gray-700 mb-4 text-sm italic">
-                [TODO: Define specific retention periods based on legal requirements and
-                business needs]
-              </p>
             </section>
 
             <section className="mb-8">
@@ -283,20 +279,14 @@ export default function PrivacyPolicy() {
                 9. Cookies and Tracking
               </h2>
               <p className="text-gray-700 mb-4">
-                We use cookies and similar technologies to:
+                We use only essential cookies required for site functionality:
               </p>
               <ul className="list-disc pl-6 mb-4 text-gray-700">
-                <li>Maintain your login session</li>
-                <li>Remember your preferences</li>
-                <li>Analyze site usage and improve performance</li>
+                <li>Authentication session cookies (to keep you logged in)</li>
               </ul>
               <p className="text-gray-700 mb-4">
-                You can control cookie settings through your browser. Disabling certain
-                cookies may affect site functionality.
-              </p>
-              <p className="text-gray-700 mb-4 text-sm italic">
-                [TODO: Add detailed cookie policy and consent management if using
-                analytics/marketing cookies]
+                We do not use analytics, advertising, or tracking cookies. No cookie
+                consent banner is required as we only use strictly necessary cookies.
               </p>
             </section>
 
@@ -315,7 +305,7 @@ export default function PrivacyPolicy() {
                   <strong>Email:</strong> Resend (for transactional emails)
                 </li>
                 <li>
-                  <strong>Hosting:</strong> [Hosting provider TBD]
+                  <strong>Hosting:</strong> Vercel (for website hosting and deployment)
                 </li>
               </ul>
               <p className="text-gray-700 mb-4">
@@ -354,12 +344,7 @@ export default function PrivacyPolicy() {
                 For questions about this Privacy Policy or to exercise your data rights,
                 contact us:
               </p>
-              <p className="text-gray-700">
-                Email: hello@paramot.co.uk
-                <br />
-                [TODO: Add Data Protection Officer details if required, physical address,
-                company registration]
-              </p>
+              <p className="text-gray-700">Email: hello@paramot.co.uk</p>
             </section>
           </div>
 

@@ -29,7 +29,10 @@ const signals = [
 
 export default function Trust() {
   return (
-    <section className="bg-gradient-to-b from-sky-50 to-white px-4 py-20">
+    <section
+      aria-label="Why choose paraMOT"
+      className="bg-gradient-to-b from-sky-50 to-white px-4 py-20"
+    >
       <div className="mx-auto max-w-5xl">
         <div className="mb-16 text-center">
           <h2 className="mb-4 text-4xl font-bold text-sky-900">Why paraMOT</h2>

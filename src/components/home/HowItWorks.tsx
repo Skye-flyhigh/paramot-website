@@ -3,8 +3,9 @@ import { CalendarCheck, PackageOpen, Wrench, FileCheck } from 'lucide-react';
 const steps = [
   {
     icon: CalendarCheck,
-    title: 'Book',
-    description: 'Choose your service and pick a date. We confirm within 24 hours.',
+    title: 'Get in Touch',
+    description:
+      'Drop us a message with your equipment details. We\u2019ll confirm availability and arrange logistics.',
   },
   {
     icon: PackageOpen,
@@ -28,12 +29,12 @@ const steps = [
 
 export default function HowItWorks() {
   return (
-    <section className="bg-white px-4 py-20">
+    <section aria-label="How the service process works" className="bg-white px-4 py-20">
       <div className="mx-auto max-w-5xl">
         <div className="mb-16 text-center">
           <h2 className="mb-4 text-4xl font-bold text-sky-900">How It Works</h2>
           <p className="mx-auto max-w-2xl text-lg text-sky-700">
-            From booking to flying again — four simple steps.
+            From first contact to flying again — four simple steps.
           </p>
         </div>
 

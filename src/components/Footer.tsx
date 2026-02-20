@@ -2,40 +2,39 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="bg-gradient-to-r from-sky-900 via-sky-800 to-slate-800 text-white py-12 px-4">
-      <div className="max-w-6xl mx-auto flex justify-around">
-        <section id="footer-branding" className="mb-6">
-          <h3 className="text-2xl font-bold mb-3">
+    <footer
+      aria-label="Footer"
+      className="bg-gradient-to-r from-sky-900 via-sky-800 to-slate-800 text-white py-12 px-4"
+    >
+      <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-start gap-8">
+        <div>
+          <h3 className="text-2xl font-bold mb-2">
             para<span className="text-sky-300">MOT</span>
           </h3>
           <p className="text-sky-200">Professional paragliding servicing and repairs</p>
-        </section>
-        <section id="footer-links" className="flex justify-around w-[50%]">
-          <div id="legal-links">
-            <h4 className="font-bold">Legal links</h4>
-            <ul className="text-sky-200">
-              <li>
-                <Link href="/terms">Terms</Link>
-              </li>
-              <li>
-                <Link href="/privacy">Privacy Policies</Link>
-              </li>
-            </ul>
-          </div>
-          <div id="social-links">
-            <h4 className="font-bold">Social links</h4>
-            <ul className="text-sky-200">
-              <li>Some link</li>
-            </ul>
-          </div>
-        </section>
+        </div>
+        <nav aria-label="Legal links">
+          <h4 className="font-bold mb-2">Legal</h4>
+          <ul className="text-sky-200 space-y-1">
+            <li>
+              <Link href="/terms" className="hover:text-white transition-colors">
+                Terms of Service
+              </Link>
+            </li>
+            <li>
+              <Link href="/privacy" className="hover:text-white transition-colors">
+                Privacy Policy
+              </Link>
+            </li>
+          </ul>
+        </nav>
       </div>
-      <section className="flex flex-col items-center gap-5 border-t border-sky-700/50 pt-6">
+      <div className="max-w-6xl mx-auto mt-8 flex flex-col items-center gap-2 border-t border-sky-700/50 pt-6">
         <p className="text-sky-300/80">
           &copy; {new Date().getFullYear()} paraMOT. All rights reserved.
         </p>
         <p className="text-sky-300/80">Homemade with 💜 by Skye</p>
-      </section>
+      </div>
     </footer>
   );
 }

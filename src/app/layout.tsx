@@ -17,8 +17,38 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'paraMOT',
-  description: 'Paragliding Servicing and repairs in the UK',
+  title: 'paraMOT — Paragliding Servicing & Repairs',
+  description:
+    'Professional paragliding wing servicing, trim measurement, cloth testing, reserve repacking, and harness inspections. APPI certified. Transparent digital reports. UK-based postal service available.',
+  keywords: [
+    'paragliding servicing',
+    'paraglider trim',
+    'reserve repack',
+    'harness inspection',
+    'APPI certified',
+    'cloth porosity testing',
+    'paraglider repair UK',
+    'wing service',
+    'line strength testing',
+  ],
+  authors: [{ name: 'paraMOT' }],
+  openGraph: {
+    title: 'paraMOT — Paragliding Servicing & Repairs',
+    description:
+      'Professional paragliding equipment servicing with transparent digital reports.',
+    url: 'https://paramot.co.uk',
+    siteName: 'paraMOT',
+    locale: 'en_GB',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'paraMOT — Paragliding Servicing & Repairs',
+    description:
+      'Professional paragliding equipment servicing with transparent digital reports.',
+  },
+  robots: { index: true, follow: true },
+  metadataBase: new URL('https://paramot.co.uk'),
 };
 
 export default function RootLayout({

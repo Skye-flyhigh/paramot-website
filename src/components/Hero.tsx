@@ -14,7 +14,7 @@ export default function Hero() {
           Paragliding servicing and repairs
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="#services">
+          <a href="#services" aria-label="View our services and pricing">
             <Button
               size="lg"
               className="bg-white text-sky-800 border-white hover:bg-sky-50"
@@ -22,7 +22,7 @@ export default function Hero() {
               Our Services
             </Button>
           </a>
-          <a href="#contact">
+          <a href="#contact" aria-label="Get a quote via our contact form">
             <Button
               variant="outline"
               size="lg"

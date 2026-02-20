@@ -29,6 +29,36 @@
       "line": false
     }
   },
+  "visual-solo": {
+    "icon": "Eye",
+    "title": "Visual Check (Solo)",
+    "description": "Visual cloth and canopy inspection. A quick health check without testing or trimming.",
+    "code": "SVC-003",
+    "cost": 60,
+    "available": true,
+    "checks": {
+      "trim": false,
+      "porosity": false,
+      "betsometer": false,
+      "cloth": true,
+      "line": false
+    }
+  },
+  "visual-tandem": {
+    "icon": "Eye",
+    "title": "Visual Check (Tandem)",
+    "description": "Visual cloth and canopy inspection for tandem wings.",
+    "code": "SVC-004",
+    "cost": 75,
+    "available": true,
+    "checks": {
+      "trim": false,
+      "porosity": false,
+      "betsometer": false,
+      "cloth": true,
+      "line": false
+    }
+  },
   "service-solo": {
     "icon": "Shield",
     "title": "Full Glider Service",
@@ -65,8 +95,7 @@
     "description": "Thorough 20-point inspection covering buckles, straps, stitching, airbag, back protection, and karabiners. Know your harness is safe before you fly.",
     "code": "SVC-031",
     "cost": 90,
-    "available": true,
-    "checks": {}
+    "available": true
   },
   "repack-solo": {
     "icon": "PackageCheck",
