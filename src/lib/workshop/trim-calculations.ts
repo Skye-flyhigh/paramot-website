@@ -506,6 +506,77 @@ function selectLoopCorrection(targetMm: number): {
 }
 
 // =============================================================================
+// LOOP MATRIX — Initial + Corrections
+// =============================================================================
+
+type LoopMatrix = Record<string, Record<string, number>>;
+
+interface CorrectionEntry {
+  lineRow: string;
+  groupLabel: string | null;
+  correctionType: string | null;
+  loopsBefore: number | null;
+  loopsAfter: number | null;
+}
+
+/**
+ * Build final loop matrix from initial state + corrections.
+ * Returns { initial, final } for both sides.
+ */
+export function buildLoopMatrix(
+  initialLoops: LoopMatrix,
+  corrections: CorrectionEntry[],
+): LoopMatrix {
+  // Deep-copy initial
+  const result: LoopMatrix = {};
+
+  for (const [row, groups] of Object.entries(initialLoops)) {
+    result[row] = { ...groups };
+  }
+
+  // Apply corrections
+  for (const c of corrections) {
+    if (!c.groupLabel || c.loopsAfter == null) continue;
+
+    if (!result[c.lineRow]) result[c.lineRow] = {};
+
+    result[c.lineRow][c.groupLabel] = c.loopsAfter;
+  }
+
+  return result;
+}
+
+/**
+ * Compute symmetry (left - right) per row-position for all measured lines.
+ */
+export function computeSymmetry(
+  measurements: MeasuredLine[],
+  side: 'left' | 'right',
+  otherSide: MeasuredLine[],
+): Array<{ lineRow: string; position: number; diff: number }> {
+  const results: Array<{ lineRow: string; position: number; diff: number }> = [];
+  const otherMap = new Map<string, number>();
+
+  for (const m of otherSide) {
+    otherMap.set(`${m.lineRow}-${m.position}`, m.measuredLength);
+  }
+
+  for (const m of measurements) {
+    const otherLength = otherMap.get(`${m.lineRow}-${m.position}`);
+
+    if (otherLength != null) {
+      // left - right: negative = left shorter
+      const diff =
+        side === 'left' ? m.measuredLength - otherLength : otherLength - m.measuredLength;
+
+      results.push({ lineRow: m.lineRow, position: m.position, diff });
+    }
+  }
+
+  return results;
+}
+
+// =============================================================================
 // CONVERSION HELPERS
 // =============================================================================
 

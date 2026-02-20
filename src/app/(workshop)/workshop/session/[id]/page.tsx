@@ -38,6 +38,7 @@ export default async function SessionHub({ params }: SessionHubProps) {
   const clothCount = session.clothTests.length;
   const trimCount = session.trimMeasurements.length;
   const correctionCount = session.corrections.length;
+  const strengthCount = session.strengthTests.length;
   const hasReport = !!session.report;
   const serviceTypes = Array.isArray(session.serviceTypes)
     ? (session.serviceTypes as string[])
@@ -120,7 +121,7 @@ export default async function SessionHub({ params }: SessionHubProps) {
                 href={`${basePath}/strength`}
                 icon={<Zap className="h-4 w-4" />}
                 label="Line Strength"
-                done={checklistDone > 0}
+                count={strengthCount}
               />
               <StepLink
                 href={`${basePath}/trim`}
@@ -131,7 +132,7 @@ export default async function SessionHub({ params }: SessionHubProps) {
               <StepLink
                 href={`${basePath}/correct`}
                 icon={<Wrench className="h-4 w-4" />}
-                label="Corrections"
+                label="Trim Correction"
                 count={correctionCount}
               />
               <StepLink
