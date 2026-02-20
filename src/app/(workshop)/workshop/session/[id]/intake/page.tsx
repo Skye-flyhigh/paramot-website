@@ -23,6 +23,9 @@ export default async function IntakePage({ params }: IntakePageProps) {
 
   const isGlider = session.equipmentType === 'GLIDER';
 
+  // Derive numLineRows from linked GliderModel (default 3 = A,B,C)
+  const numLineRows = session.gliderSize?.gliderModel?.numLineRows ?? 3;
+
   return (
     <div className="space-y-6">
       <h3 className="text-lg font-semibold text-zinc-900">
@@ -30,7 +33,19 @@ export default async function IntakePage({ params }: IntakePageProps) {
       </h3>
 
       {isGlider ? (
-        <IntakeForm sessionId={session.id} existingDiagnosis={session.diagnosis} />
+        <IntakeForm
+          sessionId={session.id}
+          numLineRows={numLineRows}
+          existingDiagnosis={session.diagnosis}
+          existingDamagedLines={session.damagedLines}
+          existingCanopyDamages={session.canopyDamages}
+          initialLoopsLeft={
+            (session.initialLoopsLeft ?? {}) as Record<string, Record<string, number>>
+          }
+          initialLoopsRight={
+            (session.initialLoopsRight ?? {}) as Record<string, Record<string, number>>
+          }
+        />
       ) : (
         <div className="space-y-4">
           {/* Session summary for non-glider intake */}
