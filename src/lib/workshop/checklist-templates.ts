@@ -195,13 +195,17 @@ const FLIGHT_TEST: ChecklistStep[] = [
 ];
 
 // Initial diagnostic — always loaded for gliders
+// Ordered: structural safety first, then fabric/cosmetic
 const INITIAL_DIAGNOSTIC: ChecklistStep[] = [
-  { serviceType: 'initial_diagnostic', stepNumber: 1, description: 'Cloth evaluation' },
+  {
+    serviceType: 'initial_diagnostic',
+    stepNumber: 1,
+    description: "Glider's attachment points",
+  },
   {
     serviceType: 'initial_diagnostic',
     stepNumber: 2,
-    description:
-      "According to the operator's decision: cloth tear resistance (Bettsometer)",
+    description: 'Risers inspection (quick links)',
   },
   {
     serviceType: 'initial_diagnostic',
@@ -211,17 +215,14 @@ const INITIAL_DIAGNOSTIC: ChecklistStep[] = [
   {
     serviceType: 'initial_diagnostic',
     stepNumber: 4,
-    description: 'Risers inspection (quick links)',
-  },
-  {
-    serviceType: 'initial_diagnostic',
-    stepNumber: 5,
     description: 'Lines tactile inspection',
   },
+  { serviceType: 'initial_diagnostic', stepNumber: 5, description: 'Cloth evaluation' },
   {
     serviceType: 'initial_diagnostic',
     stepNumber: 6,
-    description: "Glider's attachment points",
+    description:
+      "According to the operator's decision: cloth tear resistance (Bettsometer)",
   },
   {
     serviceType: 'initial_diagnostic',
@@ -248,18 +249,22 @@ const INITIAL_DIAGNOSTIC: ChecklistStep[] = [
 ];
 
 // APPI airworthiness check — always loaded for gliders
+// Ordered: manual/structural first, then fabric, then operational
 const APPI_AIRWORTHINESS: ChecklistStep[] = [
   {
     serviceType: 'appi_airworthiness',
     stepNumber: 1,
     description: "Glider's manual, maintenance book (if exists)",
   },
-  { serviceType: 'appi_airworthiness', stepNumber: 2, description: 'Cloth evaluation' },
+  {
+    serviceType: 'appi_airworthiness',
+    stepNumber: 2,
+    description: "Glider's attachment points",
+  },
   {
     serviceType: 'appi_airworthiness',
     stepNumber: 3,
-    description:
-      "According to the operator's decision: cloth tear resistance (Bettsometer)",
+    description: 'Risers inspection (quick links)',
   },
   {
     serviceType: 'appi_airworthiness',
@@ -269,17 +274,14 @@ const APPI_AIRWORTHINESS: ChecklistStep[] = [
   {
     serviceType: 'appi_airworthiness',
     stepNumber: 5,
-    description: 'Risers inspection (quick links)',
-  },
-  {
-    serviceType: 'appi_airworthiness',
-    stepNumber: 6,
     description: 'Lines tactile inspection',
   },
+  { serviceType: 'appi_airworthiness', stepNumber: 6, description: 'Cloth evaluation' },
   {
     serviceType: 'appi_airworthiness',
     stepNumber: 7,
-    description: "Glider's attachment points",
+    description:
+      "According to the operator's decision: cloth tear resistance (Bettsometer)",
   },
   {
     serviceType: 'appi_airworthiness',
