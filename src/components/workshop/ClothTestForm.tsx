@@ -1,6 +1,10 @@
 'use client';
 
-import { addClothTest, deleteClothTest } from '@/lib/submit/submitClothTest';
+import {
+  addClothTest,
+  deleteClothTest,
+  initDefaultClothTests,
+} from '@/lib/submit/submitClothTest';
 import {
   evaluatePorosity,
   evaluateTearResistance,
@@ -50,6 +54,7 @@ export default function ClothTestForm({ sessionId, existingTests }: ClothTestFor
   const [tests, setTests] = useState(existingTests);
   const [showForm, setShowForm] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [formMode, setFormMode] = useState<'porosity' | 'tear' | null>(null);
 
   const summary = useMemo(() => summarizeClothTests(tests), [tests]);
 
@@ -62,6 +67,7 @@ export default function ClothTestForm({ sessionId, existingTests }: ClothTestFor
     if (result.success && result.test) {
       setTests((prev) => [...prev, result.test]);
       setShowForm(false);
+      setFormMode(null);
     }
     setSaving(false);
   }
@@ -74,8 +80,56 @@ export default function ClothTestForm({ sessionId, existingTests }: ClothTestFor
     }
   }
 
+  async function handleInitDefaults() {
+    setSaving(true);
+    const result = await initDefaultClothTests(sessionId);
+
+    if (result.success && result.tests) {
+      setTests(result.tests);
+    }
+    setSaving(false);
+  }
+
   return (
     <div className="space-y-4">
+      {/* CLO-3: Bettsometer/porosity location guidance */}
+      <div className="rounded-lg border border-sky-200 bg-sky-50 px-4 py-3">
+        <div className="flex items-start gap-2">
+          <Info className="mt-0.5 h-4 w-4 shrink-0 text-sky-500" />
+          <div className="text-xs text-sky-700 space-y-1">
+            <p>
+              <strong>Bettsometer (tear resistance):</strong> Test on cells 0–1 (leading
+              edge area, highest wear).
+            </p>
+            <p>
+              <strong>Porosity:</strong> Test on cell 2+ (mid-chord panels, representative
+              airflow).
+            </p>
+            <p className="text-sky-500 italic">
+              Do not test porosity and tear at the same location — it compromises the
+              sample.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* CLO-1: Init default test points when empty */}
+      {tests.length === 0 && (
+        <div className="rounded-lg border border-dashed border-zinc-300 p-6 text-center">
+          <p className="text-sm text-zinc-500 mb-3">No test points recorded yet.</p>
+          <button
+            onClick={handleInitDefaults}
+            disabled={saving}
+            className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 disabled:opacity-50"
+          >
+            {saving ? 'Creating...' : 'Initialize 4 Default Test Points'}
+          </button>
+          <p className="mt-2 text-xs text-zinc-400">
+            Creates skeleton rows for top-surface cells 2, 4, 6, 8
+          </p>
+        </div>
+      )}
+
       {/* Summary card */}
       {tests.length > 0 && (
         <div
@@ -136,7 +190,6 @@ export default function ClothTestForm({ sessionId, existingTests }: ClothTestFor
       {tests.length > 0 && (
         <div className="space-y-2">
           {tests.map((test) => {
-            // Compute evaluations for display
             const porosityEval =
               test.porosityValue != null && test.porosityMethod
                 ? evaluatePorosity(test.porosityValue, test.porosityMethod)
@@ -234,7 +287,7 @@ export default function ClothTestForm({ sessionId, existingTests }: ClothTestFor
         </div>
       </details>
 
-      {/* Add new test form */}
+      {/* Add new test form — CLO-4: mutually exclusive porosity/tear inputs */}
       {showForm ? (
         <form
           action={handleSubmit}
@@ -277,6 +330,32 @@ export default function ClothTestForm({ sessionId, existingTests }: ClothTestFor
             </div>
           </div>
 
+          {/* Test mode selector */}
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={() => setFormMode(formMode === 'porosity' ? null : 'porosity')}
+              className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
+                formMode === 'porosity'
+                  ? 'border-sky-300 bg-sky-50 text-sky-700'
+                  : 'border-zinc-200 text-zinc-500 hover:bg-zinc-50'
+              }`}
+            >
+              Porosity Test
+            </button>
+            <button
+              type="button"
+              onClick={() => setFormMode(formMode === 'tear' ? null : 'tear')}
+              className={`rounded-md border px-3 py-1.5 text-xs font-medium transition-colors ${
+                formMode === 'tear'
+                  ? 'border-sky-300 bg-sky-50 text-sky-700'
+                  : 'border-zinc-200 text-zinc-500 hover:bg-zinc-50'
+              }`}
+            >
+              Tear Resistance
+            </button>
+          </div>
+
           <div className="grid gap-4 sm:grid-cols-3">
             <div>
               <label className="block text-xs font-medium text-zinc-400">
@@ -284,7 +363,8 @@ export default function ClothTestForm({ sessionId, existingTests }: ClothTestFor
               </label>
               <select
                 name="porosityMethod"
-                className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+                disabled={formMode === 'tear'}
+                className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2 text-sm disabled:bg-zinc-100 disabled:text-zinc-300"
               >
                 <option value="">Select...</option>
                 {METHODS.map((m) => (
@@ -303,7 +383,8 @@ export default function ClothTestForm({ sessionId, existingTests }: ClothTestFor
                 name="porosityValue"
                 step="0.01"
                 min="0"
-                className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+                disabled={formMode === 'tear'}
+                className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2 text-sm disabled:bg-zinc-100 disabled:text-zinc-300"
               />
             </div>
             <div>
@@ -315,7 +396,8 @@ export default function ClothTestForm({ sessionId, existingTests }: ClothTestFor
                 name="tearResistance"
                 step="1"
                 min="0"
-                className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2 text-sm"
+                disabled={formMode === 'porosity'}
+                className="mt-1 w-full rounded-md border border-zinc-300 px-3 py-2 text-sm disabled:bg-zinc-100 disabled:text-zinc-300"
               />
             </div>
           </div>
@@ -340,7 +422,10 @@ export default function ClothTestForm({ sessionId, existingTests }: ClothTestFor
             </button>
             <button
               type="button"
-              onClick={() => setShowForm(false)}
+              onClick={() => {
+                setShowForm(false);
+                setFormMode(null);
+              }}
               className="rounded-md border border-zinc-300 px-4 py-2 text-sm text-zinc-600 hover:bg-zinc-50"
             >
               Cancel
@@ -348,13 +433,15 @@ export default function ClothTestForm({ sessionId, existingTests }: ClothTestFor
           </div>
         </form>
       ) : (
-        <button
-          onClick={() => setShowForm(true)}
-          className="inline-flex items-center gap-2 rounded-md border border-zinc-300 px-4 py-2 text-sm text-zinc-600 hover:bg-zinc-50"
-        >
-          <Plus className="h-4 w-4" />
-          Add Test Point
-        </button>
+        tests.length > 0 && (
+          <button
+            onClick={() => setShowForm(true)}
+            className="inline-flex items-center gap-2 rounded-md border border-zinc-300 px-4 py-2 text-sm text-zinc-600 hover:bg-zinc-50"
+          >
+            <Plus className="h-4 w-4" />
+            Add Test Point
+          </button>
+        )
       )}
     </div>
   );

@@ -30,7 +30,9 @@ export default async function ClothPage({ params }: ClothPageProps) {
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
-        <h3 className="text-lg font-semibold text-zinc-900">Cloth Testing</h3>
+        <h3 className="text-lg font-semibold text-zinc-900">
+          Cloth Porosity and Strength
+        </h3>
         <span className="text-sm text-zinc-400">
           {session.clothTests.length} test point
           {session.clothTests.length !== 1 ? 's' : ''}

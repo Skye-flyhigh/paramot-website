@@ -66,6 +66,43 @@ export async function addClothTest(formData: FormData) {
   return { success: true, test };
 }
 
+/**
+ * Initialize 4 default test point skeletons (cells 2, 4, 6, 8 on top surface).
+ * Only works when session has zero existing cloth tests.
+ */
+export async function initDefaultClothTests(sessionId: string) {
+  const auth = await ensureTechnician();
+
+  if (!auth.authorized) return { error: 'Not authorized' };
+
+  const session = await findSessionById(sessionId);
+
+  if (!session || session.technician !== auth.email) {
+    return { error: 'Session not found' };
+  }
+
+  const existing = await prisma.clothTest.count({ where: { sessionId } });
+
+  if (existing > 0) {
+    return { error: 'Tests already exist for this session' };
+  }
+
+  const defaults = [2, 4, 6, 8].map((cell) => ({
+    sessionId,
+    surface: 'top',
+    cellId: String(cell),
+  }));
+
+  await prisma.clothTest.createMany({ data: defaults });
+
+  const created = await prisma.clothTest.findMany({
+    where: { sessionId },
+    orderBy: { createdAt: 'asc' },
+  });
+
+  return { success: true, tests: created };
+}
+
 export async function deleteClothTest(testId: string) {
   const auth = await ensureTechnician();
 
