@@ -530,6 +530,7 @@ model ServiceSession {
   @@index([status])
   @@index([serialNumber])
   @@index([technician, status])                // Dashboard query: my active sessions
+  @@index([equipmentId, status])               // Equipment history + strength lookups
 }
 
 // =============================================================================
@@ -689,6 +690,7 @@ model CorrectionLog {
   updatedAt   DateTime       @updatedAt
 
   @@index([sessionId])
+  @@index([sessionId, side])
 }
 
 // =============================================================================
