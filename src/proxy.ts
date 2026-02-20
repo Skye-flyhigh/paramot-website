@@ -72,6 +72,7 @@ export async function proxy(request: NextRequest) {
   if (isLoggedIn && authResult.authenticated) {
     const session = authResult.session;
     const isOnboardingPage = url.pathname === '/dashboard/onboarding';
+    const isWorkshopRoute = url.pathname.startsWith('/workshop');
     const needsOnboarding = !session.user.onboardingComplete;
 
     console.log('[Proxy] Onboarding check:', {
@@ -80,7 +81,8 @@ export async function proxy(request: NextRequest) {
       onboardingComplete: session.user.onboardingComplete,
     });
 
-    if (needsOnboarding && !isOnboardingPage) {
+    // Skip onboarding redirect for workshop routes (technicians may not have customer records)
+    if (needsOnboarding && !isOnboardingPage && !isWorkshopRoute) {
       console.log('[Proxy] Redirecting to onboarding');
 
       // Redirect to onboarding (unless already there)
