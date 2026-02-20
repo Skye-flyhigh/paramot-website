@@ -265,6 +265,62 @@ export async function updateSessionStatus(
 }
 
 // =============================================================================
+// CUSTOMER-FACING REPORT
+// =============================================================================
+
+/**
+ * Load a session's report data for customer viewing.
+ * Verifies customer ownership via RLS on ServiceRecords.
+ * Returns stripped data — no session ID, no internal notes.
+ */
+export async function findSessionForCustomerReport(
+  serviceRecordId: string,
+  customerId: string,
+) {
+  const { createCustomerClient } = await import('./rls');
+  const db = createCustomerClient(customerId);
+
+  // Verify this service record belongs to the customer (RLS enforced)
+  const serviceRecord = await db.serviceRecords.findFirst({
+    where: { id: serviceRecordId, customerId },
+    select: { id: true, bookingReference: true },
+  });
+
+  if (!serviceRecord) return null;
+
+  // Fetch the session with report data (no RLS on ServiceSession)
+  const session = await prisma.serviceSession.findFirst({
+    where: { serviceRecordId },
+    include: {
+      equipment: true,
+      report: true,
+      checklist: { orderBy: { stepNumber: 'asc' } },
+      diagnosis: true,
+      clothTests: { orderBy: { createdAt: 'asc' } },
+      trimMeasurements: {
+        orderBy: [{ phase: 'asc' }, { lineRow: 'asc' }, { position: 'asc' }],
+      },
+      corrections: { orderBy: { createdAt: 'asc' } },
+      strengthTests: { orderBy: { createdAt: 'asc' } },
+      gliderSize: {
+        include: {
+          gliderModel: {
+            include: { manufacturer: true },
+          },
+        },
+      },
+    },
+  });
+
+  if (!session) return null;
+
+  return {
+    session,
+    bookingReference: serviceRecord.bookingReference,
+  };
+}
+
+// =============================================================================
 // DASHBOARD HELPERS
 // =============================================================================
 

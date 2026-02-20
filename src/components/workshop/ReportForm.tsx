@@ -6,7 +6,7 @@ import { submitReport } from '@/lib/submit/submitReport';
 
 interface ReportFormProps {
   sessionId: string;
-  isGlider: boolean;
+  equipmentType: string;
   technicianEmail: string;
   existingReport: {
     airworthy: boolean;
@@ -22,10 +22,11 @@ interface ReportFormProps {
 
 export default function ReportForm({
   sessionId,
-  isGlider,
+  equipmentType,
   technicianEmail,
   existingReport,
 }: ReportFormProps) {
+  const isGlider = equipmentType === 'GLIDER';
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);

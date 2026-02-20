@@ -22,7 +22,6 @@ export default async function ReportPage({ params }: ReportPageProps) {
   if (!session || session.technician !== auth.email) notFound();
 
   const report = session.report;
-  const isGlider = session.equipmentType === 'GLIDER';
   const isCompleted = session.status === 'COMPLETED' || session.status === 'ARCHIVED';
 
   return (
@@ -38,12 +37,15 @@ export default async function ReportPage({ params }: ReportPageProps) {
             <FileText className="h-4 w-4" />
             View Full Report
           </Link>
-          <CompletedReport report={report} isGlider={isGlider} />
+          <CompletedReport
+            report={report}
+            isGlider={session.equipmentType === 'GLIDER'}
+          />
         </>
       ) : (
         <ReportForm
           sessionId={session.id}
-          isGlider={isGlider}
+          equipmentType={session.equipmentType}
           technicianEmail={auth.email}
           existingReport={report}
         />
