@@ -498,6 +498,16 @@ model ServiceSession {
   startedAt        DateTime      @default(now())
   completedAt      DateTime?
 
+  // === INITIAL STATE & OFFSETS ===
+
+  // Baseline loop matrix captured during intake (JSON: { "A": { "G1": 0, "G2": 1 }, "B": {...} })
+  initialLoopsLeft  Json          @default("{}")
+  initialLoopsRight Json          @default("{}")
+
+  // Overall line geometry offsets (mm) — applied to deviation calculations
+  gliderOffset     Float?
+  brakeOffset      Float?
+
   // === CHILD RELATIONS ===
   // Which of these get populated depends on equipmentType.
   // Glider: all of them. Reserve/Harness: checklist + diagnosis + report.
@@ -507,6 +517,9 @@ model ServiceSession {
   clothTests       ClothTest[]                 // Glider only
   trimMeasurements TrimMeasurement[]           // Glider only
   corrections      CorrectionLog[]             // Glider only
+  strengthTests    StrengthTest[]              // Glider only
+  damagedLines     DamagedLine[]               // Glider only (intake)
+  canopyDamages    CanopyDamage[]              // Glider only (intake)
   report           SessionReport?
   versions         SessionVersion[]
 
@@ -710,4 +723,75 @@ model SessionReport {
 
   createdAt   DateTime       @default(now())
   updatedAt   DateTime       @updatedAt
+}
+
+// =============================================================================
+// STRENGTH TESTING — Per-line test results (glider only)
+// =============================================================================
+
+model StrengthTest {
+  id          String         @id @default(cuid())
+  sessionId   String
+  session     ServiceSession @relation(fields: [sessionId], references: [id])
+
+  // Line identification (matches LineMaterial schema)
+  lineId      String                           // "L1A1", "L2B2" — matches LineMaterial.lineId
+  lineRow     String                           // "A", "B", "C", "D"
+  cascadeLevel Int                             // 1, 2, 3
+  side        String                           // "left" | "right"
+
+  // Test type and result
+  testType    String                           // "non_destructive" | "destructive"
+  loadApplied Float                            // daN — test load applied
+  result      String                           // "pass" | "fail" | "warning"
+
+  // Destructive-only measurements
+  measuredStrength  Float?                     // daN — actual breaking strength
+  percentRemaining  Float?                     // % of original strength remaining
+
+  notes       String?
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([sessionId])
+  @@index([sessionId, lineId])
+}
+
+// =============================================================================
+// DAMAGED LINES — Lines observed damaged during intake (glider only)
+// =============================================================================
+
+model DamagedLine {
+  id          String         @id @default(cuid())
+  sessionId   String
+  session     ServiceSession @relation(fields: [sessionId], references: [id])
+
+  side        String                           // "left" | "right"
+  lineCode    String                           // e.g. "A3", "B1", "C2"
+  notes       String?
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([sessionId])
+}
+
+// =============================================================================
+// CANOPY DAMAGE — Damage observed during intake (glider only)
+// =============================================================================
+
+model CanopyDamage {
+  id          String         @id @default(cuid())
+  sessionId   String
+  session     ServiceSession @relation(fields: [sessionId], references: [id])
+
+  surface     String                           // "top" | "bottom" | "internal"
+  cellNumber  String?                          // Cell number or location
+  notes       String?
+
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  @@index([sessionId])
 }
