@@ -1,40 +1,8 @@
 import { Check } from 'lucide-react';
 
-interface GliderService {
-  name: string;
-  soloCost: number;
-  tandemCost: number;
-  checks: {
-    trim: boolean;
-    cloth: boolean;
-    porosity: boolean;
-    betsometer: boolean;
-    line: boolean;
-  };
-}
+import { type ServiceChecks, getGridServiceGroups } from '@/lib/schema';
 
-const gliderServices: GliderService[] = [
-  {
-    name: 'Visual Check',
-    soloCost: 60,
-    tandemCost: 75,
-    checks: { trim: false, cloth: true, porosity: false, betsometer: false, line: false },
-  },
-  {
-    name: 'Trim Only',
-    soloCost: 100,
-    tandemCost: 120,
-    checks: { trim: true, cloth: false, porosity: false, betsometer: false, line: false },
-  },
-  {
-    name: 'Full Service',
-    soloCost: 180,
-    tandemCost: 210,
-    checks: { trim: true, cloth: true, porosity: true, betsometer: true, line: true },
-  },
-];
-
-const checkLabels: { key: keyof GliderService['checks']; label: string }[] = [
+const checkLabels: { key: keyof ServiceChecks; label: string }[] = [
   { key: 'trim', label: 'Trim measurement & correction' },
   { key: 'cloth', label: 'Visual cloth inspection' },
   { key: 'porosity', label: 'Porosity testing' },
@@ -43,6 +11,8 @@ const checkLabels: { key: keyof GliderService['checks']; label: string }[] = [
 ];
 
 export default function ServiceComparisonGrid() {
+  const groups = getGridServiceGroups();
+
   return (
     <div>
       {/* Desktop table */}
@@ -53,21 +23,25 @@ export default function ServiceComparisonGrid() {
       >
         <div className="min-w-[500px]">
           {/* Header row */}
-          <div role="row" className="grid grid-cols-4 gap-2 mb-2">
+          <div
+            role="row"
+            className={`grid gap-2 mb-2`}
+            style={{ gridTemplateColumns: `1fr repeat(${groups.length}, 1fr)` }}
+          >
             <div role="columnheader" className="p-3" />
-            {gliderServices.map((service) => (
+            {groups.map((group) => (
               <div
-                key={service.name}
+                key={group.gridGroup}
                 role="columnheader"
                 className="p-3 text-center rounded-t-xl bg-sky-50 border border-b-0 border-sky-100"
               >
-                <h4 className="font-bold text-sky-900 text-lg">{service.name}</h4>
+                <h4 className="font-bold text-sky-900 text-lg">{group.gridLabel}</h4>
                 <div className="mt-1 space-y-0.5 text-sm">
                   <p className="text-sky-700">
-                    Solo: <span className="font-semibold">£{service.soloCost}</span>
+                    Solo: <span className="font-semibold">£{group.soloCost}</span>
                   </p>
                   <p className="text-sky-700">
-                    Tandem: <span className="font-semibold">£{service.tandemCost}</span>
+                    Tandem: <span className="font-semibold">£{group.tandemCost}</span>
                   </p>
                 </div>
               </div>
@@ -79,7 +53,8 @@ export default function ServiceComparisonGrid() {
             <div
               key={check.key}
               role="row"
-              className={`grid grid-cols-4 gap-2 ${i === checkLabels.length - 1 ? '' : ''}`}
+              className="grid gap-2"
+              style={{ gridTemplateColumns: `1fr repeat(${groups.length}, 1fr)` }}
             >
               <div
                 role="rowheader"
@@ -89,17 +64,17 @@ export default function ServiceComparisonGrid() {
               >
                 {check.label}
               </div>
-              {gliderServices.map((service, si) => (
+              {groups.map((group) => (
                 <div
-                  key={`${check.key}-${service.name}`}
+                  key={`${check.key}-${group.gridGroup}`}
                   role="cell"
                   className={`p-3 flex items-center justify-center border-x border-sky-100 ${
                     i === checkLabels.length - 1
                       ? 'border-b rounded-b-xl'
                       : 'border-b border-b-sky-50'
-                  } ${si === gliderServices.length - 1 && i === 0 ? '' : ''}`}
+                  }`}
                 >
-                  {service.checks[check.key] ? (
+                  {group.checks[check.key] ? (
                     <Check
                       className="h-5 w-5 text-emerald-500"
                       aria-label={`${check.label}: Included`}
@@ -121,23 +96,23 @@ export default function ServiceComparisonGrid() {
 
       {/* Mobile: stack as cards */}
       <div className="sm:hidden space-y-4">
-        {gliderServices.map((service) => (
+        {groups.map((group) => (
           <div
-            key={service.name}
+            key={group.gridGroup}
             className="rounded-xl border border-sky-100 bg-white p-5 shadow-sm"
           >
-            <h4 className="font-bold text-sky-900 text-lg mb-1">{service.name}</h4>
+            <h4 className="font-bold text-sky-900 text-lg mb-1">{group.gridLabel}</h4>
             <div className="flex gap-4 text-sm text-sky-700 mb-3">
               <span>
-                Solo: <span className="font-semibold">£{service.soloCost}</span>
+                Solo: <span className="font-semibold">£{group.soloCost}</span>
               </span>
               <span>
-                Tandem: <span className="font-semibold">£{service.tandemCost}</span>
+                Tandem: <span className="font-semibold">£{group.tandemCost}</span>
               </span>
             </div>
             <ul className="space-y-1.5">
               {checkLabels.map((check) =>
-                service.checks[check.key] ? (
+                group.checks[check.key] ? (
                   <li
                     key={check.key}
                     className="flex items-center gap-2 text-sm text-sky-800"

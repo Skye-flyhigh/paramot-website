@@ -14,6 +14,9 @@ export interface ServicesType {
   cost: number | string;
   available: boolean;
   checks?: ServiceChecks;
+  gridGroup?: string; // Groups solo/tandem pairs for comparison grid (e.g. "visual-check")
+  gridLabel?: string; // Display name in grid column header (e.g. "Visual Check")
+  variant?: 'solo' | 'tandem'; // Which variant within a grid group
 }
 
 export const SERVICE_CODE = [

@@ -12,7 +12,10 @@
       "betsometer": false,
       "cloth": false,
       "line": false
-    }
+    },
+    "gridGroup": "trim",
+    "gridLabel": "Trim Only",
+    "variant": "solo"
   },
   "trim-tandem": {
     "icon": "Zap",
@@ -27,7 +30,10 @@
       "betsometer": false,
       "cloth": false,
       "line": false
-    }
+    },
+    "gridGroup": "trim",
+    "gridLabel": "Trim Only",
+    "variant": "tandem"
   },
   "visual-solo": {
     "icon": "Eye",
@@ -42,7 +48,10 @@
       "betsometer": false,
       "cloth": true,
       "line": false
-    }
+    },
+    "gridGroup": "visual-check",
+    "gridLabel": "Visual Check",
+    "variant": "solo"
   },
   "visual-tandem": {
     "icon": "Eye",
@@ -57,7 +66,10 @@
       "betsometer": false,
       "cloth": true,
       "line": false
-    }
+    },
+    "gridGroup": "visual-check",
+    "gridLabel": "Visual Check",
+    "variant": "tandem"
   },
   "service-solo": {
     "icon": "Shield",
@@ -72,7 +84,10 @@
       "betsometer": true,
       "cloth": true,
       "line": true
-    }
+    },
+    "gridGroup": "full-service",
+    "gridLabel": "Full Service",
+    "variant": "solo"
   },
   "service-tandem": {
     "icon": "Shield",
@@ -87,7 +102,10 @@
       "betsometer": true,
       "cloth": true,
       "line": true
-    }
+    },
+    "gridGroup": "full-service",
+    "gridLabel": "Full Service",
+    "variant": "tandem"
   },
   "service-harness": {
     "icon": "Shield",
