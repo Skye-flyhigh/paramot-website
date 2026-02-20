@@ -1,8 +1,8 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { Check, Loader2 } from 'lucide-react';
 import { saveDiagnosis } from '@/lib/submit/submitDiagnosis';
+import { Check, Loader2 } from 'lucide-react';
+import { useCallback, useState } from 'react';
 
 const CONDITION_OPTIONS = [
   { value: 'not_checked', label: 'Not Checked' },
@@ -185,7 +185,7 @@ export default function IntakeForm({ sessionId, existingDiagnosis }: IntakeFormP
 function conditionColor(value: ConditionValue): string {
   switch (value) {
     case 'excellent':
-      return 'border-green-300 bg-green-50 text-green-700';
+      return 'border-blue-300 bg-blue-50 text-blue-700';
     case 'good':
       return 'border-green-200 bg-green-50 text-green-600';
     case 'average':

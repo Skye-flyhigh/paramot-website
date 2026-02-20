@@ -1,7 +1,5 @@
 'use client';
 
-import { useState, useMemo } from 'react';
-import { Plus, Trash2, AlertTriangle, CheckCircle, Info } from 'lucide-react';
 import { addClothTest, deleteClothTest } from '@/lib/submit/submitClothTest';
 import {
   evaluatePorosity,
@@ -9,6 +7,8 @@ import {
   summarizeClothTests,
   type ClothResult,
 } from '@/lib/workshop/cloth-calculations';
+import { AlertTriangle, CheckCircle, Info, Plus, Trash2 } from 'lucide-react';
+import { useMemo, useState } from 'react';
 
 interface ClothTestRecord {
   id: string;
@@ -31,7 +31,7 @@ interface ClothTestFormProps {
 const SURFACES = [
   { value: 'top', label: 'Top Surface' },
   { value: 'bottom', label: 'Bottom Surface' },
-  { value: 'internal', label: 'Internal' },
+  { value: 'internal', label: 'Internal Structure' },
 ];
 
 const METHODS = [
