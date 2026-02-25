@@ -4,6 +4,7 @@ export interface ServiceChecks {
   porosity?: boolean;
   betsometer?: boolean;
   line?: boolean;
+  strength?: boolean;
 }
 
 export interface ServicesType {

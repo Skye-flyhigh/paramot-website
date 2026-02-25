@@ -11,7 +11,8 @@
       "porosity": false,
       "betsometer": false,
       "cloth": false,
-      "line": false
+      "line": false,
+      "strength": false
     },
     "gridGroup": "trim",
     "gridLabel": "Trim Only",
@@ -29,7 +30,8 @@
       "porosity": false,
       "betsometer": false,
       "cloth": false,
-      "line": false
+      "line": false,
+      "strength": false
     },
     "gridGroup": "trim",
     "gridLabel": "Trim Only",
@@ -44,10 +46,11 @@
     "available": true,
     "checks": {
       "trim": false,
-      "porosity": false,
+      "porosity": true,
       "betsometer": false,
       "cloth": true,
-      "line": false
+      "line": true,
+      "strength": false
     },
     "gridGroup": "visual-check",
     "gridLabel": "Visual Check",
@@ -62,10 +65,11 @@
     "available": true,
     "checks": {
       "trim": false,
-      "porosity": false,
+      "porosity": true,
       "betsometer": false,
       "cloth": true,
-      "line": false
+      "line": true,
+      "strength": false
     },
     "gridGroup": "visual-check",
     "gridLabel": "Visual Check",
@@ -83,7 +87,8 @@
       "porosity": true,
       "betsometer": true,
       "cloth": true,
-      "line": true
+      "line": true,
+      "strength": true
     },
     "gridGroup": "full-service",
     "gridLabel": "Full Service",
@@ -101,7 +106,8 @@
       "porosity": true,
       "betsometer": true,
       "cloth": true,
-      "line": true
+      "line": true,
+      "strength": true
     },
     "gridGroup": "full-service",
     "gridLabel": "Full Service",
@@ -121,7 +127,7 @@
     "description": "22-step sequential repack following APPI procedure. Includes deployment test, condition assessment, and reintegration into your harness.",
     "code": "PACK-001",
     "cost": 50,
-    "available": true
+    "available": false
   },
   "repack-steerable": {
     "icon": "PackageCheck",
@@ -129,7 +135,7 @@
     "description": "Professional repacking for steerable reserves. Same thorough 22-step process, adapted for guided parachute systems.",
     "code": "PACK-002",
     "cost": 70,
-    "available": true
+    "available": false
   },
   "repair": {
     "icon": "Wrench",

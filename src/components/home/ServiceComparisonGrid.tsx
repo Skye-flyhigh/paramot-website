@@ -4,10 +4,11 @@ import { type ServiceChecks, getGridServiceGroups } from '@/lib/schema';
 
 const checkLabels: { key: keyof ServiceChecks; label: string }[] = [
   { key: 'trim', label: 'Trim measurement & correction' },
+  { key: 'line', label: 'Visual line assessment' },
   { key: 'cloth', label: 'Visual cloth inspection' },
   { key: 'porosity', label: 'Porosity testing' },
-  { key: 'betsometer', label: 'Tear resistance (Bettsometer)' },
-  { key: 'line', label: 'Line strength assessment' },
+  { key: 'betsometer', label: 'Cloth - tear resistance' },
+  { key: 'strength', label: 'Line strength assessment'} 
 ];
 
 export default function ServiceComparisonGrid() {
@@ -58,10 +59,13 @@ export default function ServiceComparisonGrid() {
             >
               <div
                 role="rowheader"
-                className={`p-3 flex items-center text-sm font-medium text-sky-800 ${
+                className={`p-3 flex flex-col text-sm font-medium text-sky-800 ${
                   i === checkLabels.length - 1 ? 'rounded-bl-xl' : ''
                 }`}
               >
+                {check.key === "strength" && (
+                  <span className="text-xs text-sky-600 font-light">Non-destructive</span>
+                )}
                 {check.label}
               </div>
               {groups.map((group) => (
@@ -122,6 +126,9 @@ export default function ServiceComparisonGrid() {
                       aria-hidden="true"
                     />
                     {check.label}
+                    {
+                      check.key === "strength" && <span className="text-xs text-sky-600 font-light">- non-destructive</span>
+                    }
                   </li>
                 ) : null,
               )}
