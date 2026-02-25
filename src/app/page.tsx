@@ -8,7 +8,7 @@ import Motto from '@/components/home/Motto';
 import Services from '@/components/home/Services';
 import Trust from '@/components/home/Trust';
 import JsonLd from '@/components/seo/JsonLd';
-import { BUSINESS, FAQS, SITE_URL } from '@/lib/metadata.constant';
+import { BUSINESS, FAQS, SITE_URL } from '@/lib/metadata.const';
 import { getServicesList } from '@/lib/schema';
 
 const localBusinessSchema = {
