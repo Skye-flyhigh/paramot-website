@@ -1,3 +1,4 @@
+import { BUSINESS } from '@/lib/metadata.const';
 import Link from 'next/link';
 
 export default function TermsOfService() {
@@ -203,7 +204,7 @@ export default function TermsOfService() {
               <p className="text-gray-700 mb-4">
                 If you have questions about these terms, please contact us at:
               </p>
-              <p className="text-gray-700">Email: hello@paramot.co.uk</p>
+              <p className="text-gray-700">Email: {BUSINESS.email}</p>
             </section>
           </div>
 

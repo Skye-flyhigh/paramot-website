@@ -1,3 +1,4 @@
+import { BUSINESS } from '@/lib/metadata.const';
 import Link from 'next/link';
 
 export default function PrivacyPolicy() {
@@ -238,7 +239,7 @@ export default function PrivacyPolicy() {
               </ul>
               <p className="text-gray-700 mb-4">
                 To exercise these rights, contact us at:{' '}
-                <strong>hello@paramot.co.uk</strong>
+                <strong>{BUSINESS.email}</strong>
               </p>
               <p className="text-gray-700 mb-4">
                 You also have the right to lodge a complaint with the{' '}
@@ -344,7 +345,7 @@ export default function PrivacyPolicy() {
                 For questions about this Privacy Policy or to exercise your data rights,
                 contact us:
               </p>
-              <p className="text-gray-700">Email: hello@paramot.co.uk</p>
+              <p className="text-gray-700">Email: {BUSINESS.email}</p>
             </section>
           </div>
 

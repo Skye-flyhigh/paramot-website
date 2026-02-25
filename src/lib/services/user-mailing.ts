@@ -1,4 +1,5 @@
 import { Resend } from 'resend';
+import { BUSINESS } from '../metadata.const';
 
 interface Recipient {
   name: string;
@@ -87,13 +88,13 @@ interface EmailResponse {
  * @returns
  */
 export default async function sendEmail({
-  from = 'paraMOT <hello@paramot.co.uk>',
+  from = `paraMOT <${BUSINESS.email}>`,
   to,
   subject,
   message,
   template,
   templateVariables,
-  replyTo = 'paraMOT <hello@paramot.co.uk>',
+  replyTo = `paraMOT <${BUSINESS.email}>`,
   attachments = [],
   cc = [],
   bcc = [],
