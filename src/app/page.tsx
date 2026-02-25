@@ -1,97 +1,84 @@
 import Hero from '@/components/Hero';
-import Contact from '@/components/home/Contact';
 import ComingSoon from '@/components/home/ComingSoon';
+import Contact from '@/components/home/Contact';
 import EquipmentCTA from '@/components/home/EquipmentCTA';
 import HowItWorks from '@/components/home/HowItWorks';
 import Location from '@/components/home/Location';
 import Motto from '@/components/home/Motto';
 import Services from '@/components/home/Services';
 import Trust from '@/components/home/Trust';
+import JsonLd from '@/components/seo/JsonLd';
+import { BUSINESS, FAQS, SITE_URL } from '@/lib/metadata.constant';
+import { getServicesList } from '@/lib/schema';
 
-const jsonLd = {
+const localBusinessSchema = {
   '@context': 'https://schema.org',
-  '@graph': [
-    {
-      '@type': 'LocalBusiness',
-      name: 'paraMOT',
-      description:
-        'Professional paragliding wing servicing, trim measurement, cloth testing, reserve repacking, and harness inspections.',
-      url: 'https://paramot.co.uk',
-      email: 'hello@paramot.co.uk',
-      priceRange: '£50–£210',
-      areaServed: { '@type': 'Country', name: 'United Kingdom' },
-      knowsAbout: [
-        'Paraglider servicing',
-        'Wing trim measurement',
-        'Cloth porosity testing',
-        'Reserve repacking',
-        'Harness inspection',
-        'Line strength testing',
-      ],
-    },
-    {
-      '@type': 'FAQPage',
-      mainEntity: [
-        {
-          '@type': 'Question',
-          name: 'What does a full paraglider service include?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'A full service includes trim measurement and correction, cloth porosity testing, tear resistance testing (Bettsometer), line strength assessment, riser inspection, and a detailed digital report.',
-          },
-        },
-        {
-          '@type': 'Question',
-          name: 'How often should I service my paraglider?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'We recommend servicing annually or every 100 flying hours, per manufacturer recommendations. Wings flown in coastal or sandy conditions may need more frequent checks.',
-          },
-        },
-        {
-          '@type': 'Question',
-          name: 'Can I post my paraglider for servicing?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'Yes — we offer a postal service available UK-wide. Send us your equipment and we\u2019ll return it fully serviced with a detailed report.',
-          },
-        },
-        {
-          '@type': 'Question',
-          name: 'What is the Equipment Registry?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'The Equipment Registry is a public service history lookup by serial number, similar to an MOT check. Anyone can verify a wing\u2019s service history before purchasing.',
-          },
-        },
-        {
-          '@type': 'Question',
-          name: 'How long does a paraglider service take?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'Typically 3\u20135 working days depending on the service type and current workload. We\u2019ll confirm timescales when you get in touch.',
-          },
-        },
-        {
-          '@type': 'Question',
-          name: 'Are you APPI certified?',
-          acceptedAnswer: {
-            '@type': 'Answer',
-            text: 'Yes — trained and certified by the Association of Paragliding Pilots and Instructors (APPI).',
-          },
-        },
-      ],
-    },
+  '@type': 'LocalBusiness',
+  name: BUSINESS.name,
+  description: BUSINESS.description, 
+  url: SITE_URL,
+  email: BUSINESS.email,
+  priceRange: BUSINESS.priceRange,
+  areaServed: { '@type': 'Country', name: 'United Kingdom' },
+  knowsAbout: [
+    'Paraglider servicing',
+    'Wing trim measurement',
+    'Cloth porosity testing',
+    'Reserve repacking',
+    'Harness inspection',
+    'Line strength testing',
   ],
-};
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: BUSINESS.latitude,
+    longitude: BUSINESS.longitude,
+  },
+}
+
+const services = getServicesList()
+
+const servicesSchemas = services.map((service) => ({
+  "@context": "https://schema.org",
+  "@type": "Service",
+  name: service.title,
+  description: service.description,
+  price: service.cost,
+  priceCurrency: "GBP",
+  provider: {
+    "@type": "Organization",
+    name: BUSINESS.name,
+    url: SITE_URL,
+  },
+  offers: {
+      "@type": "Offer",
+      description: service.description,
+      price: service.cost,
+      availability: "https://schema.org/InStock",
+    }
+}))
+
+const faqSchema = {
+    "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: FAQS.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  })),
+}
 
 export default function Home() {
   return (
+    <>
+          <JsonLd data={localBusinessSchema} />
+      {servicesSchemas.map((schema) => (
+        <JsonLd key={schema.name} data={schema} />
+      ))}
+      <JsonLd data={faqSchema} />
     <main className="min-h-screen">
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
       <Hero />
       <Motto />
       <Services />
@@ -101,6 +88,7 @@ export default function Home() {
       <EquipmentCTA />
       <Contact />
       <Location />
-    </main>
+      </main>
+      </>
   );
 }
