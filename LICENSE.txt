@@ -1,0 +1,44 @@
+Copyright (c) 2025-present Skye. All rights reserved.
+
+PROPRIETARY SOFTWARE LICENCE
+
+This software and its associated documentation ("paraMOT") are the exclusive
+intellectual property of Skye. Unauthorised copying, distribution, modification,
+sublicensing, or commercial use of this software, in whole or in part, is strictly
+prohibited without prior written permission from the copyright holder.
+
+PERMITTED USE
+-------------
+This software is currently developed for private operational use within paraMOT
+workshop services. Viewing the source code for personal education or evaluation
+purposes is permitted, provided no reproduction or derivative works are created.
+
+THIRD-PARTY DEPENDENCIES
+------------------------
+This software incorporates open-source dependencies, each governed by their
+respective licences (MIT, Apache 2.0, ISC). This proprietary licence applies
+solely to the original source code authored by Skye. Third-party dependency
+licences are unaffected by this notice.
+
+METHODOLOGY NOTICE
+------------------
+The service workflows, calculations, and technical parameters implemented in this
+software are based on general paragliding industry standards, manufacturer
+specifications, and the author's own professional expertise as a certified
+paragliding equipment technician. No proprietary third-party methodology is
+reproduced herein without authorisation.
+
+FUTURE LICENSING
+----------------
+Licencing terms may change as the project evolves. Any future distribution,
+partnership, or commercial arrangement will be governed by a separate written
+agreement.
+
+CONTACT
+-------
+For licensing enquiries, partnership proposals, or permissions:
+skye@paramot.co.uk
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED. IN NO EVENT SHALL THE COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES,
+OR OTHER LIABILITY ARISING FROM THE USE OF THIS SOFTWARE.
