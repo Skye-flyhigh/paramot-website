@@ -1,7 +1,9 @@
+import ScrollReveal from "../ui/ScrollReveal";
+
 export default function Motto() {
   return (
     <section className="py-16 px-4 bg-gradient-to-b from-sky-50 to-white">
-      <div className="max-w-4xl mx-auto text-center">
+        <ScrollReveal className="max-w-4xl mx-auto text-center" delay={0.5}>
         <h2 className="text-4xl font-bold mb-6 text-sky-900">
           Precision servicing for the equipment you trust
         </h2>
@@ -9,7 +11,7 @@ export default function Motto() {
           Every measurement documented. Every correction traceable. Your paraglider&apos;s
           airworthiness, verified to the millimetre.
         </p>
-      </div>
+        </ScrollReveal>
     </section>
   );
 }

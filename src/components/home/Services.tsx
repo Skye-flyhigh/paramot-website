@@ -1,5 +1,6 @@
 import { getServicesList } from '@/lib/schema';
 
+import ScrollReveal from '../ui/ScrollReveal';
 import { ServiceCard } from './ServiceCard';
 import ServiceComparisonGrid from './ServiceComparisonGrid';
 
@@ -18,13 +19,13 @@ export default function Services() {
       className="bg-gradient-to-b from-white to-sky-50 px-4 py-20"
     >
       <div className="mx-auto max-w-6xl">
-        <div className="mb-16 text-center">
+          <ScrollReveal className="mb-16 text-center">
           <h2 className="mb-4 text-4xl font-bold text-sky-900">Services & Pricing</h2>
           <p className="mx-auto max-w-3xl text-lg leading-relaxed text-sky-700">
             Transparent pricing, no hidden fees. Every service includes a detailed digital
             report.
           </p>
-        </div>
+          </ScrollReveal>
 
         {/* Glider service comparison grid */}
         <div className="mb-16">

@@ -1,19 +1,25 @@
 import { Button } from '@/components/ui/button';
+import ScrollReveal from './ui/ScrollReveal';
 
 export default function Hero() {
   return (
-    <section className="relative bg-gradient-to-br from-sky-800 via-sky-700 to-slate-800 text-white py-24 px-4 overflow-hidden">
+    <section className="relative bg-linear-to-br from-sky-800 via-sky-700 to-slate-800 text-white h-[60vh] px-4 overflow-hidden">
       <div className="absolute inset-0 opacity-30">
-        <div className="w-full h-full bg-gradient-to-br from-transparent via-sky-500/5 to-transparent" />
+        <div className="w-full h-full bg-linear-to-br from-transparent via-sky-500/5 to-transparent" />
       </div>
-      <div className="max-w-4xl mx-auto text-center relative z-10">
-        <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
+      <div className="max-w-4xl flex flex-col items-center justify-center w-full h-full m-auto text-center relative z-10">
+        <ScrollReveal>
+        <h1 className="text-7xl font-bold mb-6 tracking-tight">
           para<span className="text-sky-300">MOT</span>
         </h1>
+
+        </ScrollReveal>
+        <ScrollReveal delay={0.2}>
         <p className="text-xl md:text-2xl mb-12 text-sky-100 font-medium">
           Paragliding servicing and repairs
         </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        </ScrollReveal>
+            <ScrollReveal className="flex flex-col sm:flex-row gap-4 justify-center" delay={0.4}>
           <a href="#services" aria-label="View our services and pricing">
             <Button
               size="lg"
@@ -30,8 +36,9 @@ export default function Hero() {
             >
               Get Quote
             </Button>
+
           </a>
-        </div>
+            </ScrollReveal>
       </div>
     </section>
   );
