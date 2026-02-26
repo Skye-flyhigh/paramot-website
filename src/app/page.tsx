@@ -8,6 +8,7 @@ import Motto from '@/components/home/Motto';
 import Services from '@/components/home/Services';
 import Trust from '@/components/home/Trust';
 import JsonLd from '@/components/seo/JsonLd';
+import StickyPicture from '@/components/ui/sticky-pic';
 import { BUSINESS, FAQS, SITE_URL } from '@/lib/metadata.const';
 import { getServicesList } from '@/lib/schema';
 
@@ -23,7 +24,9 @@ const localBusinessSchema = {
   knowsAbout: [
     'Paraglider servicing',
     'Wing trim measurement',
+    'Paraglider trimming',
     'Cloth porosity testing',
+    'Ripstop strength testing',
     'Reserve repacking',
     'Harness inspection',
     'Line strength testing',
@@ -70,6 +73,11 @@ const faqSchema = {
   })),
 }
 
+const pictures = [
+  { url: "/images/sewing.jpeg", alt: "Sewing up a panel on a paraglider" },
+  { url: "/images/inspection.jpeg", alt: "Inspecting glider cloth"}
+]
+
 export default function Home() {
   return (
     <>
@@ -80,8 +88,10 @@ export default function Home() {
       <JsonLd data={faqSchema} />
     <main className="min-h-screen">
       <Hero />
-      <Motto />
-      <Services />
+        <Motto />
+        <StickyPicture picture={pictures[1]} />
+        <Services />
+        <StickyPicture picture={pictures[0]} />
       <HowItWorks />
       <Trust />
       <ComingSoon />
