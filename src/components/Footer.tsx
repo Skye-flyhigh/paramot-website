@@ -4,7 +4,7 @@ export default function Footer() {
   return (
     <footer
       aria-label="Footer"
-      className="bg-gradient-to-r from-sky-900 via-sky-800 to-slate-800 text-white py-12 px-4"
+      className="bg-linear-to-r px-20 from-sky-900 via-sky-800 to-slate-800 text-white py-12 px-4"
     >
       <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-start gap-8">
         <div>
