@@ -103,6 +103,7 @@ export default function ContactForm({ variant, equipment, onClose }: ContactForm
                 name="name"
                 required
                 placeholder="Your full name"
+                aria-describedby={state.errors.name ? 'name-error' : undefined}
                 className={
                   state.errors.name
                     ? 'border-red-300 focus:border-red-400 focus:ring-red-400'
@@ -111,7 +112,9 @@ export default function ContactForm({ variant, equipment, onClose }: ContactForm
                 defaultValue={state.formData.name}
               />
               {state.errors.name && (
-                <p className="text-sm text-red-600">{state.errors.name}</p>
+                <p id="name-error" className="text-sm text-red-600">
+                  {state.errors.name}
+                </p>
               )}
             </div>
 
@@ -123,6 +126,7 @@ export default function ContactForm({ variant, equipment, onClose }: ContactForm
                 name="email"
                 required
                 placeholder="your.email@example.com"
+                aria-describedby={state.errors.email ? 'email-error' : undefined}
                 className={
                   state.errors.email
                     ? 'border-red-300 focus:border-red-400 focus:ring-red-400'
@@ -131,7 +135,9 @@ export default function ContactForm({ variant, equipment, onClose }: ContactForm
                 defaultValue={state.formData.email}
               />
               {state.errors.email && (
-                <p className="text-sm text-red-600">{state.errors.email}</p>
+                <p id="email-error" className="text-sm text-red-600">
+                  {state.errors.email}
+                </p>
               )}
             </div>
 
@@ -147,6 +153,7 @@ export default function ContactForm({ variant, equipment, onClose }: ContactForm
                     : 'Tell us about your paraglider service needs...'
                 }
                 rows={5}
+                aria-describedby={state.errors.message ? 'message-error' : undefined}
                 className={
                   state.errors.message
                     ? 'border-red-300 focus:border-red-400 focus:ring-red-400'
@@ -155,7 +162,9 @@ export default function ContactForm({ variant, equipment, onClose }: ContactForm
                 defaultValue={state.formData.message}
               />
               {state.errors.message && (
-                <p className="text-sm text-red-600">{state.errors.message}</p>
+                <p id="message-error" className="text-sm text-red-600">
+                  {state.errors.message}
+                </p>
               )}
             </div>
             <div className="flex w-full justify-end">

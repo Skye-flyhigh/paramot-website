@@ -1,3 +1,12 @@
+export interface ServiceChecks {
+  trim?: boolean;
+  cloth?: boolean;
+  porosity?: boolean;
+  betsometer?: boolean;
+  line?: boolean;
+  strength?: boolean;
+}
+
 export interface ServicesType {
   icon: string; // Icon name as string (mapped to component in ServiceCard)
   title: string;
@@ -5,11 +14,17 @@ export interface ServicesType {
   code: ServiceCode;
   cost: number | string;
   available: boolean;
+  checks?: ServiceChecks;
+  gridGroup?: string; // Groups solo/tandem pairs for comparison grid (e.g. "visual-check")
+  gridLabel?: string; // Display name in grid column header (e.g. "Visual Check")
+  variant?: 'solo' | 'tandem'; // Which variant within a grid group
 }
 
 export const SERVICE_CODE = [
   'SVC-001',
   'SVC-002',
+  'SVC-003',
+  'SVC-004',
   'SVC-011',
   'SVC-012',
   'SVC-031',

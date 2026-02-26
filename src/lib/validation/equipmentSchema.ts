@@ -4,7 +4,7 @@ import { zfd } from 'zod-form-data';
 // Equipment registry (independent of ownership - like a car with a reg number)
 export interface Equipment {
   id: string; // Internal ID
-  serialNumber: string; // The "registration number" - unique identifier
+  serialNumber: string | null; // The "registration number" - unique identifier
   type: EquipmentType;
   manufacturer: string;
   model: string;
@@ -13,6 +13,10 @@ export interface Equipment {
   status: 'ACTIVE' | 'RETIRED' | 'SOLD' | 'LOST';
   createdAt: Date;
   updatedAt: Date;
+  // Optional reference data FKs (linked when ACT data exists)
+  manufacturerRefId?: string | null;
+  gliderModelRefId?: string | null;
+  gliderSizeRefId?: string | null;
   // NO customerId - ownership is tracked separately!
 }
 

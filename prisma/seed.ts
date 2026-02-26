@@ -1,11 +1,12 @@
 import 'dotenv/config';
 import { PrismaClient } from '../src/generated/prisma';
+import { seedReferenceData } from './seed-reference';
 
 const prisma = new PrismaClient({
   accelerateUrl: process.env.DATABASE_URL!,
 });
 
-const SKYE_CUSTOMER_ID = '51a55b8c-ef00-4fe6-9458-dc02606474b6';
+const SKYE_CUSTOMER_ID = 'a18ee823-d4cc-44dc-b554-6f6c7a36427b';
 
 async function main() {
   console.log('🌱 Seeding database...');
@@ -56,60 +57,48 @@ async function main() {
   });
   console.log('✅ Created harness:', harness.serialNumber);
 
-  // For RLS-protected tables, use raw SQL transaction to set context
-  // This bypasses Prisma's query wrapping issues with Accelerate
-
-  // CustomerEquipment records
+  // Customer-dependent seeding (ownership + service records)
+  // Set customer context so RLS allows the SELECT on Customer table
   await prisma.$executeRaw`
     SELECT set_config('app.customer_id', ${SKYE_CUSTOMER_ID}::text, FALSE)
   `;
-
-  // Check and insert glider ownership
-  const gliderOwnershipCount = await prisma.$queryRaw<[{ count: bigint }]>`
-    SELECT COUNT(*) as count FROM "CustomerEquipment"
-    WHERE "customerId" = ${SKYE_CUSTOMER_ID}::uuid AND "equipmentId" = ${glider.id}
+  const customerExists = await prisma.$queryRaw<[{ count: bigint }]>`
+    SELECT COUNT(*) as count FROM "Customer" WHERE "id" = ${SKYE_CUSTOMER_ID}::uuid
   `;
-  if (gliderOwnershipCount[0].count === 0n) {
-    await prisma.$executeRaw`
-      INSERT INTO "CustomerEquipment"
-        ("id", "customerId", "equipmentId", "equipmentSerialNumber", "ownedFrom", "purchaseDate", "notes", "createdAt", "updatedAt")
-      VALUES
-        (gen_random_uuid(), ${SKYE_CUSTOMER_ID}::uuid, ${glider.id}, ${glider.serialNumber}, '2023-04-01', '2023-04-01', 'Purchased new from dealer', NOW(), NOW())
-    `;
-  }
-  console.log('✅ Linked glider to customer');
 
-  // Reserve ownership
-  const reserveOwnershipCount = await prisma.$queryRaw<[{ count: bigint }]>`
-    SELECT COUNT(*) as count FROM "CustomerEquipment"
-    WHERE "customerId" = ${SKYE_CUSTOMER_ID}::uuid AND "equipmentId" = ${reserve.id}
-  `;
-  if (reserveOwnershipCount[0].count === 0n) {
+  if (customerExists[0].count > 0n) {
+    // For RLS-protected tables, use raw SQL transaction to set context
     await prisma.$executeRaw`
-      INSERT INTO "CustomerEquipment"
-        ("id", "customerId", "equipmentId", "equipmentSerialNumber", "ownedFrom", "purchaseDate", "notes", "createdAt", "updatedAt")
-      VALUES
-        (gen_random_uuid(), ${SKYE_CUSTOMER_ID}::uuid, ${reserve.id}, ${reserve.serialNumber}, '2022-07-15', '2022-07-15', 'Purchased second-hand', NOW(), NOW())
+      SELECT set_config('app.customer_id', ${SKYE_CUSTOMER_ID}::text, FALSE)
     `;
-  }
-  console.log('✅ Linked reserve to customer');
 
-  // Harness ownership
-  const harnessOwnershipCount = await prisma.$queryRaw<[{ count: bigint }]>`
-    SELECT COUNT(*) as count FROM "CustomerEquipment"
-    WHERE "customerId" = ${SKYE_CUSTOMER_ID}::uuid AND "equipmentId" = ${harness.id}
-  `;
-  if (harnessOwnershipCount[0].count === 0n) {
-    await prisma.$executeRaw`
-      INSERT INTO "CustomerEquipment"
-        ("id", "customerId", "equipmentId", "equipmentSerialNumber", "ownedFrom", "purchaseDate", "createdAt", "updatedAt")
-      VALUES
-        (gen_random_uuid(), ${SKYE_CUSTOMER_ID}::uuid, ${harness.id}, ${harness.serialNumber}, '2023-02-01', '2023-02-01', NOW(), NOW())
-    `;
+    // Link equipment to customer
+    for (const eq of [glider, reserve, harness]) {
+      const ownershipCount = await prisma.$queryRaw<[{ count: bigint }]>`
+        SELECT COUNT(*) as count FROM "CustomerEquipment"
+        WHERE "customerId" = ${SKYE_CUSTOMER_ID}::uuid AND "equipmentId" = ${eq.id}
+      `;
+      if (ownershipCount[0].count === 0n) {
+        await prisma.$executeRaw`
+          INSERT INTO "CustomerEquipment"
+            ("id", "customerId", "equipmentId", "equipmentSerialNumber", "ownedFrom", "purchaseDate", "createdAt", "updatedAt")
+          VALUES
+            (gen_random_uuid(), ${SKYE_CUSTOMER_ID}::uuid, ${eq.id}, ${eq.serialNumber}, NOW(), NOW(), NOW(), NOW())
+        `;
+      }
+    }
+    console.log('✅ Linked equipment to customer');
+  } else {
+    console.log(
+      '⏭️  Customer not found — skipping ownership links (sign in first, then re-seed)',
+    );
   }
-  console.log('✅ Linked harness to customer');
 
-  // Service Records
+  // Service Records (require customer to exist for FK)
+  if (customerExists[0].count === 0n) {
+    console.log('⏭️  Skipping service records (no customer)');
+  }
+
   const serviceData = [
     {
       ref: 'SVC-001-150124-A1B2',
@@ -170,35 +159,46 @@ async function main() {
   ];
 
   // Use mechanic context for service records (technicians create all service states)
-  // Use CTE to set context within same statement (works with Accelerate pooling)
-  for (const s of serviceData) {
-    const existingCount = await prisma.$queryRaw<[{ count: bigint }]>`
-      SELECT COUNT(*) as count FROM "ServiceRecords" WHERE "bookingReference" = ${s.ref}
-    `;
-    if (existingCount[0].count === 0n) {
-      // CTE sets mechanic context, then INSERT runs with that context active
-      await prisma.$executeRaw`
-        WITH set_context AS (
-          SELECT set_config('app.mechanic_id', 'seed-script', TRUE)
-        )
-        INSERT INTO "ServiceRecords"
-          ("id", "bookingReference", "customerId", "equipmentId", "serviceCode", "status",
-           "preferredDate", "deliveryMethod", "contactMethod", "specialInstructions",
-           "cost", "actualServiceDate", "completedBy", "notes", "createdAt", "updatedAt")
-        SELECT
-          gen_random_uuid(), ${s.ref}, ${SKYE_CUSTOMER_ID}::uuid, ${s.equipmentId}, ${s.code},
-          ${s.status}::"ServiceStatus", ${s.prefDate}, ${s.delivery}::"DeliveryMethod", ${s.contact}::"ContactMethod",
-          ${s.instructions}, ${s.cost}, ${s.actualDate}::timestamp, ${s.completedBy}, ${s.notes}, NOW(), NOW()
-        FROM set_context
+  if (customerExists[0].count > 0n) {
+    for (const s of serviceData) {
+      const existingCount = await prisma.$queryRaw<[{ count: bigint }]>`
+        SELECT COUNT(*) as count FROM "ServiceRecords" WHERE "bookingReference" = ${s.ref}
       `;
+      if (existingCount[0].count === 0n) {
+        await prisma.$executeRaw`
+          WITH set_context AS (
+            SELECT set_config('app.mechanic_id', 'seed-script', TRUE)
+          )
+          INSERT INTO "ServiceRecords"
+            ("id", "bookingReference", "customerId", "equipmentId", "serviceCode", "status",
+             "preferredDate", "deliveryMethod", "contactMethod", "specialInstructions",
+             "cost", "actualServiceDate", "completedBy", "notes", "createdAt", "updatedAt")
+          SELECT
+            gen_random_uuid(), ${s.ref}, ${SKYE_CUSTOMER_ID}::uuid, ${s.equipmentId}, ${s.code},
+            ${s.status}::"ServiceStatus", ${s.prefDate}, ${s.delivery}::"DeliveryMethod", ${s.contact}::"ContactMethod",
+            ${s.instructions}, ${s.cost}, ${s.actualDate}::timestamp, ${s.completedBy}, ${s.notes}, NOW(), NOW()
+          FROM set_context
+        `;
+      }
+      console.log(`✅ Created service: ${s.ref}`);
     }
-    console.log(`✅ Created service: ${s.ref}`);
   }
+
+  // =========================================
+  // Workshop Reference Data (from ACT parser)
+  // =========================================
+  await seedReferenceData(prisma);
 
   console.log('\n🎉 Seed completed!');
   console.log(`   Equipment: 3 items`);
-  console.log(`   Ownership links: 3 records`);
-  console.log(`   Service records: 4 bookings (2 completed, 1 in progress, 1 pending)`);
+  if (customerExists[0].count > 0n) {
+    console.log(`   Ownership links: 3 records`);
+    console.log(`   Service records: 4 bookings (2 completed, 1 in progress, 1 pending)`);
+  } else {
+    console.log(`   Ownership links: SKIPPED (no customer — sign in first)`);
+    console.log(`   Service records: SKIPPED (no customer)`);
+  }
+  console.log(`   Reference data: see above for ACT-derived models`);
 }
 
 main()

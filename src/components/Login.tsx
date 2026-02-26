@@ -2,14 +2,15 @@ import { signIn } from '@/auth';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 
-export default function Login() {
+export default function Login({ callbackUrl }: { callbackUrl?: string }) {
   const isDev = process.env.NODE_ENV === 'development';
+  const redirectTo = callbackUrl || '/dashboard';
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-sky-50">
       <div className="max-w-md w-full bg-white p-8 rounded-lg shadow-lg">
         <h2 className="text-3xl font-bold text-center text-sky-900 mb-6">
-          Customer Login
+          Sign in to paraMOT
         </h2>
 
         <div className="space-y-4">
@@ -19,7 +20,7 @@ export default function Login() {
               'use server';
               const email = formData.get('email') as string;
 
-              await signIn('resend', { email, redirectTo: '/dashboard' });
+              await signIn('resend', { email, redirectTo });
             }}
             className="space-y-3"
           >
@@ -57,7 +58,7 @@ export default function Login() {
           <form
             action={async () => {
               'use server';
-              await signIn('google', { redirectTo: '/dashboard' });
+              await signIn('google', { redirectTo });
             }}
           >
             <Button type="submit" variant="outline" className="w-full">
@@ -82,7 +83,7 @@ export default function Login() {
                   'use server';
                   const email = formData.get('devEmail') as string;
 
-                  await signIn('credentials', { email, redirectTo: '/dashboard' });
+                  await signIn('credentials', { email, redirectTo });
                 }}
                 className="space-y-3"
               >
@@ -102,7 +103,7 @@ export default function Login() {
 
           <div className="text-center">
             <p className="text-sm text-sky-600">
-              Access your service history and manage your paragliding equipment
+              Access your service history and manage your equipment
             </p>
           </div>
         </div>

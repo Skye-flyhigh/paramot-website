@@ -1,10 +1,9 @@
-import type { Metadata } from 'next';
-
 import { Geist, Geist_Mono } from 'next/font/google';
 
-import './globals.css';
 import Footer from '@/components/Footer';
 import Nav from '@/components/Nav';
+import { siteMetadata } from '@/lib/helper/metadata';
+import './globals.css';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -16,10 +15,7 @@ const geistMono = Geist_Mono({
   subsets: ['latin'],
 });
 
-export const metadata: Metadata = {
-  title: 'paraMOT',
-  description: 'Paragliding Servicing and repairs in the UK',
-};
+export const metadata = siteMetadata;
 
 export default function RootLayout({
   children,

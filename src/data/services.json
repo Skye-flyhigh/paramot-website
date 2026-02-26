@@ -2,7 +2,7 @@
   "trim-solo": {
     "icon": "Zap",
     "title": "Paraglider Trimming",
-    "description": "Precision trimming services to optimize your wing's performance using professional tension meters and line geometry analysis.",
+    "description": "Restore your wing's handling and brake feel. We measure every line against manufacturer specs, detect asymmetries, and correct deviations so your glider flies the way it should.",
     "code": "SVC-001",
     "cost": 100,
     "available": true,
@@ -11,13 +11,17 @@
       "porosity": false,
       "betsometer": false,
       "cloth": false,
-      "line": false
-    }
+      "line": false,
+      "strength": false
+    },
+    "gridGroup": "trim",
+    "gridLabel": "Trim Only",
+    "variant": "solo"
   },
   "trim-tandem": {
     "icon": "Zap",
-    "title": "Tandem Paraglider Trimming",
-    "description": "Precision trimming services to optimize your tandem wing's performance using professional tension meters and line geometry analysis.",
+    "title": "Tandem Trimming",
+    "description": "Keep your tandem wing balanced and predictable. Full line measurement and trim correction for two-seater wings.",
     "code": "SVC-002",
     "cost": 120,
     "available": true,
@@ -26,13 +30,55 @@
       "porosity": false,
       "betsometer": false,
       "cloth": false,
-      "line": false
-    }
+      "line": false,
+      "strength": false
+    },
+    "gridGroup": "trim",
+    "gridLabel": "Trim Only",
+    "variant": "tandem"
+  },
+  "visual-solo": {
+    "icon": "Eye",
+    "title": "Visual Check (Solo)",
+    "description": "Visual cloth and canopy inspection. A quick health check without testing or trimming.",
+    "code": "SVC-003",
+    "cost": 60,
+    "available": true,
+    "checks": {
+      "trim": false,
+      "porosity": true,
+      "betsometer": false,
+      "cloth": true,
+      "line": true,
+      "strength": false
+    },
+    "gridGroup": "visual-check",
+    "gridLabel": "Visual Check",
+    "variant": "solo"
+  },
+  "visual-tandem": {
+    "icon": "Eye",
+    "title": "Visual Check (Tandem)",
+    "description": "Visual cloth and canopy inspection for tandem wings.",
+    "code": "SVC-004",
+    "cost": 75,
+    "available": true,
+    "checks": {
+      "trim": false,
+      "porosity": true,
+      "betsometer": false,
+      "cloth": true,
+      "line": true,
+      "strength": false
+    },
+    "gridGroup": "visual-check",
+    "gridLabel": "Visual Check",
+    "variant": "tandem"
   },
   "service-solo": {
     "icon": "Shield",
-    "title": "Paraglider Full Service",
-    "description": "Complete servicing including canopy fabric inspection and strength testing, line strength analysis, riser state evaluation, and paraglider trimming.",
+    "title": "Full Glider Service",
+    "description": "The complete health check. Cloth porosity and tear testing, line strength analysis, riser inspection, and full trim measurement with corrections. You get a detailed report showing exactly what was found and fixed.",
     "code": "SVC-011",
     "cost": 180,
     "available": true,
@@ -41,13 +87,17 @@
       "porosity": true,
       "betsometer": true,
       "cloth": true,
-      "line": true
-    }
+      "line": true,
+      "strength": true
+    },
+    "gridGroup": "full-service",
+    "gridLabel": "Full Service",
+    "variant": "solo"
   },
   "service-tandem": {
     "icon": "Shield",
-    "title": "Tandem Paraglider Full Service",
-    "description": "Complete servicing including canopy fabric inspection and strength testing, line strength analysis, riser state evaluation, and paraglider trimming.",
+    "title": "Tandem Full Service",
+    "description": "Everything in the full service, designed for tandem wings. Cloth testing, line strength, riser inspection, and complete trim analysis with corrections.",
     "code": "SVC-012",
     "cost": 210,
     "available": true,
@@ -56,30 +106,33 @@
       "porosity": true,
       "betsometer": true,
       "cloth": true,
-      "line": true
-    }
+      "line": true,
+      "strength": true
+    },
+    "gridGroup": "full-service",
+    "gridLabel": "Full Service",
+    "variant": "tandem"
   },
   "service-harness": {
     "icon": "Shield",
-    "title": "Harness Service & Inspection",
-    "description": "Complete inspection and service of the harness to ensure airworthiness.",
+    "title": "Harness Inspection",
+    "description": "Thorough 20-point inspection covering buckles, straps, stitching, airbag, back protection, and karabiners. Know your harness is safe before you fly.",
     "code": "SVC-031",
-    "cost": 90,
-    "available": true,
-    "checks": {}
+    "cost": 60,
+    "available": true
   },
   "repack-solo": {
     "icon": "PackageCheck",
-    "title": "Parachute Repacking",
-    "description": "Professional emergency parachute repacking following manufacturer specifications and safety protocols.",
+    "title": "Reserve Repack",
+    "description": "22-step sequential repack following APPI procedure. Includes deployment test, condition assessment, and reintegration into your harness.",
     "code": "PACK-001",
     "cost": 50,
     "available": false
   },
   "repack-steerable": {
     "icon": "PackageCheck",
-    "title": "Steerable Parachute Repacking",
-    "description": "Professional steerable parachute repacking following manufacturer specifications and safety protocols.",
+    "title": "Steerable Reserve Repack",
+    "description": "Professional repacking for steerable reserves. Same thorough 22-step process, adapted for guided parachute systems.",
     "code": "PACK-002",
     "cost": 70,
     "available": false
@@ -87,7 +140,7 @@
   "repair": {
     "icon": "Wrench",
     "title": "Glider Repair",
-    "description": "Comprehensive repair services for paraglider canopies and components. Currently developing advanced sewing capabilities.",
+    "description": "Canopy repairs, line replacements, and component fixes. Get in touch with photos of the damage and we'll assess what's needed.",
     "code": "REP-001",
     "cost": "Contact us",
     "available": false

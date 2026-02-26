@@ -2,10 +2,15 @@
 // This schema supports the business model: customers own gliders, book services, track history
 
 import rawServicesData from '@/data/services.json';
-import { ServiceCode, ServiceRecords, ServicesType } from './validation/serviceSchema';
+import {
+  ServiceChecks,
+  ServiceCode,
+  ServiceRecords,
+  ServicesType,
+} from './validation/serviceSchema';
 
 // Re-export types for convenience
-export type { ServiceCode, ServicesType };
+export type { ServiceChecks, ServiceCode, ServicesType };
 
 // Workbench integration interfaces - these connect to your Electron app's Prisma data
 export interface WorkbenchInspectionSession {
@@ -66,4 +71,47 @@ export function getServicesList(): ServicesType[] {
 // Get service details by code
 export function getServiceByCode(serviceCode: ServiceCode): ServicesType | undefined {
   return getServicesList().find((service) => service.code === serviceCode);
+}
+
+// Grid-grouped services for comparison grid (pairs solo/tandem by gridGroup)
+export interface GridServiceGroup {
+  gridGroup: string;
+  gridLabel: string;
+  soloCost: number;
+  tandemCost: number;
+  checks: ServiceChecks;
+}
+
+export function getGridServiceGroups(): GridServiceGroup[] {
+  const services = getServicesList();
+  const grouped = new Map<string, { solo?: ServicesType; tandem?: ServicesType }>();
+
+  for (const s of services) {
+    if (!s.gridGroup || !s.variant) continue;
+    const entry = grouped.get(s.gridGroup) ?? {};
+
+    entry[s.variant] = s;
+    grouped.set(s.gridGroup, entry);
+  }
+
+  // Maintain insertion order from services.json (visual-check, trim, full-service)
+  const result: GridServiceGroup[] = [];
+  const seen = new Set<string>();
+
+  for (const s of services) {
+    if (!s.gridGroup || seen.has(s.gridGroup)) continue;
+    seen.add(s.gridGroup);
+    const pair = grouped.get(s.gridGroup);
+
+    if (!pair?.solo || !pair?.tandem) continue;
+    result.push({
+      gridGroup: s.gridGroup,
+      gridLabel: s.gridLabel ?? s.gridGroup,
+      soloCost: typeof pair.solo.cost === 'number' ? pair.solo.cost : 0,
+      tandemCost: typeof pair.tandem.cost === 'number' ? pair.tandem.cost : 0,
+      checks: pair.solo.checks ?? {},
+    });
+  }
+
+  return result;
 }

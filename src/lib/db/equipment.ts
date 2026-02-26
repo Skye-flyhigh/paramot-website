@@ -27,6 +27,45 @@ export async function findEquipmentBySerialNumber(serialNumber: string) {
           // DO NOT include cost (commercially sensitive)
         },
       },
+      // Workshop sessions — only completed ones are public
+      serviceSessions: {
+        where: { status: 'COMPLETED' },
+        orderBy: { completedAt: 'desc' },
+        select: {
+          id: true,
+          equipmentType: true,
+          serviceTypes: true,
+          statedHours: true,
+          startedAt: true,
+          completedAt: true,
+          report: {
+            select: {
+              airworthy: true,
+              nextControlHours: true,
+              nextControlMonths: true,
+              technicianOpinion: true,
+              signedAt: true,
+            },
+          },
+          clothTests: {
+            select: {
+              surface: true,
+              porosityValue: true,
+              porosityMethod: true,
+              tearResistance: true,
+              result: true,
+            },
+          },
+          corrections: {
+            select: {
+              lineRow: true,
+              position: true,
+              correctionType: true,
+            },
+          },
+          // NO technician email, NO customer data
+        },
+      },
     },
   });
 }

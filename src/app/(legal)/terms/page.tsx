@@ -1,3 +1,4 @@
+import { BUSINESS } from '@/lib/metadata.const';
 import Link from 'next/link';
 
 export default function TermsOfService() {
@@ -29,10 +30,12 @@ export default function TermsOfService() {
                 including:
               </p>
               <ul className="list-disc pl-6 mb-4 text-gray-700">
-                <li>Paraglider wing inspections and repairs</li>
+                <li>Paraglider wing trim measurement and correction</li>
+                <li>Cloth porosity and tear resistance testing</li>
+                <li>Line strength assessment</li>
                 <li>Reserve parachute repacking and servicing</li>
-                <li>Harness inspections and repairs</li>
-                <li>General equipment maintenance</li>
+                <li>Harness inspections</li>
+                <li>Canopy repairs and line replacements</li>
               </ul>
               <p className="text-gray-700 mb-4">
                 All services are performed by qualified technicians in accordance with
@@ -51,12 +54,9 @@ export default function TermsOfService() {
               </p>
               <p className="text-gray-700 mb-4">
                 <strong>Cancellation:</strong> You may cancel or reschedule your booking
-                up to [X days] before the scheduled service date without charge.
-                Cancellations made within [X days] of the service date may incur a
+                up to 48 hours before the scheduled service date without charge.
+                Cancellations made within 48 hours of the service date may incur a
                 cancellation fee.
-              </p>
-              <p className="text-gray-700 mb-4 text-sm italic">
-                [TODO: Define specific cancellation timeframes and fees]
               </p>
             </section>
 
@@ -88,8 +88,8 @@ export default function TermsOfService() {
               </h2>
               <p className="text-gray-700 mb-4">
                 Payment is due upon completion of services unless otherwise agreed. We
-                accept [payment methods TBD]. Prices quoted are valid for [X days] from
-                the date of quotation.
+                accept bank transfer and card payments. Prices quoted are valid for 30
+                days from the date of quotation.
               </p>
               <p className="text-gray-700 mb-4">
                 Additional work discovered during servicing will be quoted separately and
@@ -134,7 +134,7 @@ export default function TermsOfService() {
               <h2 className="text-2xl font-semibold text-sky-900 mb-4">7. Warranty</h2>
               <p className="text-gray-700 mb-4">
                 We warrant that all services are performed with reasonable skill and care.
-                If you believe our work is defective, please contact us within [X days] of
+                If you believe our work is defective, please contact us within 30 days of
                 service completion. We will re-inspect and, if necessary, correct any
                 defects free of charge.
               </p>
@@ -204,11 +204,7 @@ export default function TermsOfService() {
               <p className="text-gray-700 mb-4">
                 If you have questions about these terms, please contact us at:
               </p>
-              <p className="text-gray-700">
-                Email: hello@paramot.co.uk
-                <br />
-                [TODO: Add physical address, phone number, company registration details]
-              </p>
+              <p className="text-gray-700">Email: {BUSINESS.email}</p>
             </section>
           </div>
 

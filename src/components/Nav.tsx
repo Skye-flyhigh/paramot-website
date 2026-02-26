@@ -1,40 +1,20 @@
 import Link from 'next/link';
 
-import { auth, signOut } from '@/auth';
 import { Button } from './ui/button';
 
-export default async function Nav() {
-  const session = await auth();
-
+export default function Nav() {
   return (
-    <nav className="bg-white shadow-sm border-b border-sky-200">
-      <div className="mx-auto px-20 py-4 flex justify-between items-center">
-        <div className="">
-          <Link href="/" className="text-xl font-bold text-sky-900">
-            para<span className="text-sky-400">MOT</span>
-          </Link>
-        </div>
-        <div className="flex items-center space-x-4">
-          {session?.user ? (
-            <>
-              <Link href="/dashboard">
-                <Button variant="link">Dashboard</Button>
-              </Link>
-              <form
-                action={async () => {
-                  'use server';
-                  await signOut({ redirectTo: '/' });
-                }}
-              >
-                <Button type="submit">Sign Out</Button>
-              </form>
-            </>
-          ) : (
-            <Link href="/dashboard/login">
-              <Button>Sign In</Button>
-            </Link>
-          )}
-        </div>
+    <nav
+      aria-label="Main navigation"
+      className="bg-white shadow-sm border-b border-sky-200"
+    >
+      <div className="mx-auto px-6 sm:px-20 py-4 flex justify-between items-center">
+        <Link href="/" className="text-xl font-bold text-sky-900">
+          para<span className="text-sky-400">MOT</span>
+        </Link>
+        <Link href="/equipment">
+          <Button variant="link">Equipment Registry</Button>
+        </Link>
       </div>
     </nav>
   );
