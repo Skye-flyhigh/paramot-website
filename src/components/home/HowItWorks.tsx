@@ -1,4 +1,8 @@
-import { CalendarCheck, PackageOpen, Wrench, FileCheck } from 'lucide-react';
+'use client'
+
+import useWindowSize from '@/lib/helper/useWindowSize';
+import { CalendarCheck, FileCheck, PackageOpen, Wrench } from 'lucide-react';
+import ScrollReveal from '../ui/ScrollReveal';
 
 const steps = [
   {
@@ -28,22 +32,30 @@ const steps = [
 ];
 
 export default function HowItWorks() {
+const windowSize = useWindowSize()
+
   return (
     <section aria-label="How the service process works" className="bg-white px-4 py-20">
       <div className="mx-auto max-w-5xl">
-        <div className="mb-16 text-center">
+          <ScrollReveal className="mb-16 text-center">
+            
           <h2 className="mb-4 text-4xl font-bold text-sky-900">How It Works</h2>
           <p className="mx-auto max-w-2xl text-lg text-sky-700">
             From first contact to flying again — four simple steps.
           </p>
-        </div>
+</ScrollReveal>
 
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-          {steps.map((step, i) => (
-            <div key={step.title} className="relative text-center">
+          {steps.map((step, i) => {
+            const side = i % 2 === 0 && windowSize.width && windowSize.width < 1000
+    ? 'left'
+    : 'right';
+
+            return (
+                <ScrollReveal key={step.title} direction={side} delay={0.2 +0.2 * i} className="relative text-center">
               {/* Step number */}
               <div className="mb-4 flex justify-center">
-                <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-100 to-sky-200 shadow-inner">
+                <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-sky-100 to-sky-200 shadow-inner">
                   <step.icon className="h-8 w-8 text-sky-600" />
                   <span className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-sky-600 text-xs font-bold text-white">
                     {i + 1}
@@ -52,8 +64,9 @@ export default function HowItWorks() {
               </div>
               <h3 className="mb-2 text-lg font-bold text-sky-900">{step.title}</h3>
               <p className="text-sm leading-relaxed text-sky-700">{step.description}</p>
-            </div>
-          ))}
+                </ScrollReveal>
+            )
+          })}
         </div>
       </div>
     </section>
