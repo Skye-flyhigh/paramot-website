@@ -118,7 +118,7 @@
     "title": "Harness Inspection",
     "description": "Thorough 20-point inspection covering buckles, straps, stitching, airbag, back protection, and karabiners. Know your harness is safe before you fly.",
     "code": "SVC-031",
-    "cost": 90,
+    "cost": 60,
     "available": true
   },
   "repack-solo": {
