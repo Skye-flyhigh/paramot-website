@@ -2,6 +2,7 @@ import Hero from '@/components/Hero';
 import ComingSoon from '@/components/home/ComingSoon';
 import Contact from '@/components/home/Contact';
 import EquipmentCTA from '@/components/home/EquipmentCTA';
+import FAQPreview from '@/components/home/FAQPreview';
 import HowItWorks from '@/components/home/HowItWorks';
 import Location from '@/components/home/Location';
 import Motto from '@/components/home/Motto';
@@ -9,7 +10,8 @@ import Services from '@/components/home/Services';
 import Trust from '@/components/home/Trust';
 import JsonLd from '@/components/seo/JsonLd';
 import StickyPicture from '@/components/ui/sticky-pic';
-import { BUSINESS, FAQS, SITE_URL } from '@/lib/metadata.const';
+import { getAllFAQs } from '@/data/faqs';
+import { BUSINESS, SITE_URL } from '@/lib/metadata.const';
 import { getServicesList } from '@/lib/schema';
 
 const localBusinessSchema = {
@@ -73,10 +75,12 @@ const servicesSchemas = services.map((service) => ({
   },
 }));
 
+const allFAQs = getAllFAQs();
+
 const faqSchema = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: FAQS.map((faq) => ({
+  mainEntity: allFAQs.map((faq) => ({
     '@type': 'Question',
     name: faq.question,
     acceptedAnswer: {
@@ -107,6 +111,7 @@ export default function Home() {
         <StickyPicture picture={pictures[0]} />
         <HowItWorks />
         <Trust />
+        <FAQPreview />
         <ComingSoon />
         <EquipmentCTA />
         <Contact />
