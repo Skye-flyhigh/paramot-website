@@ -8,7 +8,7 @@ const checkLabels: { key: keyof ServiceChecks; label: string }[] = [
   { key: 'cloth', label: 'Visual cloth inspection' },
   { key: 'porosity', label: 'Porosity testing' },
   { key: 'betsometer', label: 'Cloth - tear resistance' },
-  { key: 'strength', label: 'Line strength assessment'} 
+  { key: 'strength', label: 'Line strength assessment' },
 ];
 
 export default function ServiceComparisonGrid() {
@@ -63,7 +63,7 @@ export default function ServiceComparisonGrid() {
                   i === checkLabels.length - 1 ? 'rounded-bl-xl' : ''
                 }`}
               >
-                {check.key === "strength" && (
+                {check.key === 'strength' && (
                   <span className="text-xs text-sky-600 font-light">Non-destructive</span>
                 )}
                 {check.label}
@@ -126,9 +126,11 @@ export default function ServiceComparisonGrid() {
                       aria-hidden="true"
                     />
                     {check.label}
-                    {
-                      check.key === "strength" && <span className="text-xs text-sky-600 font-light">- non-destructive</span>
-                    }
+                    {check.key === 'strength' && (
+                      <span className="text-xs text-sky-600 font-light">
+                        - non-destructive
+                      </span>
+                    )}
                   </li>
                 ) : null,
               )}

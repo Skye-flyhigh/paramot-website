@@ -1,12 +1,12 @@
-import { Metadata } from "next";
-import { BUSINESS, SITE_URL } from "../metadata.const";
+import { Metadata } from 'next';
+import { BUSINESS, SITE_URL } from '../metadata.const';
 
 export const siteMetadata: Metadata = {
   title: {
     default: `${BUSINESS.name} — Paragliding Servicing & Repairs in South Wales`,
     template: `%s | ${BUSINESS.name}`,
   },
-    description: BUSINESS.description,
+  description: BUSINESS.description,
   keywords: [
     'paragliding servicing',
     'paraglider trim',
