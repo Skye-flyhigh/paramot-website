@@ -3,7 +3,12 @@
 import { useRouter } from 'next/navigation';
 import { useActionState, useEffect, useState } from 'react';
 
-import type { BookingFormData, BookingFormState } from '@/lib/validation/bookingForm';
+import type {
+  BookingFormData,
+  BookingFormState,
+  CONTACT_METHOD,
+  DELIVERY_METHOD,
+} from '@/lib/validation/bookingForm';
 import type { Equipment } from '@/lib/validation/equipmentSchema';
 
 import { Button } from '@/components/ui/button';
@@ -57,10 +62,10 @@ export default function BookingModal({
     serviceType: (existingBooking?.serviceCode as ServiceCode) || serviceTypeInit,
     preferredDate: existingBooking?.preferredDate || '',
     deliveryMethod:
-      (existingBooking?.deliveryMethod as 'DROP_OFF' | 'POST') || 'DROP_OFF',
+      (existingBooking?.deliveryMethod as (typeof DELIVERY_METHOD)[number]) || 'DROP_OFF',
     specialInstructions: existingBooking?.specialInstructions || '',
     contactMethod:
-      (existingBooking?.contactMethod as 'EMAIL' | 'PHONE' | 'TEXT') || 'EMAIL',
+      (existingBooking?.contactMethod as (typeof CONTACT_METHOD)[number]) || 'EMAIL',
     equipmentId: equipment.id,
   };
 
@@ -212,7 +217,9 @@ export default function BookingModal({
                 <>
                   <RadioGroup
                     value={serviceType}
-                    onValueChange={(value) => setServiceType(value as ServiceCode | '')}
+                    onValueChange={(value: ServiceCode) =>
+                      value ? setServiceType(value as ServiceCode) : ''
+                    }
                   >
                     {applicableServices.map((service) => {
                       return (
@@ -276,7 +283,9 @@ export default function BookingModal({
             <Label>Delivery Method</Label>
             <Select
               value={deliveryMethod}
-              onValueChange={(value) => setDeliveryMethod(value as 'DROP_OFF' | 'POST')}
+              onValueChange={(value: (typeof DELIVERY_METHOD)[number]) =>
+                setDeliveryMethod(value)
+              }
               disabled={hasNoService || isPending}
             >
               <SelectTrigger>
@@ -317,8 +326,8 @@ export default function BookingModal({
             <Label>Preferred Contact Method</Label>
             <Select
               value={contactMethod}
-              onValueChange={(value) =>
-                setContactMethod(value as 'EMAIL' | 'PHONE' | 'TEXT')
+              onValueChange={(value: (typeof CONTACT_METHOD)[number]) =>
+                setContactMethod(value)
               }
               disabled={hasNoService || isPending}
             >
