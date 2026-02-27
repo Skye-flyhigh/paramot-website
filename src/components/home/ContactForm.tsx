@@ -1,9 +1,13 @@
 'use client';
 
 import { Send } from 'lucide-react';
-import { useActionState, useEffect } from 'react';
+import { useActionState, useEffect, useState } from 'react';
 
-import type { ContactFormData, ContactFormState } from '@/lib/validation/contactForm';
+import type {
+  ContactFormData,
+  ContactFormState,
+  ContactFormVariant,
+} from '@/lib/validation/contactForm';
 import type { Equipment } from '@/lib/validation/equipmentSchema';
 
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -22,12 +26,14 @@ import submitContactForm from '@/lib/submit/submitContactForm';
 import { SubmitButton } from '../ui/submit-button';
 
 interface ContactFormProps {
-  variant: 'contact' | 'feedback' | 'equipment';
+  variant: ContactFormVariant;
   equipment?: Equipment;
   onClose?: () => void;
 }
 
 export default function ContactForm({ variant, equipment, onClose }: ContactFormProps) {
+  const [alert, setAlert] = useState<boolean>(false);
+
   const equipmentContext = equipment
     ? `Equipment: ${equipment.manufacturer} ${equipment.model} ${equipment.size} (Serial: ${equipment.serialNumber})`
     : '';
@@ -37,6 +43,8 @@ export default function ContactForm({ variant, equipment, onClose }: ContactForm
     email: '',
     message: '',
     equipmentContext,
+    variant,
+    title: '',
   };
   const initialState: ContactFormState = {
     formData: initialFormData,
@@ -55,6 +63,19 @@ export default function ContactForm({ variant, equipment, onClose }: ContactForm
     }
   }, [state.success, onClose]);
 
+  // timer for the alerts
+  useEffect(() => {
+    if (state.success) {
+      setAlert(true);
+
+      const timer = setTimeout(() => {
+        setAlert(false);
+      }, 5000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [state.success]);
+
   return (
     <div className="max-w-2xl mx-auto">
       <Card className="bg-white border-sky-100 shadow-xl">
@@ -71,7 +92,7 @@ export default function ContactForm({ variant, equipment, onClose }: ContactForm
         <CardContent>
           <form action={formAction} className="space-y-6">
             {/* Success Message */}
-            {state.success && (
+            {alert && (
               <Alert variant="success">
                 <AlertDescription>
                   Thank you! Your message has been sent successfully. We'll get back to
@@ -81,7 +102,7 @@ export default function ContactForm({ variant, equipment, onClose }: ContactForm
             )}
 
             {/* General Error */}
-            {state.errors.general && (
+            {alert && state.errors.general && (
               <Alert variant="error">
                 <AlertDescription>{state.errors.general}</AlertDescription>
               </Alert>
@@ -91,9 +112,14 @@ export default function ContactForm({ variant, equipment, onClose }: ContactForm
             {equipmentContext && (
               <input type="hidden" name="equipmentContext" value={equipmentContext} />
             )}
-            {variant === 'feedback' && (
-              <input type="hidden" name="feedback" value={'feedback'} />
-            )}
+            {variant && <input type="hidden" name="variant" value={variant} />}
+            <input
+              type="text"
+              name="title"
+              value={state.formData.title}
+              className="hidden"
+              aria-hidden={true}
+            />
 
             <div className="space-y-2">
               <Label htmlFor="name">Name</Label>

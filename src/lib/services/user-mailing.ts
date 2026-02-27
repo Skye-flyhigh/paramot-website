@@ -83,9 +83,9 @@ interface EmailResponse {
 }
 
 /**
- * Calling email provider service to send an email
- * @param param0
- * @returns
+ * `sendEmail` is a TypeScript function that sends an email using an email provider service called Resend.
+ * @param Email
+ * @returns EmailResponse
  */
 export default async function sendEmail({
   from = `paraMOT <${BUSINESS.email}>`,
