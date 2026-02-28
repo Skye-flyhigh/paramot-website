@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 import { getServicesList } from '@/lib/schema';
 
 import ScrollReveal from '../ui/ScrollReveal';
@@ -47,6 +49,15 @@ export default function Services() {
             )}
           </div>
         </div>
+
+        <ScrollReveal className="mt-12 text-center">
+          <Link
+            href="/services"
+            className="inline-block text-sm font-medium text-sky-600 hover:text-sky-800 transition-colors"
+          >
+            View all services in detail &rarr;
+          </Link>
+        </ScrollReveal>
       </div>
     </section>
   );

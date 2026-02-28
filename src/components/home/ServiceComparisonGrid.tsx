@@ -1,4 +1,5 @@
 import { Check } from 'lucide-react';
+import Link from 'next/link';
 
 import { type ServiceChecks, getGridServiceGroups } from '@/lib/schema';
 
@@ -10,6 +11,13 @@ const checkLabels: { key: keyof ServiceChecks; label: string }[] = [
   { key: 'betsometer', label: 'Cloth - tear resistance' },
   { key: 'strength', label: 'Line strength assessment' },
 ];
+
+/** Map grid group names to service page slugs */
+const groupToSlug: Record<string, string> = {
+  'visual-check': 'visual-check',
+  trim: 'trim',
+  'full-service': 'full-service',
+};
 
 export default function ServiceComparisonGrid() {
   const groups = getGridServiceGroups();
@@ -50,7 +58,7 @@ export default function ServiceComparisonGrid() {
           </div>
 
           {/* Check rows */}
-          {checkLabels.map((check, i) => (
+          {checkLabels.map((check) => (
             <div
               key={check.key}
               role="row"
@@ -59,9 +67,7 @@ export default function ServiceComparisonGrid() {
             >
               <div
                 role="rowheader"
-                className={`p-3 flex flex-col text-sm font-medium text-sky-800 ${
-                  i === checkLabels.length - 1 ? 'rounded-bl-xl' : ''
-                }`}
+                className="p-3 flex flex-col text-sm font-medium text-sky-800"
               >
                 {check.key === 'strength' && (
                   <span className="text-xs text-sky-600 font-light">Non-destructive</span>
@@ -72,11 +78,7 @@ export default function ServiceComparisonGrid() {
                 <div
                   key={`${check.key}-${group.gridGroup}`}
                   role="cell"
-                  className={`p-3 flex items-center justify-center border-x border-sky-100 ${
-                    i === checkLabels.length - 1
-                      ? 'border-b rounded-b-xl'
-                      : 'border-b border-b-sky-50'
-                  }`}
+                  className="p-3 flex items-center justify-center border-x border-sky-100 border-b border-b-sky-50"
                 >
                   {group.checks[check.key] ? (
                     <Check
@@ -95,48 +97,89 @@ export default function ServiceComparisonGrid() {
               ))}
             </div>
           ))}
+
+          {/* CTA row */}
+          <div
+            role="row"
+            className="grid gap-2"
+            style={{ gridTemplateColumns: `1fr repeat(${groups.length}, 1fr)` }}
+          >
+            <div role="cell" className="p-3" />
+            {groups.map((group) => {
+              const slug = groupToSlug[group.gridGroup];
+
+              return (
+                <div
+                  key={`cta-${group.gridGroup}`}
+                  role="cell"
+                  className="p-3 flex items-center justify-center border-x border-b border-sky-100 rounded-b-xl"
+                >
+                  {slug && (
+                    <Link
+                      href={`/services/${slug}`}
+                      className="text-sm font-medium text-sky-600 hover:text-sky-800 transition-colors"
+                    >
+                      Learn more &rarr;
+                    </Link>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </div>
 
       {/* Mobile: stack as cards */}
       <div className="sm:hidden space-y-4">
-        {groups.map((group) => (
-          <div
-            key={group.gridGroup}
-            className="rounded-xl border border-sky-100 bg-white p-5 shadow-sm"
-          >
-            <h4 className="font-bold text-sky-900 text-lg mb-1">{group.gridLabel}</h4>
-            <div className="flex gap-4 text-sm text-sky-700 mb-3">
-              <span>
-                Solo: <span className="font-semibold">£{group.soloCost}</span>
-              </span>
-              <span>
-                Tandem: <span className="font-semibold">£{group.tandemCost}</span>
-              </span>
-            </div>
-            <ul className="space-y-1.5">
-              {checkLabels.map((check) =>
-                group.checks[check.key] ? (
-                  <li
-                    key={check.key}
-                    className="flex items-center gap-2 text-sm text-sky-800"
-                  >
-                    <Check
-                      className="h-4 w-4 text-emerald-500 shrink-0"
-                      aria-hidden="true"
-                    />
-                    {check.label}
-                    {check.key === 'strength' && (
-                      <span className="text-xs text-sky-600 font-light">
-                        - non-destructive
-                      </span>
-                    )}
-                  </li>
-                ) : null,
+        {groups.map((group) => {
+          const slug = groupToSlug[group.gridGroup];
+
+          return (
+            <div
+              key={group.gridGroup}
+              className="rounded-xl border border-sky-100 bg-white p-5 shadow-sm"
+            >
+              <h4 className="font-bold text-sky-900 text-lg mb-1">{group.gridLabel}</h4>
+              <div className="flex gap-4 text-sm text-sky-700 mb-3">
+                <span>
+                  Solo: <span className="font-semibold">£{group.soloCost}</span>
+                </span>
+                <span>
+                  Tandem: <span className="font-semibold">£{group.tandemCost}</span>
+                </span>
+              </div>
+              <ul className="space-y-1.5">
+                {checkLabels.map((check) =>
+                  group.checks[check.key] ? (
+                    <li
+                      key={check.key}
+                      className="flex items-center gap-2 text-sm text-sky-800"
+                    >
+                      <Check
+                        className="h-4 w-4 text-emerald-500 shrink-0"
+                        aria-hidden="true"
+                      />
+                      {check.label}
+                      {check.key === 'strength' && (
+                        <span className="text-xs text-sky-600 font-light">
+                          - non-destructive
+                        </span>
+                      )}
+                    </li>
+                  ) : null,
+                )}
+              </ul>
+              {slug && (
+                <Link
+                  href={`/services/${slug}`}
+                  className="mt-3 inline-block text-sm font-medium text-sky-600 hover:text-sky-800 transition-colors"
+                >
+                  Learn more &rarr;
+                </Link>
               )}
-            </ul>
-          </div>
-        ))}
+            </div>
+          );
+        })}
       </div>
     </div>
   );
