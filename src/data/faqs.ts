@@ -1,6 +1,6 @@
 import { BUSINESS } from '@/lib/metadata.const';
-import type { CategorisedFAQ, FAQ, FAQCategory } from '@/lib/types/metadata';
 import { getPriceRange, getServicesList } from '@/lib/schema';
+import type { CategorisedFAQ, FAQ, FAQCategory } from '@/lib/types/metadata';
 
 /** Set of service codes that are currently available */
 function getAvailableServiceCodes(): Set<string> {
@@ -29,6 +29,7 @@ export function getVisibleCategories(): FAQCategory[] {
 }
 
 export const FAQ_CATEGORIES: FAQCategory[] = [
+  // TODO: read thoroughly before pushing to prod
   {
     name: 'Services & Pricing',
     slug: 'services',
@@ -61,7 +62,7 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
         id: 'solo-vs-tandem-pricing',
         question: 'Why is tandem wing servicing more expensive?',
         answer:
-          'Tandem wings are significantly larger — typically 38–42m² compared to 22–28m² for a solo wing. That means more fabric to test, more lines to measure and trim, and more time on every step. The price difference reflects the genuine extra work involved, not a markup.',
+          'Tandem wings are significantly larger — typically 38–42m² compared to 22–28m² for a solo wing. That means more fabric to test, more lines to measure, the trimming process is more delicate and more time on every step. The price difference reflects the genuine extra work involved, not a markup.',
       },
       {
         id: 'what-if-problem-found',
@@ -91,14 +92,14 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
         id: 'do-you-service-all-brands',
         question: 'Do you service all brands of paraglider?',
         answer:
-          "We service all major brands including Advance, BGD, Gin, Nova, Ozone, Niviuk, Skywalk, Supair, and many more. We maintain a library of manufacturer trim charts and specifications. If we don't have data for your specific wing, we'll source it from the manufacturer before starting work.",
+          "We service all major brands including Advance, BGD, Gin, Nova, Ozone, Niviuk, Skywalk, Supair, and many more. The APPI methodology is currently supported by 9 manufacturers. We maintain a library of manufacturer trim charts and specifications. If we don't have data for your specific wing, we'll source it from the manufacturer before starting work.",
       },
       {
         id: 'do-you-service-harnesses',
         serviceCodes: ['SVC-031'],
         question: 'Do you inspect and service harnesses?',
         answer:
-          'Yes. We inspect harness webbing, stitching, buckles, carabiners, and the reserve container. We check for UV degradation, abrasion, and structural integrity. Harness inspection is included in our Full Service, or available as a standalone check.',
+          'No. Harnesses have their own well detailed and thorough 22 steps inspection.',
       },
     ],
   },
@@ -404,6 +405,15 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
     ],
   },
 ];
+
+/** Fetch specific FAQs by ID — used for service page sidebars */
+export function getFAQsByIds(ids: string[]): CategorisedFAQ[] {
+  const all = getVisibleCategories().flatMap((cat) => cat.faqs);
+
+  return ids
+    .map((id) => all.find((f) => f.id === id))
+    .filter((f): f is CategorisedFAQ => f !== undefined);
+}
 
 /** Flat array of all visible FAQs — used for JSON-LD schemas */
 export function getAllFAQs(): FAQ[] {
