@@ -1,5 +1,4 @@
 import { Button } from '@/components/ui/button';
-import ScrollReveal from './ui/ScrollReveal';
 
 export default function Hero() {
   return (
@@ -8,20 +7,13 @@ export default function Hero() {
         <div className="w-full h-full bg-linear-to-br from-transparent via-sky-500/5 to-transparent" />
       </div>
       <div className="max-w-4xl flex flex-col items-center justify-center w-full h-full m-auto text-center relative z-10">
-        <ScrollReveal>
-          <h1 className="text-7xl font-bold mb-6 tracking-tight">
-            para<span className="text-sky-300">MOT</span>
-          </h1>
-        </ScrollReveal>
-        <ScrollReveal delay={0.2}>
-          <p className="text-xl md:text-2xl mb-12 text-sky-100 font-medium">
-            Paragliding servicing and repairs
-          </p>
-        </ScrollReveal>
-        <ScrollReveal
-          className="flex flex-col sm:flex-row gap-4 justify-center"
-          delay={0.4}
-        >
+        <h1 className="hero-reveal text-7xl font-bold mb-6 tracking-tight">
+          para<span className="text-sky-300">MOT</span>
+        </h1>
+        <p className="hero-reveal-1 text-xl md:text-2xl mb-12 text-sky-100 font-medium">
+          Paragliding servicing and repairs
+        </p>
+        <div className="hero-reveal-2 flex flex-col sm:flex-row gap-4 justify-center">
           <a href="#services" aria-label="View our services and pricing">
             <Button
               size="lg"
@@ -39,7 +31,7 @@ export default function Hero() {
               Get Quote
             </Button>
           </a>
-        </ScrollReveal>
+        </div>
       </div>
     </section>
   );

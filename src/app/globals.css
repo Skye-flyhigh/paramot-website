@@ -112,6 +112,26 @@
   --sidebar-ring: oklch(0.552 0.016 285.938);
 }
 
+/* Above-the-fold hero animation — CSS-only, no JS hydration dependency */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes hero-fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  }
+
+  .hero-reveal {
+    animation: hero-fade-up 0.6s ease-out both;
+  }
+  .hero-reveal-1 {
+    animation: hero-fade-up 0.6s ease-out 0.15s both;
+  }
+  .hero-reveal-2 {
+    animation: hero-fade-up 0.6s ease-out 0.3s both;
+  }
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

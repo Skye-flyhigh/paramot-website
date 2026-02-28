@@ -10,7 +10,7 @@ interface ServiceImageProps {
 export default function ServiceImage({ image }: ServiceImageProps) {
   if (!image.src) {
     return (
-      <div className="flex aspect-video items-center justify-center rounded-xl border-2 border-dashed border-sky-200 bg-linear-to-br from-sky-50 to-sky-100">
+      <div className="hero-reveal-2 flex aspect-video items-center justify-center rounded-xl border-2 border-dashed border-sky-200 bg-linear-to-br from-sky-50 to-sky-100">
         <div className="text-center text-sky-300">
           <Camera className="mx-auto mb-2 h-8 w-8" />
           <p className="text-sm">Photo coming soon</p>
@@ -20,7 +20,7 @@ export default function ServiceImage({ image }: ServiceImageProps) {
   }
 
   return (
-    <figure>
+    <figure className="hero-reveal-2">
       <Image
         src={image.src}
         alt={image.alt}

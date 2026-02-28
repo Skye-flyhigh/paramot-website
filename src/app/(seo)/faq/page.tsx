@@ -44,22 +44,22 @@ export default function FAQPage() {
       <JsonLd data={faqSchema} />
       <main className="min-h-screen bg-gradient-to-br from-sky-50 to-blue-100 py-12">
         <div className="mx-auto max-w-4xl px-4">
-          <ScrollReveal className="mb-8 text-center">
-            <h1 className="mb-3 text-4xl font-bold text-sky-900">
+          <div className="mb-8 text-center">
+            <h1 className="hero-reveal mb-3 text-4xl font-bold text-sky-900">
               Frequently Asked Questions
             </h1>
-            <p className="mx-auto max-w-2xl text-lg text-sky-700">
+            <p className="hero-reveal-1 mx-auto max-w-2xl text-lg text-sky-700">
               Everything you need to know about paraglider servicing, equipment care, and
               how we work. Can&apos;t find your answer?{' '}
               <Link
                 href="/#contact"
-                className="font-medium text-sky-600 underline hover:text-sky-800"
+                className="hero-reveal-2 font-medium text-sky-600 underline hover:text-sky-800"
               >
                 Get in touch
               </Link>
               .
             </p>
-          </ScrollReveal>
+          </div>
 
           <div className="mb-12">
             <FAQTableOfContents categories={categories} />

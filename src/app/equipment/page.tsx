@@ -1,6 +1,7 @@
 import { Search } from 'lucide-react';
 
 import EquipmentSearchForm from '@/components/equipment/EquipmentSearchForm';
+import ScrollReveal from '@/components/ui/ScrollReveal';
 
 export const metadata = {
   title: 'Equipment Registry | paraMOT',
@@ -14,11 +15,13 @@ export default function EquipmentRegistryPage() {
       <div className="mx-auto max-w-2xl px-4">
         {/* Header */}
         <div className="text-center">
-          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sky-100">
+          <div className="hero-reveal mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sky-100">
             <Search className="h-8 w-8 text-sky-600" />
           </div>
-          <h1 className="mt-4 text-3xl font-bold text-sky-900">Equipment Registry</h1>
-          <p className="mt-2 text-sky-600">
+          <h1 className="hero-reveal mt-4 text-3xl font-bold text-sky-900">
+            Equipment Registry
+          </h1>
+          <p className="hero-reveal-1 mt-2 text-sky-600">
             Look up any paraglider, reserve, or harness by serial number.
             <br />
             View full service history and airworthiness status.
@@ -26,12 +29,12 @@ export default function EquipmentRegistryPage() {
         </div>
 
         {/* Search form */}
-        <div className="mt-8">
+        <div className="mt-8 hero-reveal-2">
           <EquipmentSearchForm />
         </div>
 
         {/* Info section */}
-        <div className="mt-12 grid gap-6 sm:grid-cols-3">
+        <ScrollReveal delay={0.5} className="mt-12 grid gap-6 sm:grid-cols-3">
           <InfoCard
             title="Public Record"
             description="Service history is public — like checking a car's MOT history. Anyone can verify equipment condition."
@@ -44,7 +47,7 @@ export default function EquipmentRegistryPage() {
             title="Privacy First"
             description="Equipment data is public. Owner data is private. We never expose personal information."
           />
-        </div>
+        </ScrollReveal>
       </div>
     </main>
   );

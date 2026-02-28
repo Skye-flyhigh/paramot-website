@@ -10,9 +10,9 @@ import {
 import type { Metadata } from 'next';
 import Link from 'next/link';
 
-import ContactModal from '@/components/ui/contact-modal';
-import ServicePricing from '@/components/services/ServicePricing';
 import JsonLd from '@/components/seo/JsonLd';
+import ServicePricing from '@/components/services/ServicePricing';
+import ContactModal from '@/components/ui/contact-modal';
 import ScrollReveal from '@/components/ui/ScrollReveal';
 import { getAllServicePages, getServicePricing } from '@/data/service-pages';
 import { BUSINESS, SITE_URL } from '@/lib/metadata.const';
@@ -67,14 +67,16 @@ export default function ServicesPage() {
       <JsonLd data={itemListSchema} />
       <main className="min-h-screen bg-linear-to-br from-sky-50 to-blue-100 py-12">
         <div className="mx-auto max-w-6xl px-4">
-          <ScrollReveal className="mb-12 text-center">
-            <h1 className="mb-3 text-4xl font-bold text-sky-900">Our Services</h1>
-            <p className="mx-auto max-w-2xl text-lg text-sky-700">
+          <div className="mb-12 text-center">
+            <h1 className="hero-reveal mb-3 text-4xl font-bold text-sky-900">
+              Our Services
+            </h1>
+            <p className="hero-reveal-1 mx-auto max-w-2xl text-lg text-sky-700">
               APPI-certified paraglider servicing with transparent pricing. Every service
               includes a detailed digital report accessible through our Equipment
               Registry.
             </p>
-          </ScrollReveal>
+          </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {pages.map((page, i) => {
