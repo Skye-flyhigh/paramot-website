@@ -12,9 +12,17 @@ export default function Nav() {
         <Link href="/" className="text-xl font-bold text-sky-900">
           para<span className="text-sky-400">MOT</span>
         </Link>
-        <Link href="/equipment">
-          <Button variant="link">Equipment Registry</Button>
-        </Link>
+        <div className="hidden items-center gap-2 sm:flex">
+          <Link href="/services">
+            <Button variant="link">Services</Button>
+          </Link>
+          <Link href="/faq">
+            <Button variant="link">FAQ</Button>
+          </Link>
+          <Link href="/equipment">
+            <Button variant="link">Equipment Registry</Button>
+          </Link>
+        </div>
       </div>
     </nav>
   );

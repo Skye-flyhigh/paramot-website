@@ -238,8 +238,7 @@ export default function PrivacyPolicy() {
                 </li>
               </ul>
               <p className="text-gray-700 mb-4">
-                To exercise these rights, contact us at:{' '}
-                <strong>{BUSINESS.email}</strong>
+                To exercise these rights, contact us at: <strong>{BUSINESS.email}</strong>
               </p>
               <p className="text-gray-700 mb-4">
                 You also have the right to lodge a complaint with the{' '}

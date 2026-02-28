@@ -35,15 +35,14 @@ export default function Trust() {
       className="bg-gradient-to-b from-sky-50 to-white px-4 py-20"
     >
       <div className="mx-auto max-w-5xl">
-          <ScrollReveal className="mb-16 text-center">
+        <ScrollReveal className="mb-16 text-center">
           <h2 className="mb-4 text-4xl font-bold text-sky-900">Why paraMOT</h2>
           <p className="mx-auto max-w-2xl text-lg text-sky-700">
             Built by a pilot, for pilots. We set a new standard for workshop transparency.
           </p>
-          </ScrollReveal>
+        </ScrollReveal>
 
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2">
-          
           {signals.map((signal, i) => (
             <ScrollReveal
               key={signal.title}
@@ -61,7 +60,7 @@ export default function Trust() {
               </div>
             </ScrollReveal>
           ))}
-</div>
+        </div>
       </div>
     </section>
   );

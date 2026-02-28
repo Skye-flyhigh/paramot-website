@@ -68,6 +68,20 @@ export function getServicesList(): ServicesType[] {
   return Object.values(rawServicesData) as ServicesType[];
 }
 
+/** Derives the price range string (e.g. "£50–£210") from available services */
+export function getPriceRange(): string {
+  const prices = getServicesList()
+    .filter((s) => s.available && typeof s.cost === 'number')
+    .map((s) => s.cost as number);
+
+  if (prices.length === 0) return 'Contact us';
+
+  const min = Math.min(...prices);
+  const max = Math.max(...prices);
+
+  return `£${min}–£${max}`;
+}
+
 // Get service details by code
 export function getServiceByCode(serviceCode: ServiceCode): ServicesType | undefined {
   return getServicesList().find((service) => service.code === serviceCode);

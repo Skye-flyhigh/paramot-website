@@ -13,20 +13,42 @@ export default function Footer() {
           </h3>
           <p className="text-sky-200">Professional paragliding servicing and repairs</p>
         </div>
-        <nav aria-label="Legal links">
-          <h4 className="font-bold mb-2">Legal</h4>
-          <ul className="text-sky-200 space-y-1">
-            <li>
-              <Link href="/terms" className="hover:text-white transition-colors">
-                Terms of Service
-              </Link>
-            </li>
-            <li>
-              <Link href="/privacy" className="hover:text-white transition-colors">
-                Privacy Policy
-              </Link>
-            </li>
-          </ul>
+        <nav aria-label="Resources" className="flex gap-12">
+          <div>
+            <h4 className="font-bold mb-2">Resources</h4>
+            <ul className="text-sky-200 space-y-1">
+              <li>
+                <Link href="/services" className="hover:text-white transition-colors">
+                  Services
+                </Link>
+              </li>
+              <li>
+                <Link href="/faq" className="hover:text-white transition-colors">
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link href="/equipment" className="hover:text-white transition-colors">
+                  Equipment Registry
+                </Link>
+              </li>
+            </ul>
+          </div>
+          <div>
+            <h4 className="font-bold mb-2">Legal</h4>
+            <ul className="text-sky-200 space-y-1">
+              <li>
+                <Link href="/terms" className="hover:text-white transition-colors">
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link href="/privacy" className="hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+            </ul>
+          </div>
         </nav>
       </div>
       <div className="max-w-6xl mx-auto mt-8 flex flex-col items-center gap-2 border-t border-sky-700/50 pt-6">

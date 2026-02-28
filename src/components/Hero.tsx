@@ -9,17 +9,19 @@ export default function Hero() {
       </div>
       <div className="max-w-4xl flex flex-col items-center justify-center w-full h-full m-auto text-center relative z-10">
         <ScrollReveal>
-        <h1 className="text-7xl font-bold mb-6 tracking-tight">
-          para<span className="text-sky-300">MOT</span>
-        </h1>
-
+          <h1 className="text-7xl font-bold mb-6 tracking-tight">
+            para<span className="text-sky-300">MOT</span>
+          </h1>
         </ScrollReveal>
         <ScrollReveal delay={0.2}>
-        <p className="text-xl md:text-2xl mb-12 text-sky-100 font-medium">
-          Paragliding servicing and repairs
-        </p>
+          <p className="text-xl md:text-2xl mb-12 text-sky-100 font-medium">
+            Paragliding servicing and repairs
+          </p>
         </ScrollReveal>
-            <ScrollReveal className="flex flex-col sm:flex-row gap-4 justify-center" delay={0.4}>
+        <ScrollReveal
+          className="flex flex-col sm:flex-row gap-4 justify-center"
+          delay={0.4}
+        >
           <a href="#services" aria-label="View our services and pricing">
             <Button
               size="lg"
@@ -36,9 +38,8 @@ export default function Hero() {
             >
               Get Quote
             </Button>
-
           </a>
-            </ScrollReveal>
+        </ScrollReveal>
       </div>
     </section>
   );
