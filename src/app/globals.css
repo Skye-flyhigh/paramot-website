@@ -132,6 +132,20 @@
   }
 }
 
+/* sky-700 */
+.faq-link {
+  color: #0369a1;
+  text-decoration: underline;
+}
+/* sky-500 */
+.faq-link:hover {
+  color: #0ea5e9;
+}
+/* sky-800 */
+.faq-hover:visited {
+  color: #075985;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

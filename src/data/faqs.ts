@@ -29,7 +29,6 @@ export function getVisibleCategories(): FAQCategory[] {
 }
 
 export const FAQ_CATEGORIES: FAQCategory[] = [
-  // TODO: read thoroughly before pushing to prod
   {
     name: 'Services & Pricing',
     slug: 'services',
@@ -42,21 +41,21 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
         serviceCodes: ['SVC-003', 'SVC-004'],
         question: 'What does a Visual Check include?',
         answer:
-          "A Visual Check is a quick health assessment for your wing. We inspect the canopy fabric for visible wear, UV damage, and porosity concerns, check the lines for fraying or knots, examine the risers and maillons, and give a general condition summary. It's ideal if you're buying a used wing or just want peace of mind before the season.",
+          "A Visual Check is a quick health assessment for your wing. We inspect the canopy fabric for visible wear, UV damage, and porosity concerns, check the lines for abnormal texture, discoloration, fraying or knots, examine the risers for abrasion and accelerator failure and maillon health, and give a general condition summary. It's ideal if you're buying a used wing or just want peace of mind before the season.",
       },
       {
         id: 'what-does-trim-service-include',
         serviceCodes: ['SVC-001', 'SVC-002'],
         question: 'What does a Trim & Line service include?',
         answer:
-          "The Trim & Line service focuses on your wing's geometry — the thing that most affects how it flies. We measure every line with a laser system, compare the results against the manufacturer's trim chart, identify any shrinkage or stretch (common with Aramid and Dyneema lines), and correct the trim to restore the original flight characteristics. You get a full digital report showing before and after measurements.",
+          "The Trim & Line service focuses on your wing's geometry — to make sure the angle of attack and symmetry match the manufacturer's specification. We measure every line with a laser system, compare the results against the manufacturer's trim chart, identify any shrinkage (common with Aramid and Dyneema lines) or stretch, and correct the trim to restore the original flight characteristics. You get a full digital report showing before and after measurements.",
       },
       {
         id: 'what-does-full-service-include',
         serviceCodes: ['SVC-011', 'SVC-012'],
         question: 'What does a Full Service include?',
         answer:
-          'A Full Service is our most comprehensive option. It includes everything in the Trim & Line service, plus cloth porosity testing at multiple points across the canopy, tear resistance testing using a Bettsometer, line strength testing, detailed riser and carabiner inspection, and a comprehensive digital report. Think of it as an annual health check for your wing — it covers every aspect that degrades over time.',
+          'A Full Service is our most comprehensive option. It includes everything in the Trim & Line service, plus cloth porosity testing at multiple points across the canopy using a porosimeter, tear resistance testing using a Bettsometer, non-destructive line strength testing, thorough line inspection, detailed riser and carabiner inspection, and a comprehensive digital report. Think of it as an annual health check for your wing — it covers every aspect that degrades over time.',
       },
       {
         id: 'solo-vs-tandem-pricing',
@@ -99,7 +98,7 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
         serviceCodes: ['SVC-031'],
         question: 'Do you inspect and service harnesses?',
         answer:
-          'No. Harnesses have their own well detailed and thorough 22 steps inspection.',
+          "Yes. We inspect harness webbing, stitching, buckles, carabiners, and the reserve container. We check for UV degradation, abrasion, and structural integrity. We check against manufacturer's warning issues. Harness inspection is included in our Full Service, or available as a standalone check.",
       },
     ],
   },
@@ -126,7 +125,7 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
         id: 'what-is-porosity-testing',
         question: 'What is porosity testing?',
         answer:
-          "Porosity measures how much air passes through your canopy fabric, expressed in seconds (the time for a fixed volume of air to pass through a sample area). New paraglider fabric typically reads 200+ seconds. As fabric degrades from UV, abrasion, and use, porosity drops. Below certain thresholds (usually around 20–30 seconds, depending on the manufacturer), the wing can't maintain internal pressure reliably, leading to poor inflation and collapse resistance. We test at multiple points across the canopy to build a complete picture.",
+          "Porosity measures how much air passes through your canopy fabric, expressed in seconds (the time for a fixed volume of air to pass through a sample area). In our workshop, we are using a JDC porosimeter MK2 (<a href='https://www.jdc.ch/en/porosimeter/' target=\"_blank\" rel=\"noopener noreferrer\" class='faq-link'>https://www.jdc.ch/en/porosimeter/</a>). New paraglider fabric typically reads 200+ seconds. As fabric degrades from UV, abrasion, and use, porosity drops. Below certain thresholds (usually around 20–30 seconds, depending on the manufacturer), the wing can't maintain internal pressure reliably, leading to poor inflation and collapse resistance. We test at multiple points across the canopy to build a complete picture.",
       },
       {
         id: 'what-is-bettsometer',
@@ -138,7 +137,7 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
         id: 'what-is-line-strength-test',
         question: 'How do you test line strength?',
         answer:
-          "We test individual lines using a calibrated tension gauge to check they still meet the minimum breaking strain specified by the manufacturer. Lines degrade from UV exposure, abrasion (especially at the connection points), and general fatigue. A line that's lost significant strength is a safety concern even if it looks fine visually — this is why strength testing matters.",
+          "We test individual lines using a calibrated tension gauge to check they still meet the minimum breaking strain calculated for the worst case scenario tension (50% collapse in an autorotation can reach up to 8G for a given line) and a minimum strength requirement to last another service cycle (estimated from bending tests). Lines degrade from UV exposure, abrasion (especially at the connection points), general handling and chemicals (sunscreens, moisturisers, natural skin oils), and general fatigue. A line that's lost significant strength is a safety concern even if it looks fine visually — this is why strength testing matters.",
       },
       {
         id: 'what-does-digital-report-include',
@@ -158,6 +157,12 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
         answer:
           "Trim corrections are made at the maillon connections between the lines and risers. By adjusting where the line attaches (using knots or replacement loops), we change the effective line length to match the manufacturer's specification. All corrections are re-measured after adjustment to verify accuracy. The before-and-after data is documented in your report.",
       },
+      {
+        id: 'can-a-porous-glider-fly',
+        question: 'Can a porous glider fly?',
+        answer:
+          'Contrary to popular belief, a porous glider is actually OK to fly as long as the fabric passes tear resistance tests and has appropriate fabric rebound characteristics. Noticeable changes of behaviour for a porous glider would be: slower to fully inflate, loss of performance. The main issue for paraglider fabric is the loss of elasticity and resistance.',
+      },
     ],
   },
   {
@@ -171,13 +176,13 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
         id: 'how-often-service',
         question: 'How often should I service my paraglider?',
         answer:
-          "Most manufacturers recommend an annual service or every 100 flying hours, whichever comes first. If you fly in coastal environments (salt air accelerates degradation), sandy conditions, or do a lot of ground handling, consider more frequent checks. A good rule: if you're unsure, a Visual Check is a low-cost way to assess whether a full service is needed.",
+          "Most manufacturers recommend a service every 2 years or every 100/150 flying hours, whichever comes first. If you fly in coastal environments (salt air accelerates degradation), sandy conditions, or do a lot of ground handling, consider more frequent checks. A good rule: if you're unsure, a Visual Check is a low-cost way to assess whether a full service is needed.",
       },
       {
         id: 'uv-protection',
         question: 'How does UV damage affect my paraglider?',
         answer:
-          'UV radiation is the single biggest factor in paraglider fabric degradation. It breaks down the nylon polymer chains, reducing both porosity and tear strength. A wing left in the sun loses performance faster than one stored properly — even indirect UV through a car window adds up. The damage is cumulative and irreversible. Always pack your wing away after landing rather than leaving it laid out.',
+          'UV radiation is the single biggest factor in paraglider fabric and line degradation. It breaks down the nylon polymer chains, reducing both porosity and tear strength. A wing left in the sun loses performance faster than one stored properly — even indirect UV through a car window adds up. The damage is cumulative and irreversible. Always pack your wing away after landing rather than leaving it laid out.',
       },
       {
         id: 'storage-tips',
@@ -189,31 +194,31 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
         id: 'concertina-bag',
         question: 'Should I use a concertina packing bag?',
         answer:
-          'Yes — concertina bags are worth the investment. They keep your wing organised, protect the cells during transport, speed up launch preparation, and reduce random creasing that can stress the fabric. They also make packing more consistent, which means less time faffing on launch.',
+          'Yes — concertina bags are worth the investment. They keep your wing organised, leading edge appropriately packed, protect the cells during transport, speed up launch preparation, and reduce random creasing that can stress the fabric. They also make packing more consistent, which means less time faffing on launch.',
       },
       {
         id: 'signs-of-wear',
         question: 'What are the signs that my wing needs servicing?',
         answer:
-          "Watch for: longer or harder launches (trim deviation), the wing feeling different in the air (brake pressure changes, speed changes), visible fabric discolouration or shiny patches (UV damage), frayed or fuzzy lines, stiff or corroded maillons, or any asymmetry in flight. If something feels different from when the wing was new, that's your signal.",
+          "Watch for: slower or have a sticky point on inflation (trim deviation), slower in flight compared to your friends, the need to pull on the As to inflate the glider. If something feels different from when the wing was new, that's your signal. However, the changes are so gradual pilots don't notice it straight away and get used to it.",
       },
       {
         id: 'wing-lifespan',
         question: 'How long does a paraglider last?',
         answer:
-          'Typically 300–500 flying hours or 8–10 years, whichever comes first — but this varies hugely depending on use and care. A wing stored properly, flown gently, and serviced regularly can exceed these numbers. A wing left in a hot car, flown in sandy conditions, and never serviced might not make 200 hours. Regular servicing gives you objective data (porosity, tear strength) to make an informed decision rather than guessing.',
+          'When the cloth of the canopy fails the tests of tear resistance, the glider needs to be reformed. It typically happens around 300–500 flying hours or 8–10 years but this varies hugely depending on use and care. A wing stored properly, flown gently, and serviced regularly can exceed these numbers. A wing left in a hot car, flown in sandy conditions, and never serviced might not make 200 hours. Regular servicing gives you objective data (porosity, tear strength) to make an informed decision rather than guessing.',
       },
       {
         id: 'sand-and-dirt',
         question: 'How does sand and dirt affect my paraglider?',
         answer:
-          'Sand and grit act as abrasives inside the cells, wearing down the fabric coating from the inside every time the wing inflates and moves. They also damage lines at contact points. If you regularly fly from sandy or dusty sites, rinse the inside of the wing with fresh water periodically and dry thoroughly. Avoid dragging the wing across abrasive ground.',
+          'Sand and grit act as abrasives inside the cells, wearing down the fabric coating from the inside every time the wing inflates and moves. They also damage lines at contact points. If you regularly fly from sandy or dusty sites, regularly perform a daily check with a good visual check around the leading edge ribs (hard contact points of the glider). Avoid dragging the wing across abrasive ground.',
       },
       {
         id: 'washing-paraglider',
         question: 'Can I wash my paraglider?',
         answer:
-          'You can rinse it with clean fresh water to remove salt or sand — lay it out flat and use a gentle hose. Never use detergents, solvents, or washing machines. Never wring or twist the fabric. Dry completely in the shade before storing. If the wing has a serious contamination issue (oil, fuel), contact us for advice before attempting to clean it.',
+          'We discourage washing a paraglider as it is a technical fabric with a silicone coating to provide long-term, high-performance characteristics. You can spot-clean it with fresh water. Never use detergents, solvents, or washing machines. Never wring or twist the fabric. Dry completely in the shade before storing. If your glider went in the sea, it needs to be rinsed with fresh water before being air dried.',
       },
     ],
   },
@@ -234,13 +239,13 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
         id: 'how-to-pack',
         question: 'How should I pack my paraglider for posting?',
         answer:
-          "Use the wing's own bag inside a sturdy outer box or heavy-duty shipping bag. Remove any sharp items (carabiners, speed bar) and wrap them separately. Pad any hard components. Include your name and booking reference inside the package. We recommend a box over a bag for better protection — and please don't vacuum-seal it, as extreme compression can crease the fabric.",
+          "Use the wing's own bag inside a sturdy outer box or heavy-duty shipping bag. Remove any sharp items and wrap them separately. Pad any hard components. Include your name and booking reference inside the package. We recommend a box over a bag for better protection.",
       },
       {
         id: 'turnaround-time',
         question: 'How long does a service take?',
         answer:
-          "Typically 3–5 working days once we receive your wing, depending on the service type and current workload. We'll confirm expected timescales when you book. During peak season (spring), turnaround may be slightly longer — booking early helps.",
+          "Typically 3–5 working days once we receive your wing, depending on the service type current workload, and any necessary repairs. We'll confirm expected timescales when you book. ",
       },
       {
         id: 'drop-off',
@@ -272,7 +277,7 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
         id: 'what-is-equipment-registry',
         question: 'What is the Equipment Registry?',
         answer:
-          "The Equipment Registry is a public service history lookup, similar to an MOT check for vehicles. Anyone can search by serial number to see a wing's service history — what tests were done, when, and the results. It's designed to bring transparency to the used paraglider market, where buyers currently have to take sellers at their word.",
+          "The Equipment Registry is a public service history lookup for gliders, harnesses and rescue parachutes, similar to an MOT check for vehicles. Anyone can search by serial number to see a wing's service history — what tests were done, when, and the results. It's designed to bring transparency to the used paraglider market, where buyers currently have to take sellers at their word.",
       },
       {
         id: 'what-does-registry-show',
@@ -316,37 +321,38 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
         serviceCodes: ['PACK-001', 'PACK-002'],
         question: 'How often should I repack my reserve parachute?',
         answer:
-          "Every 6 months is the standard recommendation, and many manufacturers require it. Even if you never deploy it, the fabric can develop memory folds and the deployment bag can compress, potentially slowing deployment when you need it most. A reserve that doesn't open quickly is a reserve that doesn't work. Mark your repack date and stick to it.",
+          "Every 6 months to a year is the standard recommendation, and many manufacturers require it. Even if you never deploy it, the fabric can develop memory folds and the deployment bag can compress, potentially slowing deployment when you need it most. A reserve that doesn't open quickly is a reserve that doesn't work. Mark your repack date and stick to it.",
       },
       {
         id: 'reserve-lifespan',
         question: 'How long does a reserve parachute last?',
         answer:
-          'Most manufacturers specify a 10-year lifespan from date of manufacture, regardless of use. The nylon degrades over time even when stored perfectly. After 10 years, the fabric may not have the porosity or strength to guarantee the descent rate specified in the certification. Some reserves can be tested and recertified — check with the manufacturer.',
+          'Most manufacturers specify a 10-year lifespan from date of manufacture, regardless of use. The nylon degrades over time even when stored perfectly. After 10 years, the fabric may not have the porosity or strength to guarantee the descent rate specified in the certification.',
       },
       {
         id: 'steerable-vs-round',
-        question: "What's the difference between a steerable and round reserve?",
+        question:
+          "What's the difference between a steerable and round or square reserve?",
         answer:
-          'Round reserves are simpler and lighter — they provide a stable descent with minimal pilot input. Steerable (Rogallo-type) reserves give you directional control, which can help you avoid obstacles on landing. The trade-off: steerables are heavier, more complex to pack, and require practice to fly. For most recreational pilots, a round reserve with a good sink rate is the reliable choice.',
+          'Round or square reserves are simpler and lighter — they provide a stable descent without pilot input. Steerable (Rogallo-type) reserves give you directional control, to land in a nicer place. The trade-off: steerables are heavier, more complex to pack, and require practice to fly. For most recreational pilots, a round or square reserve with a good sink rate is the reliable choice.',
       },
       {
         id: 'reserve-deployment',
         question: 'What should I check about my reserve deployment system?',
         answer:
-          "Check: the handle is accessible and secure (can you reach it with either hand?), the pins and closing loop are in good condition, the inner container isn't too tight or too loose, and the bridle routing is correct. During repacking, we check all of these. If your reserve was deployed or your harness was modified, get the deployment system inspected before flying.",
+          "Check: the handle is accessible and secure (can you reach it with either hand?), the pins and closing loop are in good condition, the harness pouch isn't too tight or too loose, and the bridle routing is correct. During repacking, we check all of these. If your reserve was deployed or your harness was modified, get the deployment system inspected before flying.",
       },
       {
         id: 'harness-inspection-what',
         question: 'What gets checked during a harness inspection?',
         answer:
-          'We inspect the main structural webbing for UV damage and abrasion, check all stitching (especially load-bearing bartacks), examine buckles and adjustment hardware, test carabiner condition and gate function, verify the reserve container and deployment system, and check the back protection system. Harnesses take constant UV exposure and load cycling — they deserve the same attention as your wing.',
+          'We inspect the main structural webbing for UV damage and abrasion, check all stitching (especially load-bearing bartacks), examine buckles and adjustment hardware, test carabiner condition and gate function, verify the reserve container and deployment system, retrace the internal structure and check the back protection system. Harnesses take constant UV exposure and load cycling — they deserve the same attention as your wing.',
       },
       {
         id: 'carabiner-inspection',
         question: 'How often should carabiners be inspected?',
         answer:
-          "Check your carabiners before every flight (gate opens and closes freely, no visible damage). Get a professional inspection annually — we check for hairline cracks, gate wear, corrosion, and proper lock function. Steel carabiners are more durable than aluminium but heavier. Replace immediately if you see any signs of damage or if the gate doesn't lock positively.",
+          "Check your carabiners before every flight (gate opens and closes freely, no visible damage). Get a professional inspection annually — we check for hairline cracks, gate wear, corrosion, and proper lock function. Steel carabiners are more durable than aluminium but heavier. Replace immediately if you see any signs of damage or if the gate doesn't lock positively. Carabiners should be replaced every 5 years.",
       },
       {
         id: 'do-you-repack-reserves',
@@ -354,12 +360,6 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
         question: 'Do you offer reserve repacking?',
         answer:
           "Yes — reserve repacking is one of our core services. We inspect the canopy, lines, and deployment system during every repack, and document the condition in your service record. We'll flag any issues and advise on replacement if the reserve is approaching end of life.",
-      },
-      {
-        id: 'cocoon-harness-reserve',
-        question: 'Does harness type affect reserve deployment?',
-        answer:
-          'Yes — cocoon (pod) harnesses route the reserve deployment differently to open harnesses. The deployment path is longer and the inner container position matters more. If you switch harness type, have the reserve repacked and the deployment system checked in the new harness to ensure clean extraction.',
       },
     ],
   },
@@ -378,7 +378,7 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
         id: 'appi-certification',
         question: 'What is APPI certification?',
         answer:
-          "APPI (Association of Paragliding Pilots and Instructors) is an international paragliding standards body. Their technician certification covers wing inspection methodology, measurement techniques, material testing standards, and safety assessment protocols. It ensures your wing is being assessed against recognised international standards, not just someone's best guess.",
+          "<a href='https://flyappi.org/home/' target='_blank' rel='noopener noreferrer' class='faq-link'>APPI (Association of Paragliding Pilots and Instructors)</a> is an international paragliding standards body. Their technician certification covers wing inspection methodology, measurement techniques, material testing standards, and safety assessment protocols. It ensures your wing is being assessed against recognised international standards, not just someone's best guess.",
       },
       {
         id: 'where-based',
@@ -400,7 +400,7 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
       {
         id: 'how-to-contact',
         question: 'How do I get in touch or book a service?',
-        answer: `Use the contact form on our homepage, or email us directly at ${BUSINESS.email}. Tell us what equipment you have and what service you're interested in, and we'll get back to you with availability and next steps.`,
+        answer: `Use the contact form on our homepage, or email us directly at <a href='mailto:${BUSINESS.email}' class='faq-link'>${BUSINESS.email}</a>. Tell us what equipment you have and what service you're interested in, and we'll get back to you with availability and next steps.`,
       },
     ],
   },

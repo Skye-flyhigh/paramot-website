@@ -39,7 +39,7 @@ export default function FAQPreview() {
                   {faq.question}
                 </AccordionTrigger>
                 <AccordionContent className="leading-relaxed text-gray-700">
-                  {faq.answer}
+                  <span dangerouslySetInnerHTML={{ __html: faq.answer }} />
                 </AccordionContent>
               </AccordionItem>
             ))}

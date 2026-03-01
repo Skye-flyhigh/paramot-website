@@ -40,7 +40,9 @@ export default function ServiceFAQs({ faqs }: ServiceFAQsProps) {
                 </button>
                 {isOpen && (
                   <div className="px-6 pb-4">
-                    <p className="text-sm leading-relaxed text-sky-700">{faq.answer}</p>
+                    <p className="text-sm leading-relaxed text-sky-700">
+                      <span dangerouslySetInnerHTML={{ __html: faq.answer }} />
+                    </p>
                   </div>
                 )}
               </div>
