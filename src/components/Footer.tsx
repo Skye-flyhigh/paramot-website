@@ -32,6 +32,11 @@ export default function Footer() {
                   Equipment Registry
                 </Link>
               </li>
+              <li>
+                <Link href="/blog" className="hover:text-white transition-colors">
+                  Blog
+                </Link>
+              </li>
             </ul>
           </div>
           <div>

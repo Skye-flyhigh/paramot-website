@@ -22,6 +22,9 @@ export default function Nav() {
           <Link href="/equipment">
             <Button variant="link">Equipment Registry</Button>
           </Link>
+          <Link href="/blog">
+            <Button variant="link">Blog</Button>
+          </Link>
         </div>
       </div>
     </nav>
