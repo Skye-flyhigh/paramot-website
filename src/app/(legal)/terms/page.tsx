@@ -1,5 +1,30 @@
-import { BUSINESS } from '@/lib/metadata.const';
+import { BUSINESS, SITE_URL } from '@/lib/metadata.const';
+import { Metadata } from 'next/dist/lib/metadata/types/metadata-interface';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: `Terms of Service | ${BUSINESS.name}`,
+  description:
+    'Description of terms of Services: who we are, our services, booking and cancellations rules, equipement handling, payment terms, limitations of our liability, data and privacy, dispute management.',
+  keywords: [
+    'paragliding service bookings',
+    'Legal disclaimer',
+    'Governing Law',
+    `${BUSINESS.name} terms`,
+    'refund policy',
+    'Liability limitation',
+  ],
+  alternates: {
+    canonical: `${SITE_URL}/terms`,
+  },
+  robots: 'noindex',
+  other: {
+    'geo.region': 'GB-WLS',
+    'geo.placename': BUSINESS.address.city,
+    'geo.position': `${BUSINESS.latitude};${BUSINESS.longitude}`,
+    ICBM: `${BUSINESS.latitude}, ${BUSINESS.longitude}`,
+  },
+};
 
 export default function TermsOfService() {
   return (

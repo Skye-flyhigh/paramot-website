@@ -1,5 +1,21 @@
-import { BUSINESS } from '@/lib/metadata.const';
+import { BUSINESS, SITE_URL } from '@/lib/metadata.const';
+import { Metadata } from 'next';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: `Privacy policy | ${BUSINESS.name}`,
+  description: 'Description of Privacy policy',
+  alternates: {
+    canonical: `${SITE_URL}/terms`,
+  },
+  robots: 'noindex',
+  other: {
+    'geo.region': 'GB-WLS',
+    'geo.placename': BUSINESS.address.city,
+    'geo.position': `${BUSINESS.latitude};${BUSINESS.longitude}`,
+    ICBM: `${BUSINESS.latitude}, ${BUSINESS.longitude}`,
+  },
+};
 
 export default function PrivacyPolicy() {
   return (
