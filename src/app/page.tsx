@@ -10,7 +10,7 @@ import Services from '@/components/home/Services';
 import Trust from '@/components/home/Trust';
 import JsonLd from '@/components/seo/JsonLd';
 import StickyPicture from '@/components/ui/sticky-pic';
-import { getAllFAQs } from '@/data/faqs';
+import { getFAQSchema } from '@/data/faqs';
 import { BUSINESS, SITE_URL } from '@/lib/metadata.const';
 import { getServicesList } from '@/lib/schema';
 
@@ -75,7 +75,7 @@ const servicesSchemas = services.map((service) => ({
   },
 }));
 
-const allFAQs = getAllFAQs();
+const allFAQs = getFAQSchema();
 
 const faqSchema = {
   '@context': 'https://schema.org',

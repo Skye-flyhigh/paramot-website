@@ -2,7 +2,7 @@ import FAQSection from '@/components/faq/FAQSection';
 import FAQTableOfContents from '@/components/faq/FAQTableOfContents';
 import JsonLd from '@/components/seo/JsonLd';
 import ScrollReveal from '@/components/ui/ScrollReveal';
-import { getAllFAQs, getVisibleCategories } from '@/data/faqs';
+import { getFAQSchema, getVisibleCategories } from '@/data/faqs';
 import { BUSINESS, SITE_URL } from '@/lib/metadata.const';
 import type { Metadata } from 'next';
 import Link from 'next/link';
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 
 export default function FAQPage() {
   const categories = getVisibleCategories();
-  const allFAQs = getAllFAQs();
+  const allFAQs = getFAQSchema();
 
   const faqSchema = {
     '@context': 'https://schema.org',

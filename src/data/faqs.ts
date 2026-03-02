@@ -163,6 +163,12 @@ export const FAQ_CATEGORIES: FAQCategory[] = [
         answer:
           'Contrary to popular belief, a porous glider is actually OK to fly as long as the fabric passes tear resistance tests and has appropriate fabric rebound characteristics. Noticeable changes of behaviour for a porous glider would be: slower to fully inflate, loss of performance. The main issue for paraglider fabric is the loss of elasticity and resistance.',
       },
+      {
+        id: 'what-does-silicone-coating-do',
+        question: 'What does the silicone coating on paraglider fabric do?',
+        answer:
+          'Silicone coating on nylon ripstop acts as a high-performance, durable treatment that renders the fabric airtight and stronger while remaining lightweigth. This coating offers a dimensional stability that fixes warp and weft threads of the fabric limiting ballooning effect and maintaining a sharp aerofoil shape.',
+      },
     ],
   },
   {
@@ -415,10 +421,15 @@ export function getFAQsByIds(ids: string[]): CategorisedFAQ[] {
     .filter((f): f is CategorisedFAQ => f !== undefined);
 }
 
-/** Flat array of all visible FAQs — used for JSON-LD schemas */
-export function getAllFAQs(): FAQ[] {
+/** Strip HTML tags from a string — used to clean answers for JSON-LD metadata */
+function stripHtml(html: string): string {
+  return html.replace(/<[^>]*>/g, '');
+}
+
+/** Flat array of all visible FAQs — used for JSON-LD schemas (HTML stripped) */
+export function getFAQSchema(): FAQ[] {
   return getVisibleCategories().flatMap((cat) =>
-    cat.faqs.map(({ question, answer }) => ({ question, answer })),
+    cat.faqs.map(({ question, answer }) => ({ question, answer: stripHtml(answer) })),
   );
 }
 
