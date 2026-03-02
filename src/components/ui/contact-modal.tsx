@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 
 import ContactForm from '@/components/home/ContactForm';
 import type { ContactFormVariant } from '@/lib/validation/contactForm';
@@ -39,24 +40,26 @@ export default function ContactModal({
         {children}
       </button>
 
-      {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 p-4 backdrop-blur-sm">
-          <dialog
-            open
-            className="relative m-0 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-lg bg-white shadow-xl"
-          >
-            <header className="flex items-center justify-between border-b p-4">
-              <h2 className="text-lg font-semibold text-sky-900">{TITLES[variant]}</h2>
-              <XButton onClose={() => setIsOpen(false)} />
-            </header>
-            <ContactForm
-              variant={variant}
-              equipment={equipment}
-              onClose={() => setIsOpen(false)}
-            />
-          </dialog>
-        </div>
-      )}
+      {isOpen &&
+        createPortal(
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 p-4 backdrop-blur-sm">
+            <dialog
+              open
+              className="relative m-0 w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-lg bg-white shadow-xl"
+            >
+              <header className="flex items-center justify-between border-b p-4">
+                <h2 className="text-lg font-semibold text-sky-900">{TITLES[variant]}</h2>
+                <XButton onClose={() => setIsOpen(false)} />
+              </header>
+              <ContactForm
+                variant={variant}
+                equipment={equipment}
+                onClose={() => setIsOpen(false)}
+              />
+            </dialog>
+          </div>,
+          document.body,
+        )}
     </>
   );
 }

@@ -20,11 +20,11 @@ export default function ServicePricing({ pricing }: ServicePricingProps) {
   }
 
   return (
-    <div className="space-y-2 text-center">
+    <div className="text-center">
       {/* Solo / Tandem pricing */}
       {pricing.solo !== undefined && (
         <div>
-          <span className="text-2xl font-bold text-sky-900">£{pricing.solo}</span>
+          <span className="text-xl font-bold text-sky-900">£{pricing.solo}</span>
           {pricing.tandem !== undefined && (
             <span className="ml-1 text-sm text-sky-500">solo</span>
           )}
@@ -32,7 +32,7 @@ export default function ServicePricing({ pricing }: ServicePricingProps) {
       )}
       {pricing.tandem !== undefined && (
         <div>
-          <span className="text-2xl font-bold text-sky-900">£{pricing.tandem}</span>
+          <span className="text-xl font-bold text-sky-900">£{pricing.tandem}</span>
           <span className="ml-1 text-sm text-sky-500">tandem</span>
         </div>
       )}
@@ -40,7 +40,7 @@ export default function ServicePricing({ pricing }: ServicePricingProps) {
       {/* Regular / Steerable pricing (reserves) */}
       {pricing.regular !== undefined && (
         <div>
-          <span className="text-2xl font-bold text-sky-900">£{pricing.regular}</span>
+          <span className="text-xl font-bold text-sky-900">£{pricing.regular}</span>
           {pricing.steerable !== undefined && (
             <span className="ml-1 text-sm text-sky-500">standard</span>
           )}
@@ -48,7 +48,7 @@ export default function ServicePricing({ pricing }: ServicePricingProps) {
       )}
       {pricing.steerable !== undefined && (
         <div>
-          <span className="text-2xl font-bold text-sky-900">£{pricing.steerable}</span>
+          <span className="text-xl font-bold text-sky-900">£{pricing.steerable}</span>
           <span className="ml-1 text-sm text-sky-500">steerable</span>
         </div>
       )}

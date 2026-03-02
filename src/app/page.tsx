@@ -91,8 +91,8 @@ const faqSchema = {
 };
 
 const pictures = [
-  { url: '/images/sewing.jpeg', alt: 'Sewing up a panel on a paraglider' },
-  { url: '/images/inspection.jpeg', alt: 'Inspecting glider cloth' },
+  { url: '/images/sewing.webp', alt: 'Sewing up a panel on a paraglider' },
+  { url: '/images/inspection.webp', alt: 'Inspecting glider cloth' },
 ];
 
 export default function Home() {

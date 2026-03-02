@@ -43,7 +43,6 @@ export interface ServicePageConfig {
 // ─── Page configs ─────────────────────────────────────────────────
 
 const SERVICE_PAGES: ServicePageConfig[] = [
-  //TODO: read thoroughly the content
   {
     slug: 'full-service',
     pageTitle: 'Full Glider Service',
@@ -57,6 +56,7 @@ const SERVICE_PAGES: ServicePageConfig[] = [
       'wing porosity test',
       'glider cloth testing',
       'paraglider service report',
+      'porosity testing',
     ],
     serviceCodes: ['SVC-011', 'SVC-012'],
     heroDescription:
@@ -67,26 +67,11 @@ const SERVICE_PAGES: ServicePageConfig[] = [
         step: 1,
         title: 'Material reception & intake',
         description:
-          'We log your equipment, confirm the serial number, note any concerns you have, and record the current state of the wing before work begins.',
+          "We log your equipment, confirm the serial number, note any concerns you have, check on the manufacturer's issue notice, and record the current state of the wing before work begins.",
         icon: 'ClipboardList',
       },
       {
         step: 2,
-        title: 'Initial diagnostic',
-        description:
-          'A visual assessment of the canopy, lines, and risers to evaluate the overall condition and identify anything that needs closer attention.',
-        icon: 'Search',
-      },
-      {
-        step: 3,
-        title: 'Cloth porosity testing',
-        description:
-          'We measure air permeability at multiple points across the canopy. Porosity indicates how well the fabric maintains internal pressure — critical for inflation and collapse resistance.',
-        icon: 'Wind',
-        critical: true,
-      },
-      {
-        step: 4,
         title: 'Tear resistance testing (Bettsometer)',
         description:
           'A standardised test measuring how much force is needed to propagate a small cut in the fabric. Combined with porosity, this determines whether the cloth still has enough structural strength.',
@@ -94,7 +79,7 @@ const SERVICE_PAGES: ServicePageConfig[] = [
         critical: true,
       },
       {
-        step: 5,
+        step: 3,
         title: 'Line strength evaluation',
         description:
           "Individual lines are tested against the manufacturer's minimum breaking strain. Lines degrade from UV and abrasion — a line can look fine but have lost significant strength.",
@@ -102,32 +87,48 @@ const SERVICE_PAGES: ServicePageConfig[] = [
         critical: true,
       },
       {
-        step: 6,
-        title: 'Riser & hardware inspection',
-        description:
-          'We examine webbing for UV damage, check all stitching, test speed bar pulleys and Brummel hooks, inspect maillons for corrosion, and verify brake handle attachment.',
-        icon: 'Link',
-      },
-      {
-        step: 7,
+        step: 4,
         title: 'Lines tactile inspection',
         description:
           'Every line is checked by hand for fraying, stiffness, kinks, and sheath damage. We note any lines that need replacement and their positions.',
         icon: 'Hand',
+        critical: true,
+      },
+      {
+        step: 5,
+        title: 'Cloth porosity testing',
+        description:
+          'We measure air permeability at multiple points across the canopy. Porosity indicates the health of the silicon coating and fabric.',
+        icon: 'Wind',
+      },
+      {
+        step: 6,
+        title: 'Riser & hardware inspection',
+        description:
+          'We examine webbing for UV damage, check all stitching, test speed bar pulleys and Brummel hooks, inspect maillons for corrosion, quick links for fraying, and verify brake handle attachment.',
+        icon: 'Link',
+      },
+      {
+        step: 7,
+        title: 'Visual diagnostic',
+        description:
+          'A visual assessment of the canopy, and risers to evaluate the overall condition and identify anything that needs closer attention.',
+        icon: 'Search',
       },
       {
         step: 8,
-        title: 'Canopy inspection — outer surfaces',
+        title: "Glider's attachment points",
         description:
-          'Systematic inspection of the upper and lower outer surfaces, trailing edge, and leading edge. We flag any damaged cloth or stitching by location.',
-        icon: 'Layers',
+          "A particular attention is brought to the glider attachment points where the lines are attached. Checking for any fabric damages and inverted lark's foot.",
+        icon: 'Eye',
+        critical: true,
       },
       {
         step: 9,
-        title: 'Canopy inspection — internal structure',
+        title: 'Canopy inspection cloth - outter and inner surfaces',
         description:
-          'Ribs and diagonal walls are inspected for tears, delamination, and stitching failures. Internal damage is invisible from outside but affects cell structure.',
-        icon: 'ScanSearch',
+          'Systematic inspection of the upper and lower outer surfaces, trailing edge, and leading edge with particular attention to attachment points. We flag any damaged cloth or stitching by location. Ribs and diagonal walls are inspected for tears, delamination, and stitching failures. Internal damage is invisible from outside but affects cell structure.',
+        icon: 'Layers',
       },
       {
         step: 10,
@@ -140,14 +141,14 @@ const SERVICE_PAGES: ServicePageConfig[] = [
         step: 11,
         title: 'Inflated check',
         description:
-          'The wing is inflated to verify canopy shape, check for crossed lines, and assess overall behaviour. This confirms the bench work translates to proper wing geometry.',
+          'The wing is inflated to verify canopy shape, check for crossed lines, and assess overall behaviour. This confirms the bench work translates to proper wing geometry. Weather dependant.',
         icon: 'CloudSun',
       },
       {
         step: 12,
         title: 'Flight test recommendation',
         description:
-          'If corrections were significant, a flight test is recommended to verify in-air behaviour — speed range, brake response, and symmetry under load.',
+          'If corrections were significant, a flight test is recommended to verify in-air behaviour — speed range, brake response, and symmetry under load. Weather dependant.',
         icon: 'Plane',
       },
     ],
@@ -163,7 +164,18 @@ const SERVICE_PAGES: ServicePageConfig[] = [
       { label: 'Reserve repack', included: false },
       { label: 'Harness inspection', included: false },
     ],
-    images: [],
+    images: [
+      {
+        src: '/images/line-inspection.webp',
+        alt: 'Skye is inspecting the textures of the line of this Gin Bonanza 2',
+        caption: 'Tactile line inspection and attachment point checks.',
+      },
+      {
+        src: '/images/laser.webp',
+        alt: 'Gin Bonanza line measurement with a hand held laser',
+        caption: 'Hand held laser measurements for trim corrections',
+      },
+    ],
     relatedFAQIds: [
       'what-does-full-service-include',
       'how-often-service',
@@ -171,6 +183,7 @@ const SERVICE_PAGES: ServicePageConfig[] = [
       'what-is-bettsometer',
       'what-is-line-strength-test',
       'what-does-digital-report-include',
+      'what-does-silicone-coating-do',
     ],
   },
   {
@@ -178,7 +191,7 @@ const SERVICE_PAGES: ServicePageConfig[] = [
     pageTitle: 'Trim & Line Service',
     metaTitle: 'Paraglider Trim & Line Service — Laser Measurement | paraMOT',
     metaDescription:
-      'Precision laser trim measurement and correction for paragliders. We measure every line against manufacturer specs, detect asymmetries, and restore original flight characteristics.',
+      'Precision laser trim measurement and correction for paragliders. We measure every line against manufacturer specs, detect asymmetries, and restore original flight characteristics. Ideal for newer gliders.',
     keywords: [
       'paraglider trim service',
       'line trim measurement',
@@ -188,14 +201,14 @@ const SERVICE_PAGES: ServicePageConfig[] = [
     ],
     serviceCodes: ['SVC-001', 'SVC-002'],
     heroDescription:
-      "Your wing's geometry is the single biggest factor in how it flies. We measure every line with a laser system, compare against manufacturer specs, and correct deviations so your glider handles the way it should.",
+      "Your wing's geometry is the single biggest factor in how it flies. We measure every line with a laser system, compare against manufacturer specs, and correct deviations so your glider handles the way it should. Ideal for newer gliders.",
     icon: 'Zap',
     processSteps: [
       {
         step: 1,
         title: 'Trim measurement',
         description:
-          "The wing is suspended and every line measured under controlled tension using a laser system. Each measurement is recorded digitally and compared against the manufacturer's trim chart to identify shrinkage, stretch, and asymmetries.",
+          "The wing is suspended and every line measured under controlled tension of 5kg using a laser system. Each measurement is recorded digitally and compared against the manufacturer's trim chart to identify shrinkage, stretch, and asymmetries.",
         icon: 'Ruler',
       },
       {
@@ -209,7 +222,7 @@ const SERVICE_PAGES: ServicePageConfig[] = [
         step: 3,
         title: 'Inflated check & flight test',
         description:
-          'The wing is inflated to verify shape, check for crossed lines, and assess behaviour. If corrections were significant, a flight test is recommended to confirm speed range, brake response, and symmetry.',
+          'The wing is inflated to verify shape, check for crossed lines, and assess behaviour. If corrections were significant, a flight test is recommended to confirm speed range, brake response, and symmetry. Weather dependant.',
         icon: 'CloudSun',
       },
     ],
@@ -223,7 +236,13 @@ const SERVICE_PAGES: ServicePageConfig[] = [
       { label: 'Tear resistance testing', included: false },
       { label: 'Line strength testing', included: false },
     ],
-    images: [],
+    images: [
+      {
+        src: '/images/laser.webp',
+        alt: 'Gin Bonanza line measurement with a hand held laser',
+        caption: 'Hand held laser measurements for trim corrections',
+      },
+    ],
     relatedFAQIds: [
       'what-does-trim-service-include',
       'what-is-trim-measurement',
@@ -240,12 +259,13 @@ const SERVICE_PAGES: ServicePageConfig[] = [
     pageTitle: 'Visual Check',
     metaTitle: 'Paraglider Visual Inspection — Pre-Purchase Check | paraMOT',
     metaDescription:
-      'Quick visual health assessment for your paraglider. Canopy fabric inspection, line condition check, riser examination, and porosity overview. Ideal for pre-purchase checks.',
+      'Quick visual health assessment for your paraglider. Canopy fabric inspection, line condition check, riser examination, and porosity overview. Ideal for pre-purchase checks or pre-travel checks.',
     keywords: [
       'paraglider visual inspection',
       'wing condition check',
       'pre-purchase paraglider inspection',
       'used paraglider check',
+      'prepare paragliding holidays',
     ],
     serviceCodes: ['SVC-003', 'SVC-004'],
     heroDescription:
@@ -301,7 +321,7 @@ const SERVICE_PAGES: ServicePageConfig[] = [
     ],
     images: [
       {
-        src: '/images/inspection.jpeg',
+        src: '/images/inspection.webp',
         alt: 'Skye is thoroughly inspecting the top surface of this BGD Magic',
         caption: 'Inspection of the top surface of a BGD Magic',
       },
@@ -337,7 +357,7 @@ const SERVICE_PAGES: ServicePageConfig[] = [
         step: 1,
         title: 'Serial number & documentation',
         description:
-          "We record the harness serial number, stated hours, and check the manufacturer's manual and safety notes for model-specific inspection requirements.",
+          "We record the harness serial number, stated hours, and check the manufacturer's manual and safety notes for model-specific inspection requirements. We check manual and safety notes.",
         icon: 'ClipboardList',
       },
       {
@@ -461,7 +481,7 @@ const SERVICE_PAGES: ServicePageConfig[] = [
         step: 3,
         title: 'Deploy & inspect',
         description:
-          'The reserve is fully deployed and left open for a minimum of 2 hours. This allows the fabric to relax from compression and enables thorough visual inspection of the canopy, lines, and connections.',
+          'The reserve is fully deployed and left open for a minimum of 2 hours. This allows the fabric to relax from compression and static electricity and enables thorough visual inspection of the canopy, lines, and connections.',
         icon: 'Clock',
       },
       {
@@ -539,12 +559,13 @@ const SERVICE_PAGES: ServicePageConfig[] = [
   },
   {
     slug: 'repair',
-    pageTitle: 'Glider Repair',
-    metaTitle: 'Paraglider Repair — Canopy, Lines & Components | paraMOT',
+    pageTitle: 'Canopy Repair',
+    metaTitle: 'Repair — Canopy, Lines & Components | paraMOT',
     metaDescription:
-      'Professional paraglider canopy repairs, line replacements, and component fixes. Send photos for a free assessment. APPI-certified workshop in South Wales.',
+      'Professional canopy repairs for paragliders and parachutes, line replacements, and component fixes. Send photos for a free assessment. APPI-certified workshop in South Wales.',
     keywords: [
       'paraglider canopy repair',
+      'parachute canopy repair',
       'glider panel repair',
       'paraglider line replacement',
       'wing repair service UK',
@@ -579,7 +600,7 @@ const SERVICE_PAGES: ServicePageConfig[] = [
         step: 4,
         title: 'Inflated check',
         description:
-          "After repair, the wing is inflated to check canopy shape, wrinkles, and crossed lines. This verifies the repair hasn't affected the wing's geometry.",
+          "After repair, the wing is inflated to check canopy shape, and crossed lines. This verifies the repair hasn't affected the wing's geometry.",
         icon: 'CloudSun',
       },
       {
@@ -599,7 +620,13 @@ const SERVICE_PAGES: ServicePageConfig[] = [
       { label: 'Post-repair inflated check', included: true },
       { label: 'Equipment Registry entry', included: true },
     ],
-    images: [],
+    images: [
+      {
+        src: '/images/sewing.webp',
+        alt: 'Skye practicing replacing a panel on a top surface of a paraglider',
+        caption: 'Replacing a panel on a top surface of a paraglider',
+      },
+    ],
     relatedFAQIds: ['do-you-do-repairs', 'what-if-problem-found', 'signs-of-wear'],
   },
 ];
