@@ -110,13 +110,17 @@ export default function ContactForm({ variant, equipment, onClose }: ContactForm
 
             {/* Hidden equipment context */}
             {equipmentContext && (
-              <input type="hidden" name="equipmentContext" value={equipmentContext} />
+              <input
+                type="hidden"
+                name="equipmentContext"
+                defaultValue={equipmentContext}
+              />
             )}
-            {variant && <input type="hidden" name="variant" value={variant} />}
+            {variant && <input type="hidden" name="variant" defaultValue={variant} />}
             <input
               type="text"
               name="title"
-              value={state.formData.title}
+              defaultValue={state.formData.title}
               className="hidden"
               aria-hidden={true}
             />

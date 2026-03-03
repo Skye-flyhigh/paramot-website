@@ -60,10 +60,10 @@ export default function BlogPage() {
     <>
       <JsonLd data={blogSchema} />
       <JsonLd data={itemListSchema} />
-      <main className="min-h-screen bg-linear-to-br from-sky-50 to-blue-100 py-12">
-        <div className="mx-auto max-w-6xl px-4">
+      <main className="pm-page">
+        <div className="pm-container-lg">
           <div className="mb-12 text-center">
-            <h1 className="hero-reveal mb-3 text-4xl font-bold text-sky-900">Blog</h1>
+            <h1 className="hero-reveal mb-3 pm-page-title">Blog</h1>
             <p className="hero-reveal-1 mx-auto max-w-2xl text-lg text-sky-700">
               Practical insights on paraglider maintenance, fabric science, and equipment
               care — from the workshop floor.
@@ -83,7 +83,7 @@ export default function BlogPage() {
           )}
 
           <ScrollReveal delay={0.3}>
-            <div className="mt-12 rounded-xl border border-sky-200 bg-white p-8 text-center">
+            <div className="mt-12 pm-card-cta">
               <h2 className="mb-2 text-xl font-bold text-sky-900">
                 Have a topic you&apos;d like us to cover?
               </h2>
@@ -91,14 +91,12 @@ export default function BlogPage() {
                 We write about what matters to pilots. If there&apos;s something
                 you&apos;ve always wondered about your equipment, let us know.
               </p>
-              <ContactModal className="inline-block rounded-lg bg-sky-600 px-6 py-3 font-medium text-white transition-colors hover:bg-sky-700">
-                Suggest a topic
-              </ContactModal>
+              <ContactModal className="pm-btn">Suggest a topic</ContactModal>
             </div>
           </ScrollReveal>
 
           <div className="mt-8 text-center">
-            <Link href="/" className="font-medium text-sky-600 hover:text-sky-800">
+            <Link href="/" className="pm-link">
               &larr; Back to Home
             </Link>
           </div>

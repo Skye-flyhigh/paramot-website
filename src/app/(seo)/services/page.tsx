@@ -65,12 +65,10 @@ export default function ServicesPage() {
   return (
     <>
       <JsonLd data={itemListSchema} />
-      <main className="min-h-screen bg-linear-to-br from-sky-50 to-blue-100 py-12">
-        <div className="mx-auto max-w-6xl px-4">
+      <main className="pm-page">
+        <div className="pm-container-lg">
           <div className="mb-12 text-center">
-            <h1 className="hero-reveal mb-3 text-4xl font-bold text-sky-900">
-              Our Services
-            </h1>
+            <h1 className="hero-reveal mb-3 pm-page-title">Our Services</h1>
             <p className="hero-reveal-1 mx-auto max-w-2xl text-lg text-sky-700">
               APPI-certified paraglider servicing with transparent pricing. Every service
               includes a detailed digital report accessible through our Equipment
@@ -87,18 +85,16 @@ export default function ServicesPage() {
                 <ScrollReveal key={page.slug} delay={i * 0.1}>
                   <Link
                     href={`/services/${page.slug}`}
-                    className={`group block rounded-xl border bg-white p-6 transition-all hover:shadow-md ${
-                      pricing.available
-                        ? 'border-sky-100 hover:border-sky-300'
-                        : 'border-sky-100 opacity-60'
+                    className={`group block p-6 pm-card-interactive ${
+                      !pricing.available ? 'opacity-60' : ''
                     }`}
                   >
                     <div className="mb-4 flex items-start justify-between">
-                      <div className="relative flex h-14 w-14 items-center justify-center rounded-2xl bg-linear-to-br from-sky-100 to-sky-200 shadow-inner">
+                      <div className="relative h-14 w-14 pm-icon-box">
                         <Icon className="h-7 w-7 text-sky-600" />
                         {!pricing.available && (
-                          <div className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-orange-100">
-                            <AlertCircle className="h-4 w-4 text-orange-600" />
+                          <div className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-amber-100/80">
+                            <AlertCircle className="h-4 w-4 text-amber-700" />
                           </div>
                         )}
                       </div>
@@ -112,9 +108,7 @@ export default function ServicesPage() {
                     </h2>
 
                     {!pricing.available && (
-                      <span className="mb-2 inline-block rounded-full bg-orange-50 px-2 py-0.5 text-xs font-medium text-orange-600">
-                        Coming Soon
-                      </span>
+                      <span className="mb-2 pm-badge-warn">Coming Soon</span>
                     )}
 
                     <p className="text-sm leading-relaxed text-sky-700">
@@ -122,7 +116,7 @@ export default function ServicesPage() {
                       {page.heroDescription.length > 120 ? '...' : ''}
                     </p>
 
-                    <span className="mt-4 inline-block text-sm font-medium text-sky-600 group-hover:text-sky-800">
+                    <span className="mt-4 inline-block text-sm pm-link">
                       Learn more &rarr;
                     </span>
                   </Link>
@@ -132,7 +126,7 @@ export default function ServicesPage() {
           </div>
 
           <ScrollReveal delay={0.3}>
-            <div className="mt-12 rounded-xl border border-sky-200 bg-white p-8 text-center">
+            <div className="mt-12 pm-card-cta">
               <h2 className="mb-2 text-xl font-bold text-sky-900">
                 Not sure which service you need?
               </h2>
@@ -140,14 +134,12 @@ export default function ServicesPage() {
                 Tell us about your equipment and we&apos;ll recommend the right service
                 for your situation.
               </p>
-              <ContactModal className="inline-block rounded-lg bg-sky-600 px-6 py-3 font-medium text-white transition-colors hover:bg-sky-700">
-                Get in touch
-              </ContactModal>
+              <ContactModal className="pm-btn">Get in touch</ContactModal>
             </div>
           </ScrollReveal>
 
           <div className="mt-8 text-center">
-            <Link href="/" className="font-medium text-sky-600 hover:text-sky-800">
+            <Link href="/" className="pm-link">
               &larr; Back to Home
             </Link>
           </div>

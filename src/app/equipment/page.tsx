@@ -46,8 +46,8 @@ export default function EquipmentRegistryPage() {
   return (
     <>
       <JsonLd data={searchSchema} />
-      <main className="min-h-screen bg-sky-50 py-12">
-        <div className="mx-auto max-w-2xl px-4">
+      <main className="pm-page">
+        <div className="pm-container-sm">
           {/* Header */}
           <div className="text-center">
             <div className="hero-reveal mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-sky-100">

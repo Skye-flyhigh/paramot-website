@@ -70,7 +70,7 @@ export default function ProcessTimeline({ steps }: ProcessTimelineProps) {
   return (
     <section>
       <ScrollReveal>
-        <h2 className="mb-8 text-2xl font-bold text-sky-900">How it works</h2>
+        <h2 className="mb-8 pm-section-title">How it works</h2>
       </ScrollReveal>
 
       <div className="relative">

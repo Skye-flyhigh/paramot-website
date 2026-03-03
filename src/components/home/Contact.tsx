@@ -8,7 +8,7 @@ export default function Contact() {
     <section
       id="contact"
       aria-label="Contact form"
-      className="py-20 px-4 bg-gradient-to-b from-white to-sky-50"
+      className="py-20 px-4 bg-linear-to-b from-white to-sky-50"
     >
       <div className="max-w-4xl mx-auto">
         <ScrollReveal className="text-center mb-16">

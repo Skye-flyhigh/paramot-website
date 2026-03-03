@@ -1,6 +1,6 @@
 export default function Motto() {
   return (
-    <section className="py-16 px-4 bg-gradient-to-b from-sky-50 to-white">
+    <section className="py-16 px-4 bg-linear-to-b from-sky-50 to-white">
       <div className="max-w-4xl mx-auto text-center">
         <h2 className="hero-reveal-2 text-4xl font-bold mb-6 text-sky-900">
           Precision servicing for the equipment you trust

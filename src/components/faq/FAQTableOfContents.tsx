@@ -37,10 +37,10 @@ export default function FAQTableOfContents({
           <ScrollReveal key={cat.slug} delay={i * 0.2}>
             <a
               href={`#${cat.slug}`}
-              className="group flex flex-col items-center gap-2 rounded-xl border border-sky-100 bg-white p-4 text-center transition-all hover:border-sky-300 hover:shadow-md"
+              className="group flex flex-col items-center gap-2 p-4 text-center pm-card-interactive"
             >
               {Icon && (
-                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-sky-50 to-sky-100 transition-colors group-hover:from-sky-100 group-hover:to-sky-200">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-linear-to-br from-sky-50 to-sky-100 transition-colors group-hover:from-sky-100 group-hover:to-sky-200">
                   <Icon className="h-5 w-5 text-sky-500 transition-colors group-hover:text-sky-600" />
                 </div>
               )}

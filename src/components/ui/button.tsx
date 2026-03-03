@@ -11,11 +11,12 @@ const buttonVariants = cva(
       variant: {
         destructive:
           'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
-        default: 'bg-sky-600 text-white hover:bg-sky-700 shadow-lg hover:shadow-xl',
+        default:
+          'bg-primary text-primary-foreground hover:bg-primary/90 shadow-lg hover:shadow-xl',
         outline:
-          'border-2 border-sky-200 text-sky-700 hover:bg-sky-50 hover:border-sky-300',
-        ghost: 'text-sky-700 hover:bg-sky-50',
-        link: 'text-sky-600 underline-offset-4 hover:underline',
+          'border-2 border-input text-secondary-foreground hover:bg-accent hover:border-primary/30',
+        ghost: 'text-secondary-foreground hover:bg-accent',
+        link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
         default: 'h-9 px-4 py-2 has-[>svg]:px-3',

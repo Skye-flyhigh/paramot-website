@@ -32,7 +32,7 @@ export default function Trust() {
   return (
     <section
       aria-label="Why choose paraMOT"
-      className="bg-gradient-to-b from-sky-50 to-white px-4 py-20"
+      className="bg-linear-to-b from-sky-50 to-white px-4 py-20"
     >
       <div className="mx-auto max-w-5xl">
         <ScrollReveal className="mb-16 text-center">
@@ -47,9 +47,9 @@ export default function Trust() {
             <ScrollReveal
               key={signal.title}
               delay={0.2 + 0.1 * i}
-              className="flex gap-4 rounded-xl border border-sky-100 bg-white p-6 transition-shadow hover:shadow-md"
+              className="flex gap-4 p-6 pm-card-interactive"
             >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-sky-100 to-sky-200 shadow-inner">
+              <div className="h-12 w-12 shrink-0 pm-icon-box">
                 <signal.icon className="h-6 w-6 text-sky-600" />
               </div>
               <div>

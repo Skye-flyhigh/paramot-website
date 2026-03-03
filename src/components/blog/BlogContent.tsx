@@ -16,7 +16,7 @@ function slugify(text: string): string {
 
 export default function BlogContent({ content }: BlogContentProps) {
   return (
-    <div className="prose-paramot">
+    <div>
       <Markdown
         components={{
           h2: ({ children }) => {

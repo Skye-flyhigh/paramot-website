@@ -18,11 +18,11 @@ export default function IncludesGrid({
   return (
     <section>
       <ScrollReveal>
-        <h2 className="mb-6 text-2xl font-bold text-sky-900">What&apos;s included</h2>
+        <h2 className="mb-6 pm-section-title">What&apos;s included</h2>
       </ScrollReveal>
 
       <ScrollReveal delay={0.1}>
-        <div className="rounded-xl border border-sky-100 bg-white p-6">
+        <div className="pm-card p-6">
           <ul className="grid gap-3 sm:grid-cols-2">
             {items.map((item) => (
               <li key={item.label} className="flex items-center gap-3">
@@ -46,10 +46,7 @@ export default function IncludesGrid({
             <div className="mt-6 rounded-lg border border-sky-200 bg-sky-50 p-4">
               <p className="text-sm text-sky-700">
                 {upgradeNote}{' '}
-                <Link
-                  href={`/services/${upgradeSlug}`}
-                  className="font-medium text-sky-600 underline hover:text-sky-800"
-                >
+                <Link href={`/services/${upgradeSlug}`} className="pm-link underline">
                   Learn more &rarr;
                 </Link>
               </p>

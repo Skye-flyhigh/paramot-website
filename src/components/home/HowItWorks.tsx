@@ -60,7 +60,7 @@ export default function HowItWorks() {
               >
                 {/* Step number */}
                 <div className="mb-4 flex justify-center">
-                  <div className="relative flex h-16 w-16 items-center justify-center rounded-2xl bg-linear-to-br from-sky-100 to-sky-200 shadow-inner">
+                  <div className="relative h-16 w-16 pm-icon-box">
                     <step.icon className="h-8 w-8 text-sky-600" />
                     <span className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-sky-600 text-xs font-bold text-white">
                       {i + 1}

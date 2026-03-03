@@ -170,8 +170,8 @@ export default async function ServiceDetailPage({ params }: PageProps) {
     <>
       <JsonLd data={serviceSchema} />
       <JsonLd data={breadcrumbSchema} />
-      <main className="min-h-screen bg-linear-to-br from-sky-50 to-blue-100 py-12">
-        <div className="mx-auto max-w-4xl px-4">
+      <main className="pm-page">
+        <div className="pm-container-md">
           <ServiceHero page={page} pricing={pricing} />
 
           <div className="mt-12 space-y-12">
@@ -196,10 +196,7 @@ export default async function ServiceDetailPage({ params }: PageProps) {
           </div>
 
           <div className="mt-8 text-center">
-            <Link
-              href="/services"
-              className="font-medium text-sky-600 hover:text-sky-800"
-            >
+            <Link href="/services" className="pm-link">
               &larr; Back to Services
             </Link>
           </div>

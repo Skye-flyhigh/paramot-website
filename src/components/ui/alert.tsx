@@ -9,9 +9,9 @@ const Alert = React.forwardRef<
   }
 >(({ className, variant = 'default', ...props }, ref) => {
   const variants = {
-    default: 'bg-sky-50 border-sky-200 text-sky-800',
+    default: 'bg-muted border-input text-foreground',
     success: 'bg-green-50 border-green-200 text-green-800',
-    warning: 'bg-orange-50 border-orange-200 text-orange-800',
+    warning: 'bg-amber-50 border-amber-200 text-amber-800',
     error: 'bg-red-50 border-red-200 text-red-800',
   };
 

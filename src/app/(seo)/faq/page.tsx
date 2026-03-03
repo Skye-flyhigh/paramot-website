@@ -42,12 +42,10 @@ export default function FAQPage() {
   return (
     <>
       <JsonLd data={faqSchema} />
-      <main className="min-h-screen bg-gradient-to-br from-sky-50 to-blue-100 py-12">
-        <div className="mx-auto max-w-4xl px-4">
+      <main className="pm-page">
+        <div className="pm-container-md">
           <div className="mb-8 text-center">
-            <h1 className="hero-reveal mb-3 text-4xl font-bold text-sky-900">
-              Frequently Asked Questions
-            </h1>
+            <h1 className="hero-reveal mb-3 pm-page-title">Frequently Asked Questions</h1>
             <p className="hero-reveal-1 mx-auto max-w-2xl text-lg text-sky-700">
               Everything you need to know about paraglider servicing, equipment care, and
               how we work. Can&apos;t find your answer?{' '}
@@ -73,21 +71,18 @@ export default function FAQPage() {
             ))}
           </div>
 
-          <div className="mt-12 rounded-xl border border-sky-200 bg-white p-8 text-center">
+          <div className="mt-12 pm-card-cta">
             <h2 className="mb-2 text-xl font-bold text-sky-900">Still have questions?</h2>
             <p className="mb-4 text-sky-700">
               We&apos;re happy to help. Drop us a message and we&apos;ll get back to you.
             </p>
-            <Link
-              href="/#contact"
-              className="inline-block rounded-lg bg-sky-600 px-6 py-3 font-medium text-white transition-colors hover:bg-sky-700"
-            >
+            <Link href="/#contact" className="pm-btn">
               Contact us
             </Link>
           </div>
 
           <div className="mt-8 text-center">
-            <Link href="/" className="font-medium text-sky-600 hover:text-sky-800">
+            <Link href="/" className="pm-link">
               &larr; Back to Home
             </Link>
           </div>

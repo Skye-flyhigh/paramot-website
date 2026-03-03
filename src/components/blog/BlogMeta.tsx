@@ -50,7 +50,7 @@ export default function BlogMeta({
         <Clock className="h-4 w-4" />
         {readingTime} min read
       </span>
-      <span className="inline-flex items-center gap-1.5 rounded-full bg-sky-100 px-3 py-0.5 text-xs font-medium text-sky-700">
+      <span className="pm-badge">
         <Tag className="h-3 w-3" />
         {categoryInfo.name}
       </span>

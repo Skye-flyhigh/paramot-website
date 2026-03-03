@@ -113,7 +113,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     <>
       <JsonLd data={articleSchema} />
       <JsonLd data={breadcrumbSchema} />
-      <main className="min-h-screen bg-linear-to-br from-sky-50 to-blue-100 py-12">
+      <main className="pm-page">
         <div className="mx-auto max-w-3xl px-4">
           <article>
             <BlogMeta
@@ -153,7 +153,7 @@ export default async function BlogPostPage({ params }: PageProps) {
           <BlogRelated posts={relatedPosts} />
 
           <div className="mt-8 text-center">
-            <Link href="/blog" className="font-medium text-sky-600 hover:text-sky-800">
+            <Link href="/blog" className="pm-link">
               &larr; Back to Blog
             </Link>
           </div>

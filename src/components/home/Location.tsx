@@ -11,9 +11,9 @@ export default function Location() {
       <div className="max-w-md mx-auto text-center">
         <a
           href={`mailto:${BUSINESS.email}`}
-          className="group block rounded-2xl bg-gradient-to-b from-sky-50 to-white border border-sky-100 p-8 transition-shadow hover:shadow-lg"
+          className="group block rounded-2xl bg-linear-to-b from-sky-50 to-white border border-sky-100 p-8 transition-shadow hover:shadow-lg"
         >
-          <div className="w-14 h-14 bg-gradient-to-br from-sky-100 to-sky-200 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-inner">
+          <div className="w-14 h-14 pm-icon-box mx-auto mb-4">
             <Mail className="w-7 h-7 text-sky-600" />
           </div>
           <h3 className="text-lg font-bold mb-1 text-sky-900">Email Us</h3>

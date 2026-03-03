@@ -28,17 +28,13 @@ export default function FAQPreview() {
         </ScrollReveal>
 
         <ScrollReveal delay={0.2}>
-          <Accordion
-            type="single"
-            collapsible
-            className="rounded-xl border border-sky-100 bg-white px-6"
-          >
+          <Accordion type="single" collapsible className="pm-card px-6">
             {faqs.map((faq) => (
               <AccordionItem key={faq.id} value={faq.id}>
                 <AccordionTrigger className="text-left text-sky-900 hover:no-underline hover:text-sky-700">
                   {faq.question}
                 </AccordionTrigger>
-                <AccordionContent className="leading-relaxed text-gray-700">
+                <AccordionContent className="leading-relaxed pm-text-body">
                   <span dangerouslySetInnerHTML={{ __html: faq.answer }} />
                 </AccordionContent>
               </AccordionItem>
@@ -46,7 +42,7 @@ export default function FAQPreview() {
           </Accordion>
 
           <div className="mt-6 text-center">
-            <Link href="/faq" className="font-medium text-sky-600 hover:text-sky-800">
+            <Link href="/faq" className="pm-link">
               See all FAQs &rarr;
             </Link>
           </div>

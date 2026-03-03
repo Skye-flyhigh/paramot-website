@@ -53,7 +53,7 @@ export default function Services() {
         <ScrollReveal className="mt-12 text-center">
           <Link
             href="/services"
-            className="inline-block text-sm font-medium text-sky-600 hover:text-sky-800 transition-colors"
+            className="inline-block text-sm pm-link transition-colors"
           >
             View all services in detail &rarr;
           </Link>

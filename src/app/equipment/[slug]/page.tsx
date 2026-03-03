@@ -94,8 +94,8 @@ export default async function ServiceDetailPage({
   return (
     <>
       <JsonLd data={breadcrumbSchema} />
-      <main className="min-h-screen bg-sky-50 py-8" id="equipment-dashboard">
-        <div className="max-w-4xl mx-auto px-4" id="equipment-placeholder">
+      <main className="pm-page" id="equipment-dashboard">
+        <div className="pm-container-md" id="equipment-placeholder">
           {/* Navigation */}
           {session && (
             <div className="mb-6">

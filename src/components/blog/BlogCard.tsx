@@ -23,10 +23,7 @@ export default function BlogCard({ post, index }: BlogCardProps) {
 
   return (
     <ScrollReveal delay={index * 0.1}>
-      <Link
-        href={`/blog/${post.slug}`}
-        className="group block rounded-xl border border-sky-100 bg-white p-6 transition-all hover:border-sky-300 hover:shadow-md"
-      >
+      <Link href={`/blog/${post.slug}`} className="group block p-6 pm-card-interactive">
         {post.coverImage && (
           <Image
             src={post.coverImage.src}
@@ -37,7 +34,7 @@ export default function BlogCard({ post, index }: BlogCardProps) {
           />
         )}
 
-        <span className="mb-3 inline-flex items-center gap-1.5 rounded-full bg-sky-100 px-2.5 py-0.5 text-xs font-medium text-sky-700">
+        <span className="mb-3 pm-badge">
           <Tag className="h-3 w-3" />
           {categoryInfo.name}
         </span>
@@ -59,9 +56,7 @@ export default function BlogCard({ post, index }: BlogCardProps) {
               {readingTime} min
             </span>
           </div>
-          <span className="font-medium text-sky-600 group-hover:text-sky-800">
-            Read more &rarr;
-          </span>
+          <span className="pm-link">Read more &rarr;</span>
         </div>
       </Link>
     </ScrollReveal>
