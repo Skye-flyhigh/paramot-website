@@ -33,9 +33,9 @@ export default function PrivacyPolicy() {
                 1. Introduction
               </h2>
               <p className="text-gray-700 mb-4">
-                paraMOT ("we", "us", or "our") is committed to protecting your privacy.
-                This Privacy Policy explains how we collect, use, disclose, and safeguard
-                your personal information when you use our services.
+                {BUSINESS.name} ("we", "us", or "our") is committed to protecting your
+                privacy. This Privacy Policy explains how we collect, use, disclose, and
+                safeguard your personal information when you use our services.
               </p>
               <p className="text-gray-700 mb-4">
                 We are based in the United Kingdom and comply with UK data protection
@@ -335,7 +335,7 @@ export default function PrivacyPolicy() {
                 11. Children's Privacy
               </h2>
               <p className="text-gray-700 mb-4">
-                Our services are not intended for individuals under 18. We do not
+                Our services are not intended for individuals under 16. We do not
                 knowingly collect personal information from children. If you believe we
                 have collected data from a child, please contact us immediately.
               </p>
