@@ -35,7 +35,10 @@ export default function HowItWorks() {
   const windowSize = useWindowSize();
 
   return (
-    <section aria-label="How the service process works" className="bg-white px-4 py-20">
+    <section
+      aria-label="How the service process works"
+      className="bg-white px-4 py-20 overflow-hidden"
+    >
       <div className="mx-auto max-w-5xl">
         <ScrollReveal className="mb-16 text-center">
           <h2 className="mb-4 text-4xl font-bold text-sky-900">How It Works</h2>
