@@ -1,10 +1,26 @@
-import { BUSINESS } from '@/lib/metadata.const';
+import { BUSINESS, SITE_URL } from '@/lib/metadata.const';
+import { Metadata } from 'next';
 import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: `Privacy policy | ${BUSINESS.name}`,
+  description: 'Description of Privacy policy',
+  alternates: {
+    canonical: `${SITE_URL}/terms`,
+  },
+  robots: 'noindex',
+  other: {
+    'geo.region': 'GB-WLS',
+    'geo.placename': BUSINESS.address.city,
+    'geo.position': `${BUSINESS.latitude};${BUSINESS.longitude}`,
+    ICBM: `${BUSINESS.latitude}, ${BUSINESS.longitude}`,
+  },
+};
 
 export default function PrivacyPolicy() {
   return (
-    <main className="min-h-screen bg-gradient-to-br from-sky-50 to-blue-100 py-12">
-      <div className="max-w-4xl mx-auto px-4">
+    <main className="pm-page">
+      <div className="pm-container-md">
         <div className="bg-white rounded-xl shadow-xl p-8">
           <h1 className="text-4xl font-bold text-sky-900 mb-2">Privacy Policy</h1>
           <p className="text-sky-600 mb-8">
@@ -16,12 +32,12 @@ export default function PrivacyPolicy() {
               <h2 className="text-2xl font-semibold text-sky-900 mb-4">
                 1. Introduction
               </h2>
-              <p className="text-gray-700 mb-4">
-                paraMOT ("we", "us", or "our") is committed to protecting your privacy.
-                This Privacy Policy explains how we collect, use, disclose, and safeguard
-                your personal information when you use our services.
+              <p className="pm-text-body mb-4">
+                {BUSINESS.name} ("we", "us", or "our") is committed to protecting your
+                privacy. This Privacy Policy explains how we collect, use, disclose, and
+                safeguard your personal information when you use our services.
               </p>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 We are based in the United Kingdom and comply with UK data protection
                 laws, including the UK GDPR and the Data Protection Act 2018.
               </p>
@@ -35,10 +51,10 @@ export default function PrivacyPolicy() {
               <h3 className="text-xl font-semibold text-sky-800 mb-3">
                 2.1 Personal Information
               </h3>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 When you register for our services, we collect:
               </p>
-              <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <ul className="list-disc pl-6 mb-4 pm-text-body">
                 <li>Name and contact details (email, phone number)</li>
                 <li>Postal address (for equipment delivery/collection)</li>
                 <li>Authentication information (for account security)</li>
@@ -47,11 +63,11 @@ export default function PrivacyPolicy() {
               <h3 className="text-xl font-semibold text-sky-800 mb-3">
                 2.2 Equipment Information
               </h3>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 To provide our services, we record details about your paragliding
                 equipment:
               </p>
-              <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <ul className="list-disc pl-6 mb-4 pm-text-body">
                 <li>Equipment type, manufacturer, model, and serial numbers</li>
                 <li>Service history and condition reports</li>
                 <li>Ownership records (for equipment tracking)</li>
@@ -60,10 +76,10 @@ export default function PrivacyPolicy() {
               <h3 className="text-xl font-semibold text-sky-800 mb-3">
                 2.3 Service Records
               </h3>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 We maintain records of all services performed, including:
               </p>
-              <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <ul className="list-disc pl-6 mb-4 pm-text-body">
                 <li>Service dates, types, and descriptions</li>
                 <li>Technician notes and findings</li>
                 <li>Booking and payment information</li>
@@ -72,15 +88,15 @@ export default function PrivacyPolicy() {
               <h3 className="text-xl font-semibold text-sky-800 mb-3">
                 2.4 Technical Information
               </h3>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 When you use our website, we automatically collect minimal technical
                 information:
               </p>
-              <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <ul className="list-disc pl-6 mb-4 pm-text-body">
                 <li>Authentication session data (for secure login)</li>
                 <li>Browser preferences (for site functionality)</li>
               </ul>
-              <p className="text-gray-700 mb-4 text-sm italic">
+              <p className="pm-text-body mb-4 text-sm italic">
                 Note: Our hosting provider may log IP addresses and other technical
                 information in server logs for security and troubleshooting purposes. We
                 do not actively collect or use this information.
@@ -91,8 +107,8 @@ export default function PrivacyPolicy() {
               <h2 className="text-2xl font-semibold text-sky-900 mb-4">
                 3. How We Use Your Information
               </h2>
-              <p className="text-gray-700 mb-4">We use your information to:</p>
-              <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <p className="pm-text-body mb-4">We use your information to:</p>
+              <ul className="list-disc pl-6 mb-4 pm-text-body">
                 <li>Provide and manage our servicing and repair services</li>
                 <li>Maintain accurate service records for safety and compliance</li>
                 <li>Communicate with you about bookings, services, and updates</li>
@@ -101,11 +117,11 @@ export default function PrivacyPolicy() {
                 <li>Comply with legal obligations and industry regulations</li>
               </ul>
 
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 <strong>Legal Basis:</strong> We process your personal data under the
                 following legal bases:
               </p>
-              <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <ul className="list-disc pl-6 mb-4 pm-text-body">
                 <li>
                   <strong>Contract:</strong> Processing is necessary to perform our
                   services
@@ -129,28 +145,28 @@ export default function PrivacyPolicy() {
               <h2 className="text-2xl font-semibold text-sky-900 mb-4">
                 4. Public Equipment Service History
               </h2>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 <strong>Important:</strong> Equipment service records are intentionally
                 made public (accessible via serial number lookup) to promote safety and
                 transparency in the paragliding community.
               </p>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 <strong>What is public:</strong>
               </p>
-              <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <ul className="list-disc pl-6 mb-4 pm-text-body">
                 <li>Equipment serial numbers, manufacturers, models</li>
                 <li>Service dates, types, and general condition reports</li>
                 <li>Service history timeline (similar to vehicle MOT history)</li>
               </ul>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 <strong>What remains private:</strong>
               </p>
-              <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <ul className="list-disc pl-6 mb-4 pm-text-body">
                 <li>Your personal contact information (name, email, phone, address)</li>
                 <li>Service costs and payment information</li>
                 <li>Your customer account details</li>
               </ul>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 By using our services, you consent to this public equipment history model.
                 This serves the legitimate interest of safety in the paragliding
                 community.
@@ -161,11 +177,11 @@ export default function PrivacyPolicy() {
               <h2 className="text-2xl font-semibold text-sky-900 mb-4">
                 5. Data Sharing and Disclosure
               </h2>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 We do not sell your personal information. We may share your information
                 with:
               </p>
-              <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <ul className="list-disc pl-6 mb-4 pm-text-body">
                 <li>
                   <strong>Service Providers:</strong> Third parties who help us operate
                   our business (e.g., payment processors, email services)
@@ -185,11 +201,11 @@ export default function PrivacyPolicy() {
               <h2 className="text-2xl font-semibold text-sky-900 mb-4">
                 6. Data Retention
               </h2>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 We retain your personal information for as long as necessary to provide
                 our services and comply with legal obligations:
               </p>
-              <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <ul className="list-disc pl-6 mb-4 pm-text-body">
                 <li>
                   <strong>Customer Account Data:</strong> Until account deletion + 2 years
                   for legal compliance
@@ -208,10 +224,10 @@ export default function PrivacyPolicy() {
               <h2 className="text-2xl font-semibold text-sky-900 mb-4">
                 7. Your Rights (UK GDPR)
               </h2>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 Under UK data protection law, you have the right to:
               </p>
-              <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <ul className="list-disc pl-6 mb-4 pm-text-body">
                 <li>
                   <strong>Access:</strong> Request a copy of your personal data
                 </li>
@@ -237,11 +253,10 @@ export default function PrivacyPolicy() {
                   <strong>Withdraw Consent:</strong> Where processing is based on consent
                 </li>
               </ul>
-              <p className="text-gray-700 mb-4">
-                To exercise these rights, contact us at:{' '}
-                <strong>{BUSINESS.email}</strong>
+              <p className="pm-text-body mb-4">
+                To exercise these rights, contact us at: <strong>{BUSINESS.email}</strong>
               </p>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 You also have the right to lodge a complaint with the{' '}
                 <a
                   href="https://ico.org.uk/"
@@ -259,17 +274,17 @@ export default function PrivacyPolicy() {
               <h2 className="text-2xl font-semibold text-sky-900 mb-4">
                 8. Data Security
               </h2>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 We implement appropriate technical and organizational measures to protect
                 your personal information, including:
               </p>
-              <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <ul className="list-disc pl-6 mb-4 pm-text-body">
                 <li>Encryption of data in transit (HTTPS) and at rest</li>
                 <li>Row-level security policies on database access</li>
                 <li>Regular security assessments and updates</li>
                 <li>Limited access to personal data on a need-to-know basis</li>
               </ul>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 However, no internet-based system is completely secure. We cannot
                 guarantee absolute security of your data.
               </p>
@@ -279,13 +294,13 @@ export default function PrivacyPolicy() {
               <h2 className="text-2xl font-semibold text-sky-900 mb-4">
                 9. Cookies and Tracking
               </h2>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 We use only essential cookies required for site functionality:
               </p>
-              <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <ul className="list-disc pl-6 mb-4 pm-text-body">
                 <li>Authentication session cookies (to keep you logged in)</li>
               </ul>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 We do not use analytics, advertising, or tracking cookies. No cookie
                 consent banner is required as we only use strictly necessary cookies.
               </p>
@@ -295,10 +310,10 @@ export default function PrivacyPolicy() {
               <h2 className="text-2xl font-semibold text-sky-900 mb-4">
                 10. Third-Party Services
               </h2>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 Our website and services may use third-party providers:
               </p>
-              <ul className="list-disc pl-6 mb-4 text-gray-700">
+              <ul className="list-disc pl-6 mb-4 pm-text-body">
                 <li>
                   <strong>Authentication:</strong> NextAuth.js (for secure login)
                 </li>
@@ -309,7 +324,7 @@ export default function PrivacyPolicy() {
                   <strong>Hosting:</strong> Vercel (for website hosting and deployment)
                 </li>
               </ul>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 These services have their own privacy policies and are responsible for
                 their data practices.
               </p>
@@ -319,8 +334,8 @@ export default function PrivacyPolicy() {
               <h2 className="text-2xl font-semibold text-sky-900 mb-4">
                 11. Children's Privacy
               </h2>
-              <p className="text-gray-700 mb-4">
-                Our services are not intended for individuals under 18. We do not
+              <p className="pm-text-body mb-4">
+                Our services are not intended for individuals under 16. We do not
                 knowingly collect personal information from children. If you believe we
                 have collected data from a child, please contact us immediately.
               </p>
@@ -330,7 +345,7 @@ export default function PrivacyPolicy() {
               <h2 className="text-2xl font-semibold text-sky-900 mb-4">
                 12. Changes to This Policy
               </h2>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 We may update this Privacy Policy from time to time. Changes will be
                 posted on this page with an updated revision date. Significant changes
                 will be communicated via email.
@@ -341,11 +356,11 @@ export default function PrivacyPolicy() {
               <h2 className="text-2xl font-semibold text-sky-900 mb-4">
                 13. Contact Information
               </h2>
-              <p className="text-gray-700 mb-4">
+              <p className="pm-text-body mb-4">
                 For questions about this Privacy Policy or to exercise your data rights,
                 contact us:
               </p>
-              <p className="text-gray-700">Email: {BUSINESS.email}</p>
+              <p className="pm-text-body">Email: {BUSINESS.email}</p>
             </section>
           </div>
 

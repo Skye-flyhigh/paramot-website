@@ -1,8 +1,10 @@
 import { Geist, Geist_Mono } from 'next/font/google';
 
 import Footer from '@/components/Footer';
+import MobileTabBar from '@/components/MobileTabBar';
 import Nav from '@/components/Nav';
 import { siteMetadata } from '@/lib/helper/metadata';
+import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 
 const geistSans = Geist({
@@ -26,8 +28,10 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Nav />
-        {children}
+        <div className="pb-16 sm:pb-0">{children}</div>
         <Footer />
+        <MobileTabBar />
+        <Analytics />
       </body>
     </html>
   );

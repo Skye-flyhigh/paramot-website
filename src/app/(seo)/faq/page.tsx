@@ -1,0 +1,93 @@
+import FAQSection from '@/components/faq/FAQSection';
+import FAQTableOfContents from '@/components/faq/FAQTableOfContents';
+import JsonLd from '@/components/seo/JsonLd';
+import ScrollReveal from '@/components/ui/ScrollReveal';
+import { getFAQSchema, getVisibleCategories } from '@/data/faqs';
+import { BUSINESS, SITE_URL } from '@/lib/metadata.const';
+import type { Metadata } from 'next';
+import Link from 'next/link';
+
+export const metadata: Metadata = {
+  title: 'Frequently Asked Questions',
+  description:
+    'Everything you need to know about paraglider servicing, trim measurement, porosity testing, reserve repacking, and the Equipment Registry. Answers from an APPI-certified workshop.',
+  alternates: {
+    canonical: `${SITE_URL}/faq`,
+  },
+  openGraph: {
+    title: `FAQ | ${BUSINESS.name}`,
+    description:
+      'Answers to common questions about paraglider servicing, equipment care, and the paraMOT Equipment Registry.',
+    url: `${SITE_URL}/faq`,
+  },
+};
+
+export default function FAQPage() {
+  const categories = getVisibleCategories();
+  const allFAQs = getFAQSchema();
+
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: allFAQs.map((faq) => ({
+      '@type': 'Question',
+      name: faq.question,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: faq.answer,
+      },
+    })),
+  };
+
+  return (
+    <>
+      <JsonLd data={faqSchema} />
+      <main className="pm-page">
+        <div className="pm-container-md">
+          <div className="mb-8 text-center">
+            <h1 className="hero-reveal mb-3 pm-page-title">Frequently Asked Questions</h1>
+            <p className="hero-reveal-1 mx-auto max-w-2xl text-lg text-sky-700">
+              Everything you need to know about paraglider servicing, equipment care, and
+              how we work. Can&apos;t find your answer?{' '}
+              <Link
+                href="/#contact"
+                className="hero-reveal-2 font-medium text-sky-600 underline hover:text-sky-800"
+              >
+                Get in touch
+              </Link>
+              .
+            </p>
+          </div>
+
+          <div className="mb-12">
+            <FAQTableOfContents categories={categories} />
+          </div>
+
+          <div className="space-y-12">
+            {categories.map((category) => (
+              <ScrollReveal key={category.slug}>
+                <FAQSection category={category} />
+              </ScrollReveal>
+            ))}
+          </div>
+
+          <div className="mt-12 pm-card-cta">
+            <h2 className="mb-2 text-xl font-bold text-sky-900">Still have questions?</h2>
+            <p className="mb-4 text-sky-700">
+              We&apos;re happy to help. Drop us a message and we&apos;ll get back to you.
+            </p>
+            <Link href="/#contact" className="pm-btn">
+              Contact us
+            </Link>
+          </div>
+
+          <div className="mt-8 text-center">
+            <Link href="/" className="pm-link">
+              &larr; Back to Home
+            </Link>
+          </div>
+        </div>
+      </main>
+    </>
+  );
+}

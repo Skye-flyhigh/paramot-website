@@ -6,7 +6,7 @@ export default function EquipmentCTA() {
   return (
     <section
       aria-label="Equipment Registry"
-      className="bg-gradient-to-br from-sky-800 via-sky-700 to-slate-800 px-4 py-16"
+      className="bg-linear-to-br from-sky-800 via-sky-700 to-slate-800 px-4 py-16"
     >
       <div className="mx-auto flex max-w-4xl flex-col items-center gap-6 text-center">
         <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-white/10 backdrop-blur-sm">

@@ -1,12 +1,17 @@
+import { cache } from 'react';
+
 import { prisma } from './client';
 
 /**
  * Find equipment by serial number (public lookup for equipment pages)
  * Includes full service history (regardless of current owner)
  *
+ * Wrapped in React cache() so that generateMetadata() and the page component
+ * share a single DB hit per render pass (same request = same result).
+ *
  * Note: Cost is included but should only be shown to equipment owner in UI
  */
-export async function findEquipmentBySerialNumber(serialNumber: string) {
+export const findEquipmentBySerialNumber = cache(async (serialNumber: string) => {
   return await prisma.equipment.findUnique({
     where: { serialNumber },
     include: {
@@ -68,7 +73,7 @@ export async function findEquipmentBySerialNumber(serialNumber: string) {
       },
     },
   });
-}
+});
 
 /**
  * Find equipment by internal ID

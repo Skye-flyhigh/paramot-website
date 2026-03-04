@@ -1,0 +1,67 @@
+import { Eye, PackageCheck, Shield, Wrench, Zap, type LucideIcon } from 'lucide-react';
+
+import type { ServicePageConfig } from '@/data/service-pages';
+
+import ContactModal from '@/components/ui/contact-modal';
+import ServicePricing from './ServicePricing';
+
+const iconMap: Record<string, LucideIcon> = {
+  Shield,
+  Zap,
+  Eye,
+  PackageCheck,
+  Wrench,
+};
+
+interface ServiceHeroProps {
+  page: ServicePageConfig;
+  pricing: {
+    solo?: number;
+    tandem?: number;
+    regular?: number;
+    steerable?: number;
+    available: boolean;
+  };
+}
+
+export default function ServiceHero({ page, pricing }: ServiceHeroProps) {
+  const Icon = iconMap[page.icon] || Shield;
+
+  return (
+    <header className="flex flex-col items-center gap-8 text-center md:flex-row md:text-left">
+      <div className="hero-reveal h-20 w-20 shrink-0 pm-icon-box">
+        <Icon className="h-10 w-10 text-sky-600" />
+      </div>
+
+      <div className="hero-reveal flex-1">
+        <h1 className="mb-3 pm-page-title">{page.pageTitle}</h1>
+
+        {!pricing.available && (
+          <span className="mb-3 pm-badge-warn px-3 py-1 text-sm">
+            Currently unavailable
+          </span>
+        )}
+
+        <p className="max-w-2xl text-lg leading-relaxed text-sky-700">
+          {page.heroDescription}
+        </p>
+      </div>
+
+      <div className="hero-reveal-1 shrink-0 rounded-xl border border-sky-200 bg-white p-6 shadow-sm">
+        <ServicePricing pricing={pricing} />
+
+        <div className="mt-4">
+          {pricing.available ? (
+            <ContactModal className="pm-btn px-6 py-2.5 text-sm">
+              Get in touch
+            </ContactModal>
+          ) : (
+            <ContactModal className="pm-btn-outline px-6 py-2.5 text-sm">
+              Register interest
+            </ContactModal>
+          )}
+        </div>
+      </div>
+    </header>
+  );
+}

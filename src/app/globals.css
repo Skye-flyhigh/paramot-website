@@ -41,75 +41,251 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* paraMOT design token utilities */
+  --shadow-pm-card: var(--pm-shadow-card);
+  --shadow-pm-card-hover: var(--pm-shadow-card-hover);
+  --radius-pm-card: var(--pm-radius-card);
+  --radius-pm-badge: var(--pm-radius-badge);
+  --radius-pm-cta: var(--pm-radius-cta);
+  --radius-pm-icon: var(--pm-radius-icon);
 }
 
 :root {
+  /* ── paraMOT Design Tokens ── */
+
+  /* Page background gradient stops */
+  --pm-page-from: var(--color-sky-50);
+  --pm-page-to: var(--color-blue-100);
+
+  /* Surfaces */
+  --pm-surface: white;
+  --pm-surface-muted: var(--color-sky-100);
+  --pm-surface-subtle: var(--color-sky-50);
+
+  /* Borders */
+  --pm-border: var(--color-sky-100);
+  --pm-border-hover: var(--color-sky-300);
+  --pm-border-accent: var(--color-sky-200);
+
+  /* Text hierarchy */
+  --pm-heading: var(--color-sky-900);
+  --pm-body: var(--color-sky-700);
+  --pm-muted: var(--color-sky-500);
+  --pm-accent: var(--color-sky-600);
+  --pm-accent-hover: var(--color-sky-800);
+
+  /* Icon containers */
+  --pm-icon-from: var(--color-sky-100);
+  --pm-icon-to: var(--color-sky-200);
+  --pm-icon-fg: var(--color-sky-600);
+
+  /* Badges — category */
+  --pm-badge-bg: var(--color-sky-100);
+  --pm-badge-fg: var(--color-sky-700);
+
+  /* Badges — warning */
+  --pm-badge-warn-bg: var(--color-amber-50);
+  --pm-badge-warn-fg: var(--color-amber-700);
+
+  /* CTA buttons */
+  --pm-cta-bg: var(--color-sky-600);
+  --pm-cta-bg-hover: var(--color-sky-700);
+  --pm-cta-fg: white;
+  --pm-cta-outline-border: var(--color-sky-300);
+  --pm-cta-outline-fg: var(--color-sky-700);
+  --pm-cta-outline-hover-bg: var(--color-sky-50);
+
+  /* Shadows */
+  --pm-shadow-card: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --pm-shadow-card-hover:
+    0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+
+  /* Radii */
+  --pm-radius-card: 0.75rem;
+  --pm-radius-badge: 9999px;
+  --pm-radius-cta: 0.5rem;
+  --pm-radius-icon: 1rem;
+
+  /* Dividers */
+  --pm-divider: var(--color-sky-100);
+
+  /* ── shadcn tokens (aligned to sky palette) ── */
   --radius: 0.625rem;
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.141 0.005 285.823);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.141 0.005 285.823);
-  --primary: oklch(0.21 0.006 285.885);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.967 0.001 286.375);
-  --secondary-foreground: oklch(0.21 0.006 285.885);
-  --muted: oklch(0.967 0.001 286.375);
-  --muted-foreground: oklch(0.552 0.016 285.938);
-  --accent: oklch(0.967 0.001 286.375);
-  --accent-foreground: oklch(0.21 0.006 285.885);
+  --card: white;
+  --card-foreground: var(--color-sky-900);
+  --popover: white;
+  --popover-foreground: var(--color-sky-900);
+  --primary: var(--color-sky-600);
+  --primary-foreground: white;
+  --secondary: var(--color-sky-50);
+  --secondary-foreground: var(--color-sky-900);
+  --muted: var(--color-sky-50);
+  --muted-foreground: var(--color-sky-500);
+  --accent: var(--color-sky-50);
+  --accent-foreground: var(--color-sky-900);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.92 0.004 286.32);
-  --input: oklch(0.92 0.004 286.32);
-  --ring: oklch(0.705 0.015 286.067);
+  --border: var(--color-sky-100);
+  --input: var(--color-sky-200);
+  --ring: var(--color-sky-400);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.141 0.005 285.823);
-  --sidebar-primary: oklch(0.21 0.006 285.885);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.967 0.001 286.375);
-  --sidebar-accent-foreground: oklch(0.21 0.006 285.885);
-  --sidebar-border: oklch(0.92 0.004 286.32);
-  --sidebar-ring: oklch(0.705 0.015 286.067);
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.141 0.005 285.823);
+  --sidebar: white;
+  --sidebar-foreground: var(--color-sky-900);
+  --sidebar-primary: var(--color-sky-600);
+  --sidebar-primary-foreground: white;
+  --sidebar-accent: var(--color-sky-50);
+  --sidebar-accent-foreground: var(--color-sky-900);
+  --sidebar-border: var(--color-sky-100);
+  --sidebar-ring: var(--color-sky-400);
+  --background: white;
+  --foreground: var(--color-sky-900);
 }
 
 .dark {
-  --background: oklch(0.141 0.005 285.823);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.21 0.006 285.885);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.21 0.006 285.885);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.92 0.004 286.32);
-  --primary-foreground: oklch(0.21 0.006 285.885);
-  --secondary: oklch(0.274 0.006 286.033);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.274 0.006 286.033);
-  --muted-foreground: oklch(0.705 0.015 286.067);
-  --accent: oklch(0.274 0.006 286.033);
-  --accent-foreground: oklch(0.985 0 0);
+  /* Placeholder — proper dark mode values will be set in PR 2.
+     These use sky-inverted tones to keep things readable if toggled early. */
+  --background: var(--color-sky-950);
+  --foreground: var(--color-sky-100);
+  --card: var(--color-sky-900);
+  --card-foreground: var(--color-sky-100);
+  --popover: var(--color-sky-900);
+  --popover-foreground: var(--color-sky-100);
+  --primary: var(--color-sky-400);
+  --primary-foreground: var(--color-sky-950);
+  --secondary: var(--color-sky-800);
+  --secondary-foreground: var(--color-sky-100);
+  --muted: var(--color-sky-800);
+  --muted-foreground: var(--color-sky-400);
+  --accent: var(--color-sky-800);
+  --accent-foreground: var(--color-sky-100);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.552 0.016 285.938);
+  --border: var(--color-sky-800);
+  --input: var(--color-sky-700);
+  --ring: var(--color-sky-500);
   --chart-1: oklch(0.488 0.243 264.376);
   --chart-2: oklch(0.696 0.17 162.48);
   --chart-3: oklch(0.769 0.188 70.08);
   --chart-4: oklch(0.627 0.265 303.9);
   --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.21 0.006 285.885);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.274 0.006 286.033);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.552 0.016 285.938);
+  --sidebar: var(--color-sky-950);
+  --sidebar-foreground: var(--color-sky-100);
+  --sidebar-primary: var(--color-sky-400);
+  --sidebar-primary-foreground: var(--color-sky-950);
+  --sidebar-accent: var(--color-sky-800);
+  --sidebar-accent-foreground: var(--color-sky-100);
+  --sidebar-border: var(--color-sky-800);
+  --sidebar-ring: var(--color-sky-500);
+}
+
+/* Above-the-fold hero animation — CSS-only, no JS hydration dependency */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes hero-fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+  }
+
+  .hero-reveal {
+    animation: hero-fade-up 0.6s ease-out both;
+  }
+  .hero-reveal-1 {
+    animation: hero-fade-up 0.6s ease-out 0.15s both;
+  }
+  .hero-reveal-2 {
+    animation: hero-fade-up 0.6s ease-out 0.3s both;
+  }
+}
+
+.faq-link {
+  color: var(--pm-accent);
+  text-decoration: underline;
+}
+.faq-link:hover {
+  color: var(--pm-accent-hover);
+}
+.faq-link:visited {
+  color: var(--pm-accent-hover);
+}
+
+@layer components {
+  /* ── Page layout ── */
+  .pm-page {
+    @apply min-h-screen bg-linear-to-br from-sky-50 to-blue-100 py-12;
+  }
+  .pm-container-sm {
+    @apply mx-auto max-w-2xl px-4;
+  }
+  .pm-container-md {
+    @apply mx-auto max-w-4xl px-4;
+  }
+  .pm-container-lg {
+    @apply mx-auto max-w-6xl px-4;
+  }
+
+  /* ── Typography ── */
+  .pm-page-title {
+    @apply text-4xl font-bold text-sky-900;
+  }
+  .pm-page-subtitle {
+    @apply mx-auto max-w-2xl text-lg text-sky-700;
+  }
+  .pm-section-title {
+    @apply text-2xl font-bold text-sky-900;
+  }
+  .pm-text-heading {
+    @apply text-sky-900;
+  }
+  .pm-text-body {
+    @apply text-sky-700;
+  }
+  .pm-text-muted {
+    @apply text-sky-500;
+  }
+  .pm-text-accent {
+    @apply text-sky-600;
+  }
+
+  /* ── Cards ── */
+  .pm-card {
+    @apply rounded-xl border border-sky-100 bg-white;
+  }
+  .pm-card-interactive {
+    @apply rounded-xl border border-sky-100 bg-white transition-all hover:border-sky-300 hover:shadow-md;
+  }
+  .pm-card-cta {
+    @apply rounded-xl border border-sky-200 bg-white p-8 text-center;
+  }
+
+  /* ── Badges ── */
+  .pm-badge {
+    @apply inline-flex items-center gap-1.5 rounded-full bg-sky-100 px-2.5 py-0.5 text-xs font-medium text-sky-700;
+  }
+  .pm-badge-warn {
+    @apply inline-block rounded-full bg-amber-50 px-2.5 py-0.5 text-xs font-medium text-amber-700;
+  }
+
+  /* ── Buttons ── */
+  .pm-btn {
+    @apply inline-block rounded-lg bg-sky-600 px-6 py-3 font-medium text-white transition-colors hover:bg-sky-700;
+  }
+  .pm-btn-outline {
+    @apply inline-block rounded-lg border border-sky-300 px-6 py-3 font-medium text-sky-700 transition-colors hover:bg-sky-50;
+  }
+
+  /* ── Links ── */
+  .pm-link {
+    @apply font-medium text-sky-600 hover:text-sky-800;
+  }
+
+  /* ── Icon containers ── */
+  .pm-icon-box {
+    @apply flex items-center justify-center rounded-2xl bg-linear-to-br from-sky-100 to-sky-200 shadow-inner;
+  }
 }
 
 @layer base {
