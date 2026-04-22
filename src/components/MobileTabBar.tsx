@@ -1,8 +1,19 @@
 'use client';
 
-import { ClipboardList, HelpCircle, Home, Wrench, type LucideIcon } from 'lucide-react';
+import {
+  ClipboardList,
+  FolderSearch2,
+  HelpCircle,
+  Home,
+  LogIn,
+  LogOut,
+  Wrench,
+  type LucideIcon,
+} from 'lucide-react';
+import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { Button } from './ui/button';
 
 interface Tab {
   href: string;
@@ -12,25 +23,39 @@ interface Tab {
   matchPrefixes: string[];
 }
 
-const tabs: Tab[] = [
+const baseTabs: Tab[] = [
   { href: '/', label: 'Home', icon: Home, matchPrefixes: [] },
-  {
-    href: '/services',
-    label: 'Services',
-    icon: Wrench,
-    matchPrefixes: ['/services'],
-  },
-  { href: '/faq', label: 'FAQ', icon: HelpCircle, matchPrefixes: ['/faq'] },
+  { href: '/services', label: 'Services', icon: Wrench, matchPrefixes: ['/services'] },
   {
     href: '/equipment',
-    label: 'Equipment',
-    icon: ClipboardList,
+    label: 'Registry',
+    icon: FolderSearch2,
     matchPrefixes: ['/equipment'],
   },
 ];
 
-export default function MobileTabBar() {
+const dashboardTab: Tab = {
+  href: '/dashboard',
+  label: 'Dashboard',
+  icon: ClipboardList,
+  matchPrefixes: ['/dashboard'],
+};
+
+const faqTab: Tab = {
+  href: '/faq',
+  label: 'FAQ',
+  icon: HelpCircle,
+  matchPrefixes: ['/faq'],
+};
+
+interface MobileTabBarProps {
+  isAuthenticated: boolean;
+}
+
+export default function MobileTabBar({ isAuthenticated }: MobileTabBarProps) {
   const pathname = usePathname();
+
+  const tabs = [...baseTabs, isAuthenticated ? dashboardTab : faqTab];
 
   function isActive(tab: Tab): boolean {
     if (tab.matchPrefixes.length === 0) return pathname === '/';
@@ -61,6 +86,34 @@ export default function MobileTabBar() {
             </Link>
           );
         })}
+
+        {isAuthenticated ? (
+          <>
+            <form
+              action={async () => {
+                await signOut({ redirectTo: '/' });
+              }}
+              className="py-2 "
+            >
+              <Button
+                variant="ghost"
+                type="submit"
+                className="flex flex-1 flex-col items-center gap-0.5 text-xs text-gray-500 hover:text-sky-600 transition-colors"
+              >
+                <LogOut className="h-5 w-5" />
+                <span>Log Out</span>
+              </Button>
+            </form>
+          </>
+        ) : (
+          <Link
+            href="/dashboard/login"
+            className="flex flex-1 flex-col items-center gap-0.5 py-2 text-xs text-gray-500 hover:text-sky-600 transition-colors"
+          >
+            <LogIn className="h-5 w-5" />
+            <span>Sign In</span>
+          </Link>
+        )}
       </div>
     </nav>
   );
