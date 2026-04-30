@@ -1,3 +1,27 @@
+import type { ServiceStatus } from '@/generated/prisma';
+
+export const SERVICE_TYPES = [
+  'strength_check',
+  'trim_control',
+  'canopy_repair',
+  'lineset_replacement',
+  'partial_replacement',
+  'flight_test',
+] as const;
+
+export type ServiceType = (typeof SERVICE_TYPES)[number];
+
+export const SERVICE_TYPE_LABELS: Record<ServiceType, string> = {
+  strength_check: 'Lines Strength Check',
+  trim_control: 'Trim Control',
+  canopy_repair: 'Canopy Repair',
+  lineset_replacement: 'Lineset Replacement',
+  partial_replacement: 'Lines Partial Replacement',
+  flight_test: 'Flight Test',
+};
+
+export const MEASURE_METHODS = ['differential', 'laser'] as const;
+
 export interface ServiceChecks {
   trim?: boolean;
   cloth?: boolean;
@@ -33,15 +57,6 @@ export const SERVICE_CODE = [
   'REP-001',
 ] as const;
 export type ServiceCode = (typeof SERVICE_CODE)[number];
-
-export const SERVICE_STATUSES = [
-  'PENDING',
-  'IN_PROGRESS',
-  'AWAITING',
-  'COMPLETED',
-  'CANCELLED',
-] as const;
-export type ServiceStatus = (typeof SERVICE_STATUSES)[number];
 
 export interface ServiceRecords {
   // Identifiers
