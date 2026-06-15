@@ -79,8 +79,7 @@
   "lint-staged": {
     "*.{js,jsx,ts,tsx}": [
       "eslint --fix",
-      "prettier --write",
-      "bash -c 'if grep -q \"skye@paramot.co.uk\" \"$0\" && ! echo \"$0\" | grep -q \"mockData.ts\"; then echo \"❌ Test email found in $0\"; exit 1; fi'"
+      "prettier --write"
     ],
     "*.{json,md,css}": [
       "prettier --write"

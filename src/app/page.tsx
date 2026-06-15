@@ -18,9 +18,25 @@ const localBusinessSchema = {
   '@context': 'https://schema.org',
   '@type': 'LocalBusiness',
   name: BUSINESS.name,
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: BUSINESS.address.street,
+    addressLocality: BUSINESS.address.city,
+    addressRegion: BUSINESS.address.region,
+    postalCode: BUSINESS.address.postcode,
+    addressCountry: BUSINESS.address.country,
+  },
   description: BUSINESS.description,
   url: SITE_URL,
   email: BUSINESS.email,
+  openingHourseSpecification: [
+    {
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+      opens: '09:00',
+      closes: '17:00',
+    },
+  ],
   priceRange: BUSINESS.priceRange,
   areaServed: { '@type': 'Country', name: 'United Kingdom' },
   knowsAbout: [

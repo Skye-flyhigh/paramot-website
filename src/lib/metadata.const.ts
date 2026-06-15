@@ -10,11 +10,13 @@ export const BUSINESS: BusinessInfo = {
   address: {
     street: '56 Broad street',
     city: 'Blaenavon',
+    region: 'Torfean',
     postcode: 'NP4 9NH',
     country: 'UK',
   },
   email: 'hello@paramot.co.uk',
-  foundingYear: 2026,
+  phone: '',
+  foundingYear: 2025,
   description:
     'Professional paragliding wing servicing, trim measurement, cloth testing, reserve repacking, and harness inspections. APPI certified. Transparent digital reports. UK-based postal service available.',
   priceRange: getPriceRange(),

@@ -24,12 +24,14 @@ export interface BusinessInfo {
   address: {
     street: string;
     city: string;
+    region: string;
     postcode: string;
     country: string;
   };
   foundingYear: number;
   description: string;
   email: string;
+  phone: string;
   priceRange: string;
   latitude: number;
   longitude: number;
