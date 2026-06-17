@@ -2,7 +2,7 @@
   "name": "paramot-website",
   "version": "0.2.0",
   "private": true,
-  "packageManager": "pnpm@11.6.0",
+  "packageManager": "pnpm@11.7.0",
   "scripts": {
     "dev": "next dev --turbopack",
     "dry": "prisma generate && next build --turbopack && next start",
