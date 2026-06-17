@@ -1,18 +1,4 @@
-import type {
-  Address,
-  Communication,
-  Customer,
-  CustomerEquipment,
-  Equipment,
-  ServiceRecords,
-} from '@/lib/db';
+import type { CustomerWithDetails } from '@/lib/db/customers';
 
-// Customer data with all relations loaded (matches ensureCustomer query)
-// Flattened with email for dashboard context
-export type Dashboard = Customer & {
-  serviceRecords: (ServiceRecords & { equipment: Equipment })[];
-  customerEquipment: (CustomerEquipment & { equipment: Equipment })[];
-  address: Address | null;
-  communicationPreferences: Communication | null;
-  email: string;
-};
+/** Customer data with all dashboard relations loaded + email from User table */
+export type Dashboard = CustomerWithDetails & { email: string };

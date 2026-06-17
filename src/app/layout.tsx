@@ -4,6 +4,7 @@ import Footer from '@/components/Footer';
 import MobileTabBar from '@/components/MobileTabBar';
 import Nav from '@/components/Nav';
 import { siteMetadata } from '@/lib/helper/metadata';
+import { ensureAuthenticated } from '@/lib/security/auth-check';
 import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 
@@ -19,18 +20,20 @@ const geistMono = Geist_Mono({
 
 export const metadata = siteMetadata;
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const isAuth = await ensureAuthenticated();
+
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Nav />
         <div className="pb-16 sm:pb-0">{children}</div>
         <Footer />
-        <MobileTabBar />
+        <MobileTabBar isAuthenticated={isAuth.authenticated} />
         <Analytics />
       </body>
     </html>
